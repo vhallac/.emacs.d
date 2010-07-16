@@ -82,7 +82,9 @@
           (setq ad-return-value
                 (start-process 
                  ;; open the process a buffer
-                 "SMTP" process-buffer "openssl"
+                 "SMTP" process-buffer (if (boundp 'openssl-prg)
+                                           openssl-prg
+                                         "openssl")
                  ;; use client mode for tunnelling
                  "s_client" 
                  ;; be quiet about it, or any ssl communication stuff will
