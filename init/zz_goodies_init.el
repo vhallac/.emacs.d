@@ -57,3 +57,8 @@
 
 ;; Tab either indents, or does completion
 (setq tab-always-indent 'complete)
+
+;; browse-kill-ring mode for easy kill-ring history handling
+;; Use M-y to paste from history
+(require 'browse-kill-ring)
+(browse-kill-ring-default-keybindings)
