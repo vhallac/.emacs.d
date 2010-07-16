@@ -6,7 +6,8 @@
        plt-dir "c:/plt/"
        erc-dcc-get-default-directory "f:\\zz_download\\erc_dcc"
        gforth-dir "c:/progs/gforth"
-       js-js-tmpdir (getenv "TMP"))
+       js-js-tmpdir (getenv "TMP")
+       openssl-prg "f:/tools/msysgit/bin/openssl.exe")
 
 ;; This is Billy-land. No /usr/include for you!
 (setq c-helper-global-search-list
