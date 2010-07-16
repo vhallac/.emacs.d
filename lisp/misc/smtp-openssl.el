@@ -89,7 +89,10 @@
                  "s_client" 
                  ;; be quiet about it, or any ssl communication stuff will
                  ;; happen in band
-                 "-quiet" 
+                 "-quiet"
+                 ;; Need this for gmail. Would it break others? Don't know,
+                 ;; don't care.
+                 "-starttls" "smtp"
                  ;; use tls1 and/or connection
                  "-tls1" "-connect"
                  (format "%s:%s" host port))))
