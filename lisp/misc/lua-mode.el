@@ -835,21 +835,30 @@ use standalone."
 ;;{{{ lua-calculate-indentation-info
 
 (defun lua-cleanup-indentation-info (info)
-  (when info
-    (cond
-     ( (eq 'remove-matching (caar info))
-       (cdr (lua-cleanup-indentation-info (cdr info))))
+  "Cleanup the list of indentation information.
+There are two tokens that cause list cleanup: remove-matching,
+and replace matching. These tokens are considered cleanup tokens.
 
-     ( (eq 'replace-matching (caar info))
-       (append (list (cdr (car info))) (cdr (lua-cleanup-indentation-info (cdr info)))))
+When a remove-matching token is found, the next non cleanup token
+is removed from list.
 
-     ( t
-       (append (list (car info)) (lua-cleanup-indentation-info (cdr info)))))))
-    ;; (if (eq 'remove-matching (caar info))
-    ;;     (if (eq 'remove-matching (caadr info))
-    ;;         (cdr (lua-cleanup-indentation-info (cdr info)))
-    ;;       (lua-cleanup-indentation-info (cddr info)))
-    ;;   (append (list (car info)) (lua-cleanup-indentation-info (cdr info))))))
+When a replace-matching token is found, the next non-cleanup
+token is removed from the list, and the cdr of the
+replace-matching token is inserted in its place."
+  (let (value
+        (erase-count 0))
+    (dolist (elt info value)
+      (cond
+       ( (eq 'remove-matching (car elt))
+         (setq erase-count (1+ erase-count)))
+       ( (eq 'replace-matching (car elt))
+         (setq value (cons (cdr elt) value))
+         (setq erase-count (1+ erase-count)))
+       ( t
+         (if (= erase-count 0)
+             (setq value (cons elt value))
+           (setq erase-count (1- erase-count))))))
+    (reverse value)))
 
 (defun lua-calculate-indentation-info (&optional parse-start parse-end)
   "For each block token on the line, computes how it affects the indentation.
