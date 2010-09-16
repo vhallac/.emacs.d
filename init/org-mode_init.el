@@ -1,5 +1,7 @@
 ;; Is this how we set it up?
 (require 'org-install)
+(require 'org-protocol)
+
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
 
 (define-key global-map "\C-cl" 'org-store-link)
@@ -11,8 +13,6 @@
 (global-set-key (kbd "<f11> O") 'bh/clock-out)
 
 (setq
- org-M-RET-may-split-line '((default))
- org-clock-in-resume t
  org-clock-persist t
  org-enforce-todo-checkbox-dependencies t
  org-enforce-todo-dependencies t
@@ -68,7 +68,6 @@
         ("NEXT" ("WAITING"))
         ("DONE" ("WAITING") ("CANCELLED"))))
 
-
 (defun home ()
   (interactive)
   (find-file "~/org/home.org"))
@@ -100,53 +99,26 @@
 (setq org-default-notes-file "~/org/refile.org")
 
 ;;;  Load Org Remember Stuff
-(require 'remember)
-(org-remember-insinuate)
+(setq org-capture-templates
+      '(("w" "Web" entry
+         (file+headline "~/org/home.org" "Firefox")
+         "* TODO %c\n\n%i" :immediate-finish t)
+        ("t" "TODO" entry
+         (file+headline "~/org/refile.org" "Tasks")
+         "* TODO %?\n  :PROPERTIES:\n  :CREATED: %U\n  :LINK: %a\n  :END:\n %i"
+         :clock-in t :clock-resume t)
+        ("n" "note" entry
+         (file+headline "~/org/refile.org" "Notes")
+         "* %? :NOTE:\n  %U\n  %a\n"
+         :clock-in t :clock-resume t)
+        ("a" "appointment" entry
+         (file+headline "~/org/appointments.org" "Appointments")
+         "* %? :APPOINTMENT:\n %U")))
 
-;; Start clock in a remember buffer and switch back to previous clocking task on save
-(add-hook 'remember-mode-hook 'org-clock-in 'append)
-(add-hook 'org-remember-before-finalize-hook 'bh/clock-in-interrupted-task)
-
-;; I use C-M-r to start org-remember
-(global-set-key (kbd "C-M-r") 'org-remember)
-
-;; Keep clocks running
-(setq org-remember-clock-out-on-exit nil)
-
-;; C-c C-c stores the note immediately
-(setq org-remember-store-without-prompt t)
-
-;; I don't use this -- but set it in case I forget to specify a location in a future template
-(setq org-remember-default-headline "Tasks")
+;; I use C-M-r to start org-capture (r for 'remember'. I may need a better key.)
+(global-set-key (kbd "C-M-r") 'org-capture)
 
 (add-hook 'org-clock-out-hook 'bh/remove-empty-drawer-on-clock-out 'append)
-
-;; From:
-;; http://tsdh.wordpress.com/2008/11/14/calling-org-remember-from-inside-conkeror/
-;; Integrate with conkeror
-;; TODO: Change to autoload
-(require 'org-protocol)
-
-(setq org-remember-templates
- '(("Web" ?w "* TODO %c\n\n%i%!" "~/org/home.org" "Firefox" nil)
-   ("TODO1"  ?T "* TODO %?\n   %i\n %a" nil nil nil)
-   ("TODO"  ?t "* TODO %?\n  :PROPERTIES:\n :created: %U\n :link: %a\n  :END:\n %i")
-   ("note" ?n "* %? :NOTE:\n  %U\n  %a\n  :CLOCK:\n  :END:" nil bottom nil)
-   ("appointment" ?a "* %?\n  %U" "~/git/org/todo.org" "Appointments" nil)))
-
-(setq remember-annotation-functions '(org-remember-annotation))
-(setq remember-handler-functions '(org-remember-handler))
-(add-hook 'remember-mode-hook 'org-remember-apply-template)
-
-;; For windows, remember to register the org-protocol:// handler via
-;; Windows Registry Editor Version 5.00
-;; [HKEY_CLASSES_ROOT\org-protocol]
-;; @="URL:Org Protocol"
-;; "URL Protocol"=""
-;; [HKEY_CLASSES_ROOT\org-protocol\shell]
-;; [HKEY_CLASSES_ROOT\org-protocol\shell\open]
-;; [HKEY_CLASSES_ROOT\org-protocol\shell\open\command]
-;; @="\"<path-to-emacs>/bin/emacsclient.exe\" \"%1\""
 
 ;; clocking functions
 
@@ -178,15 +150,13 @@
 
 ;; Save the running clock and all clock history when exiting Emacs, load it on
 ;; startup
-(setq org-clock-persist 'history)
+(setq org-clock-persist t)
 
 ;; Enable auto clock resolution for finding open clocks
 (setq org-clock-auto-clock-resolution 'when-no-clock-is-running)
 
 ;; Include current clocking task in clock reports
 (setq org-clock-report-include-clocking-task t)
-
-(setq bh/keep-clock-running nil)
 
 (add-hook 'org-clock-out-hook 'bh/clock-out-maybe 'append)
 
@@ -203,19 +173,14 @@
                            (nil :maxlevel . 5)))
 
 ; Targets start with the file name - allows creating level 1 tasks
-(setq org-refile-use-outline-path (quote file))
+(setq org-refile-use-outline-path 'file)
 
 ; Targets complete in steps so we start with filename, TAB shows the next level
 ; of targets etc
 (setq org-outline-path-complete-in-steps t)
 
 ; Allow refile to create parent tasks with confirmation
-(setq org-refile-allow-creating-parent-nodes (quote confirm))
-
-; Use IDO only for buffers
-; set ido-mode to buffer and ido-everywhere to t via the customize interface
-; '(ido-mode (quote both) nil (ido))
-; '(ido-everywhere t)
+(setq org-refile-allow-creating-parent-nodes 'confirm)
 
 ;; Agenda setup
 
@@ -262,6 +227,8 @@
         ("#" "Stuck Projects" tags-todo "LEVEL=2-REFILE|LEVEL=1+REFILE/!-DONE-CANCELLED"
          ((org-agenda-skip-function 'bh/skip-non-stuck-projects)
           (org-agenda-overriding-header "Stuck Projects")))
+        ;; TODO: The following condition is wrong. I don't have a good selector
+        ;; for clockable tasks yet.
         ("c" "Select default clocking task" tags "LEVEL=2-REFILE"
          ((org-agenda-skip-function
            '(org-agenda-skip-subtree-if 'notregexp "^\\*\\* Organization"))
@@ -336,9 +303,11 @@
 ;; Change task state to NEXT from TODO when clocking in
 (defun bh/clock-in-to-next (kw)
   "Switch task from TODO to NEXT when clocking in.
-Skips remember tasks and tasks with subtasks"
+Skips remember/capture tasks and tasks with subtasks"
   (if (and (string-equal kw "TODO")
-           (not (string-equal (buffer-name) "*Remember*")))
+           (not (or (string-equal "*Remember*" (buffer-name))
+                    (string-prefix-p "CAPTURE-" (buffer-name)))))
+
       (let ((subtree-end (save-excursion (org-end-of-subtree t)))
             (has-subtask nil))
         (save-excursion
@@ -351,6 +320,10 @@ Skips remember tasks and tasks with subtasks"
         (when (not has-subtask)
           "NEXT"))))
 
+;; Use the default task to clock in whenever you clock out
+(setq bh/keep-clock-running nil)
+
+;; Not quite sure how these will be integrated. Leave them in for now.
 (defun bh/clock-in ()
   (interactive)
   (setq bh/keep-clock-running t)
@@ -372,22 +345,10 @@ Skips remember tasks and tasks with subtasks"
       (org-clock-in))))
 
 (defun bh/clock-out-maybe ()
-  (when (and bh/keep-clock-running (not org-clock-clocking-in) (marker-buffer org-clock-default-task))
+  (when (and bh/keep-clock-running
+             (not org-clock-clocking-in)
+             (marker-buffer org-clock-default-task))
     (bh/clock-in-default-task)))
-
-(defun bh/clock-in-interrupted-task ()
-  "Clock in the interrupted task if there is one"
-  (interactive)
-  (let ((clock-in-to-task))
-    (if (org-clock-is-active)
-        (when (marker-buffer org-clock-interrupted-task)
-          (if (equal org-clock-interrupted-task org-clock-hd-marker)
-              (setq clock-in-to-task (cadr org-clock-history))
-            (setq clock-in-to-task org-clock-interrupted-task))))
-    (if clock-in-to-task
-        (org-with-point-at clock-in-to-task
-          (org-clock-in nil))
-      (org-clock-out))))
 
 (defun bh/weekday-p ()
   (let ((wday (nth 6 (decode-time))))
@@ -397,10 +358,6 @@ Skips remember tasks and tasks with subtasks"
   (let ((hour (nth 2 (decode-time))))
     (and (bh/weekday-p) (or (and (>= hour 8) (<= hour 11))
                            (and (>= hour 13) (<= hour 16))))))
-
-(defun bh/network-p ()
-  (= 0 (call-process "/bin/ping" nil nil nil
-                     "-c1" "-q" "-t1" "norang.ca")))
 
 (defun bh/org-auto-exclude-function (tag)
   (and (cond
@@ -413,3 +370,17 @@ Skips remember tasks and tasks with subtasks"
           (or (< hour 8) (> hour 21)))))
        (concat "-" tag)))
 
+;; I don't use this -- but set it in case I forget to specify a location in a
+;; future template.
+;; org-capture still uses this variable
+(setq org-remember-default-headline "Tasks")
+
+;; For windows, remember to register the org-protocol:// handler via
+;; Windows Registry Editor Version 5.00
+;; [HKEY_CLASSES_ROOT\org-protocol]
+;; @="URL:Org Protocol"
+;; "URL Protocol"=""
+;; [HKEY_CLASSES_ROOT\org-protocol\shell]
+;; [HKEY_CLASSES_ROOT\org-protocol\shell\open]
+;; [HKEY_CLASSES_ROOT\org-protocol\shell\open\command]
+;; @="\"<path-to-emacs>/bin/emacsclient.exe\" \"%1\""
