@@ -1,6 +1,6 @@
 (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
-(autoload 'python-mode "python-mode" "Python editing mode." t)
+(autoload 'python-mode "python.el" "Python editing mode." t)
 
 (defun ropemacs-start ()
   "Loads pymacs and ropemacs"
