@@ -8,4 +8,6 @@
   (setq lua-electric-mode nil) ; Can't indent properly. At stay out of the way.
   (setq lua-indent-level 4)
   (choose-indent-type)
-  (vtidy-mode t)))
+  (auto-fill-mode 1)
+  (vtidy-mode t)
+  (subword-mode 1)))
