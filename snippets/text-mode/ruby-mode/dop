@@ -1,0 +1,6 @@
+#name : do ... end
+#group : definitions
+# --
+do | ${1:params} |
+  $0
+end

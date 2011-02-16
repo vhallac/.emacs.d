@@ -1,0 +1,6 @@
+#name : do ... end
+#group : definitions
+# --
+do
+  $0
+end
