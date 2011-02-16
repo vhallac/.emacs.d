@@ -33,7 +33,8 @@
  org-publish-use-timestamps-flag nil
  org-return-follows-link t
  org-special-ctrl-a/e t
- org-use-fast-todo-selection t)
+ org-use-fast-todo-selection t
+ org-clock-modeline-total 'current)
 
 ;; TODO sequences
 (setq org-todo-keywords
@@ -89,7 +90,7 @@
         ;; yasnippet
         (make-variable-buffer-local 'yas/trigger-key)
         (setq yas/trigger-key [tab])
-        (define-key yas/keymap [tab] 'yas/next-field-group)
+        (define-key yas/keymap [tab] 'yas/next-field)
         ;; flyspell mode to spell check everywhere
         (flyspell-mode 1)
         (auto-fill-mode t)
@@ -384,3 +385,20 @@ Skips remember/capture tasks and tasks with subtasks"
 ;; [HKEY_CLASSES_ROOT\org-protocol\shell\open]
 ;; [HKEY_CLASSES_ROOT\org-protocol\shell\open\command]
 ;; @="\"<path-to-emacs>/bin/emacsclient.exe\" \"%1\""
+
+(setq org-agenda-day-face-function
+      (defun jd:org-agenda-day-face-holidays-function (date)
+        "Compute DATE face for holidays."
+        (unless (org-agenda-todayp date)
+          (dolist (file (org-agenda-files nil 'ifmode))
+            (let ((face
+                   (dolist (entry (org-agenda-get-day-entries file date))
+                     (let ((category (with-temp-buffer
+                                       (insert entry)
+                                       (org-get-category (point-min)))))
+                       (when (or (string= "Holidays" category)
+                                 (string= "Vacation" category))
+                         (return 'org-agenda-date-weekend))))))
+              (when face (return face)))))))
+
+(setq org-agenda-include-diary t)
