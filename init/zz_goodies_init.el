@@ -21,7 +21,8 @@
 
 ; Experimental setup extras
 (GNUEmacs
- (scroll-bar-mode -1)
+ (when window-system
+   (scroll-bar-mode -1))
  (blink-cursor-mode -1)
  (setq transient-mark-mode t)
  (menu-bar-mode -1)
