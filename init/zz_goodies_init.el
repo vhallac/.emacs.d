@@ -62,3 +62,5 @@
 ;; Use M-y to paste from history
 (require 'browse-kill-ring)
 (browse-kill-ring-default-keybindings)
+
+(set-language-environment "Turkish")
