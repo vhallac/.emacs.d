@@ -10,7 +10,12 @@
         ("dys.wowace@gmail.com" 
          (:network-server  . "talk.google.com")
          (:machine-alias   . "gmail-2")
-         (:connection-type . ssl))))
+         (:connection-type . ssl))
+        ("vhallac@chat.facebook.com" 
+         (:network-server  . "chat.facebook.com")
+         (:machine-alias   . "facebook")
+         (:port            . 5222)
+         (:connection-type . network))))
 
 (defun make-jid-from-args (username server resource)
   "Construct a jid from username server and resource arguments."
