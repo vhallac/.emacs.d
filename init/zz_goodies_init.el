@@ -12,22 +12,32 @@
 
 ; Default frame position
 (if window-system
-    (progn 
+    (progn
       (GNUEmacs
        (set-cursor-color "light green"))))
 
 ; Lazy mode on: Type y or n instead of full "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
 
+(add-hook 'after-make-frame-functions
+          (lambda (frame)
+             (when window-system
+               (scroll-bar-mode -1)
+               (set-cursor-color "light green"))
+             (blink-cursor-mode -1)
+             (setq transient-mark-mode t)
+             (menu-bar-mode -1)
+             (tool-bar-mode -1)))
+
+; Make sure the hooks are run if we are not in daemon mode
+(if (not (daemonp))
+    (add-hook 'after-init-hook
+              (lambda ()
+                (run-hook-with-args 'after-make-frame-functions
+                                    (selected-frame)))))
+
 ; Experimental setup extras
 (GNUEmacs
- (when window-system
-   (scroll-bar-mode -1))
- (blink-cursor-mode -1)
- (setq transient-mark-mode t)
- (menu-bar-mode -1)
- (tool-bar-mode -1)
-
  ;; no splash screen:
  (setq inhibit-startup-message t)
  (setq inhibit-splash-screen t)
