@@ -73,3 +73,6 @@
 ;; Use M-y to paste from history
 (require 'browse-kill-ring)
 (browse-kill-ring-default-keybindings)
+
+(add-hook 'before-save-hook
+          'delete-trailing-whitespace)

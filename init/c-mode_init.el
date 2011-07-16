@@ -127,7 +127,7 @@ NOTE: This is no longer used, but left for future generations. ;-)"
     (if (or literal
             arg
             (not (looking-at "[ \t]*$")))
-        (self-insert-command (prefix-numeric-value arg)) 
+        (self-insert-command (prefix-numeric-value arg))
       (let ((initializer nil))
         (save-excursion
           (c-safe (c-backward-token-1 1))
@@ -211,8 +211,8 @@ extern \"C\" statements are added."
   "Insert the company standard header to the current buffer."
   (let ((header-template "/***************************************************************************\n *  Copyright (C) %YEAR% Eracom Technologies Australia Pty. Ltd.\n *  All Rights Reserved\n *\n *  Use of this file for any purpose whatsoever is prohibited without the\n *  prior written consent of Eracom Technologies Australia Pty. Ltd.\n *\n *  $Source:   $\n *  $Revision: $\n *  $Date:     $\n *\n *//**\n *\n *\n *  @file  %FILENAME%\n *  @brief \n *\n ** **************************************************************************\n */\n")
         (header))
-    (setq header (replace-regexp-in-string "%YEAR%" 
-                                           (int-to-string 
+    (setq header (replace-regexp-in-string "%YEAR%"
+                                           (int-to-string
                                             (nth 5 (decode-time)))
                                            header-template))
     (setq header (replace-regexp-in-string "%FILENAME%"
@@ -277,7 +277,6 @@ extern \"C\" statements are added."
   ; 17 Mar 2009-VH: Just go with the default (choose-c-style)
   ; Minor modes I like in my C environment
   (completion-mode)
-  (vtidy-mode 1)
   (c-subword-mode)
   ;(camelCase-mode 1)
   (add-hook 'c-special-indent-hook 'ms-space-for-alignment nil t))

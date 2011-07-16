@@ -18,7 +18,6 @@
 (add-hook 'nxml-mode-hook
           '(lambda ()
              (choose-indent-type)
-             (vtidy-mode t)
              ;; Add my schema files to RNG search path
              (add-to-list 'rng-schema-locating-files
                 "~/.emacs.d/nxml-schemas/schemas.xml")))

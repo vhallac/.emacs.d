@@ -93,8 +93,7 @@
         (define-key yas/keymap [tab] 'yas/next-field)
         ;; flyspell mode to spell check everywhere
         (flyspell-mode 1)
-        (auto-fill-mode t)
-        (vtidy-mode 1)))
+        (auto-fill-mode t)))
 
 ;; Remember and org-protocol setups
 (setq org-default-notes-file "~/org/refile.org")

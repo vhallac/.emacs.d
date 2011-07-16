@@ -9,5 +9,4 @@
   (setq lua-indent-level 4)
   (choose-indent-type)
   (auto-fill-mode 1)
-  (vtidy-mode t)
   (subword-mode 1)))

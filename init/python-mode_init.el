@@ -9,7 +9,3 @@
   (pymacs-load "ropemacs" "rope-")
   ;; Automatically save project python buffers before refactorings
   (setq ropemacs-confirm-saving 'nil))
-
-(add-hook 'python-mode-hook
-          (lambda ()
-            (vtidy-mode t)))
