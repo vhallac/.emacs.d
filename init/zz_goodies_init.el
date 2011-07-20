@@ -10,18 +10,14 @@
  (defun set-buffer-tag-table (FILE)
    (visit-tags-table FILE t)))
 
-; Default frame position
-(if window-system
-    (progn
-      (GNUEmacs
-       (set-cursor-color "light green"))))
-
 ; Lazy mode on: Type y or n instead of full "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
 
 (add-hook 'after-make-frame-functions
           (lambda (frame)
-             (when window-system
+            (message "Setting it up")
+             (when (window-system frame)
+               (message "Should get rid of scroll bar here")
                (scroll-bar-mode -1)
                (set-cursor-color "light green"))
              (blink-cursor-mode -1)
