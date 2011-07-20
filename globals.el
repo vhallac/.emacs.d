@@ -1,15 +1,3 @@
-(GNUEmacs
- ;From locate.el locate-current-line-number
- (defun line-number ()
-   "Return the current line number in current buffer."
-   (+ (count-lines (point-min) (point))
-      (if (eq (current-column) 0)
-          1
-        0)))
- (defun int-to-char (X) X)
- (defun set-buffer-tag-table (FILE)
-   (visit-tags-table FILE t)))
-
 ; Lazy mode on: Type y or n instead of full "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -32,14 +20,12 @@
                 (run-hook-with-args 'after-make-frame-functions
                                     (selected-frame)))))
 
-; Experimental setup extras
-(GNUEmacs
- ;; no splash screen:
- (setq inhibit-startup-message t)
- (setq inhibit-splash-screen t)
+;; no splash screen:
+(setq inhibit-startup-message t)
+(setq inhibit-splash-screen t)
 
- ;; Interactively do things
- (ido-mode t))
+;; Interactively do things
+(ido-mode t)
 
 (defadvice kill-ring-save (before slick-copy activate compile) "When called
   interactively with no active region, copy a single line instead."

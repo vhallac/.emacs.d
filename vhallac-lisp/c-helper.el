@@ -6,22 +6,21 @@
 (setq c-helper-buffer-specific-dir-hook nil)
 
 ; Emacs compatibility functions
-(GNUEmacs
-    (progn
-      (if (not (functionp 'buffer-tag-table-files))
-          (defun buffer-tag-table-files ()
-            (save-excursion
-              (if (visit-tags-table-buffer)
-                  (let ((tag-path (file-name-directory (buffer-file-name))))
-                    (mapcar '(lambda (file) (convert-standard-filename 
-                                             (concat tag-path file)))
-                            (tags-table-files)))
-                nil))))
-      (if (not (functionp 'buffer-tag-table-list))
-          (defun buffer-tag-table-list ()
-            (save-excursion
-              (if (visit-tags-table-buffer)
-                  (buffer-file-name)))))))
+(progn
+  (if (not (functionp 'buffer-tag-table-files))
+      (defun buffer-tag-table-files ()
+        (save-excursion
+          (if (visit-tags-table-buffer)
+              (let ((tag-path (file-name-directory (buffer-file-name))))
+                (mapcar '(lambda (file) (convert-standard-filename
+                                         (concat tag-path file)))
+                        (tags-table-files)))
+            nil))))
+  (if (not (functionp 'buffer-tag-table-list))
+      (defun buffer-tag-table-list ()
+        (save-excursion
+          (if (visit-tags-table-buffer)
+              (buffer-file-name))))))
 
 (defun partial-file-path-match (full-path partial-path)
   "Compare a full (at least fuller) path against a sub-path.
@@ -55,7 +54,7 @@ to the top list of directories is found."
              (dirs nil))
         (mapcar '(lambda (name)
                    (cond ((and (file-directory-p name)
-                               (not (member 
+                               (not (member
                                      (file-name-nondirectory name)
                                      '("." ".." "cvs" "CVS" "rcs" "RCS" ".svn"))))
                           (setq dirs (cons name dirs)))
