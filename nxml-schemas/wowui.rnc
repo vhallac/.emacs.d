@@ -1,0 +1,594 @@
+default namespace = "http://www.blizzard.com/wow/ui/"
+namespace ann = "http://relaxng.org/ns/compatibility/annotations/1.0"
+
+FRAMEPOINT = string "TOPLEFT" |
+             string "TOPRIGHT" |
+             string "BOTTOMLEFT" |
+             string "BOTTOMRIGHT" |
+             string "TOP" |
+             string "BOTTOM" |
+             string "LEFT" |
+             string "RIGHT" |
+             string "CENTER"
+
+FRAMESTRATA = string "PARENT" |
+              string "BACKGROUND" |
+              string "LOW" |
+              string "MEDIUM" |
+              string "HIGH" |
+              string "DIALOG" |
+              string "FULLSCREEN" |
+              string "FULLSCREEN_DIALOG" |
+              string "TOOLTIP"
+
+DRAWLAYER = string "BACKGROUND" |
+            string "BORDER" |
+            string "ARTWORK" |
+            string "OVERLAY" |
+            string "HIGHLIGHT"
+
+
+ALPHAMODE = string "DISABLE" |
+            string "BLEND" |
+            string "ALPHAKEY" |
+            string "ADD" |
+            string "MOD"
+
+OUTLINETYPE = string "NONE" |
+              string "NORMAL" |
+              string "THICK"
+
+JUSTIFYVTYPE = string "TOP" |
+               string "MIDDLE" |
+               string "BOTTOM"
+
+JUSTIFYHTYPE = string "LEFT" |
+               string "CENTER" |
+               string "RIGHT"
+
+INSERTMODE = string "TOP" |
+             string "BOTTOM"
+
+ORIENTATION = string "HORIZONTAL" |
+              string "VERTICAL"
+
+ATTRIBUTETYPE = string "nil" |
+                string "boolean" |
+                string "number" |
+                string "string"
+
+AbsValue = element AbsValue {
+         attribute val { xsd:int }
+}
+
+RelValue = element RelValue {
+         attribute val { xsd:float }
+}
+
+Value = AbsValue | RelValue
+
+AbsDimension = element AbsDimension {
+         attribute x { xsd:int },
+         attribute y { xsd:int }
+}
+
+RelDimension = element RelDimension {
+         attribute x { xsd:float },
+         attribute y { xsd:float }
+}
+
+Dimension = AbsDimension |
+            RelDimension |
+            ( attribute x { xsd:int }?, attribute y {xsd:int}? )
+
+AbsInset = element AbsInset {
+         attribute left { xsd:int }?,
+         attribute right { xsd:int }?,
+         attribute top { xsd:int }?,
+         attribute bottom { xsd:int }?
+}
+
+RelInset = element RelInset {
+         attribute left { xsd:float },
+         attribute right { xsd:float },
+         attribute top { xsd:float },
+         attribute bottom { xsd:float }
+}
+
+Inset = AbsInset |
+        RelInset |
+        ( attribute left { xsd:int }?,
+          attribute right { xsd:int }?,
+          attribute top { xsd:int }?,
+          attribute bottom { xsd:int }?
+        )
+
+ColorFloat = xsd:float { minInclusive="0.0" maxInclusive="1.0" }
+
+ColorType = attribute r { ColorFloat },
+            attribute g { ColorFloat },
+            attribute b { ColorFloat },
+            [ ann:defaultValue = "1.0" ] attribute a { ColorFloat }?
+
+ShadowType = ( element Color { ColorType } &
+               element Offset { Dimension } )*
+
+GradientType = element MinColor { ColorType },
+               element MaxColor {ColorType },
+               [ ann:defaultValue = "HORIZONTAL" ] attribute orientation { ORIENTATION }?
+
+AttributeType = attribute name { xsd:string },
+                [ ann:defaultValue = "string" ] attribute type { ATTRIBUTETYPE }?,
+                attribute value { xsd:string }?
+
+AttributesType = element Attribute { AttributeType }+
+
+ButtonStyleType = attribute style { xsd:string }
+
+ScriptsType = (
+            element A { ScriptType } |
+            element OnLoad { ScriptType } |
+            element OnAttributeChanged { ScriptType } |
+            element OnSizeChanged { ScriptType } |
+            element OnEvent { ScriptType } |
+            element OnUpdate { ScriptType } |
+            element OnShow { ScriptType } |
+            element OnHide { ScriptType } |
+            element OnEnter { ScriptType } |
+            element OnLeave { ScriptType } |
+            element OnMouseDown { ScriptType } |
+            element OnMouseUp { ScriptType } |
+            element OnMouseWheel { ScriptType } |
+            element OnJoystickStickMotion { ScriptType } |
+            element OnJoystickAxisMotion { ScriptType } |
+            element OnJoystickButtonDown { ScriptType } |
+            element OnJoystickButtonUp { ScriptType } |
+            element OnJoystickHatMotion { ScriptType } |
+            element OnDragStart { ScriptType } |
+            element OnDragStop { ScriptType } |
+            element OnReceiveDrag { ScriptType } |
+            element PreClick { ScriptType } |
+            element OnClick { ScriptType } |
+            element PostClick { ScriptType } |
+            element OnDoubleClick { ScriptType } |
+            element OnValueChanged { ScriptType } |
+            element OnMinMaxChanged { ScriptType } |
+            element OnUpdateModel { ScriptType } |
+            element OnAnimFinished { ScriptType } |
+            element OnEnterPressed { ScriptType } |
+            element OnEscapePressed { ScriptType } |
+            element OnSpacePressed { ScriptType } |
+            element OnTabPressed { ScriptType } |
+            element OnTextChanged { ScriptType } |
+            element OnTextSet { ScriptType } |
+            element OnCursorChanged { ScriptType } |
+            element OnInputLanguageChanged { ScriptType } |
+            element OnEditFocusGained { ScriptType } |
+            element OnEditFocusLost { ScriptType } |
+            element OnHorizontalScroll { ScriptType } |
+            element OnVerticalScroll { ScriptType } |
+            element OnScrollRangeChanged { ScriptType } |
+            element OnCharComposition { ScriptType } |
+            element OnChar { ScriptType } |
+            element OnKeyDown { ScriptType } |
+            element OnKeyUp { ScriptType } |
+            element OnColorSelect { ScriptType } |
+            element OnHyperlinkEnter { ScriptType } |
+            element OnHyperlinkLeave { ScriptType } |
+            element OnHyperlinkClick { ScriptType } |
+            element OnMessageScrollChanged { ScriptType } |
+            element OnMovieFinished { ScriptType } |
+            element OnMovieShowSubtitle { ScriptType } |
+            element OnMovieHideSubtitle { ScriptType } |
+            element OnTooltipSetDefaultAnchor { ScriptType } |
+            element OnTooltipCleared { ScriptType } |
+            element OnTooltipAddMoney { ScriptType } |
+            element OnTooltipSetUnit { ScriptType } |
+            element OnTooltipSetItem { ScriptType } |
+            element OnTooltipSetSpell { ScriptType } |
+            element OnTooltipSetQuest { ScriptType } |
+            element OnTooltipSetAchievement { ScriptType } |
+            element OnEnable { ScriptType } |
+            element OnDisable { ScriptType }
+)+
+
+ScriptType = text, attribute function { xsd:string }?
+
+FontType = ( element FontHeight { Value } |
+             element Color { ColorType } |
+             element Shadow { ShadowType } )*,
+             attribute name { xsd:string }?,
+             attribute inherits { xsd:string }?,
+             [ ann:defaultValue = "false" ] attribute virtual { xsd:boolean }?,
+             attribute font { xsd:string }?,
+             [ ann:defaultValue = "0" ] attribute spacing { xsd:float }?,
+             [ ann:defaultValue = "NONE" ] attribute outline { OUTLINETYPE }?,
+             [ ann:defaultValue = "false" ] attribute monochrome { xsd:boolean }?,
+             [ ann:defaultValue = "MIDDLE" ] attribute justifyV { JUSTIFYVTYPE }?,
+             [ ann:defaultValue = "CENTER" ] attribute justifyH { JUSTIFYHTYPE }?
+
+Font = element Font { FontType }
+
+LayoutFrameType = ( element Size { Dimension } |
+                    element Anchors {
+                       element Anchor {
+                            element Offset { Dimension }?,
+                            attribute point { FRAMEPOINT },
+                            attribute relativeTo { xsd:string }?,
+                            attribute relativePoint { FRAMEPOINT }?,
+                            attribute x { xsd:int }?,
+                            attribute y { xsd:int }?
+                       }+
+                    } |
+                    element Animations { AnimationGroup+ }
+                  )* ,
+                  attribute name { xsd:string }?,
+                  attribute inherits { xsd:string }?,
+                  [ ann:defaultValue = "false" ] attribute virtual { xsd:boolean }?,
+                  [ ann:defaultValue = "false" ] attribute setAllPoints { xsd:boolean }?,
+                  [ ann:defaultValue = "false" ] attribute hidden { xsd:boolean }?,
+                  attribute parentKey { xsd:string }?
+
+LayoutFrame = element LayoutFrame { LayoutFrameType }
+
+BackdropType = ( element BackgroundInsets { Inset } |
+                 element TileSize { Value } |
+                 element EdgeSize { Value } |
+                 element Color { ColorType } |
+                 element BorderColor { ColorType } )*,
+                 attribute bgFile { xsd:string }?,
+                 attribute edgeFile { xsd:string }?,
+                 [ ann:defaultValue = "false" ] attribute tile { xsd:boolean }?,
+                 [ ann:defaultValue = "BLEND" ] attribute alphaMode { ALPHAMODE }?
+
+TextureType = LayoutFrameType,
+              ( element TexCoords { attribute left { xsd:float },
+                                    attribute right { xsd:float },
+                                    attribute top { xsd:float },
+                                    attribute bottom { xsd:float }
+                                  } |
+                element Color { ColorType } |
+                element Gradient { GradientType }
+              )*,
+              attribute file { xsd:string }?,
+              [ ann:defaultValue = "BLEND" ] attribute alphaMode { ALPHAMODE }?,
+              [ ann:defaultValue = "1.0" ] attribute alpha { xsd:float }?,
+              [ ann:defaultValue = "false" ] attribute nonBlocking { xsd:boolean }?
+
+Texture = element Texture { TextureType }
+LayoutFrame |= Texture
+
+FontStringType = LayoutFrameType,
+                 ( element FontHeight { Value } |
+                   element Color { ColorType } |
+                   element Shadow { ShadowType }
+                 )*,
+                 attribute font { xsd:string }?,
+                 [ ann:defaultValue = "255" ] attribute bytes { xsd:int { minInclusive="0" } }?,
+                 attribute text { xsd:string }?,
+                 [ ann:defaultValue = "0" ] attribute spacing { xsd:float }?,
+                 [ ann:defaultValue = "NONE" ] attribute outline { OUTLINETYPE }?,
+                 [ ann:defaultValue = "false" ] attribute monochrome { xsd:boolean }?,
+                 [ ann:defaultValue = "false" ] attribute nonspacewrap { xsd:boolean }?,
+                 [ ann:defaultValue = "true" ] attribute wordwrap { xsd:boolean }?,
+                 [ ann:defaultValue = "MIDDLE" ] attribute justifyV { JUSTIFYVTYPE }?,
+                 [ ann:defaultValue = "CENTER" ] attribute justifyH { JUSTIFYHTYPE }?,
+                 [ ann:defaultValue = "0" ] attribute maxLines { xsd:unsignedInt }?,
+                 [ ann:defaultValue = "false" ] attribute indented { xsd:boolean }?
+
+FontString = element FontString { FontStringType }
+LayoutFrame |= FontString
+
+FrameType = LayoutFrameType,
+            ( element TitleRegion { LayoutFrameType } |
+              element ResizeBounds { ( element minResize { Dimension } |
+                                       element maxResize { Dimension }
+                                     )+ } |
+              element Backdrop { BackdropType } |
+              element HitRectInsets { Inset } |
+              element Layers { ( element Layer { 
+                                    ( Texture | FontString )+,
+                                    [ ann:defaultValue = "ARTWORK" ] attribute level { DRAWLAYER }? }
+                               )+ } |
+              element Attributes { AttributesType } |
+              element Frames { Frame+ } |
+              element Scripts { ScriptsType }
+            )*,
+            [ ann:defaultValue = "1.0" ] attribute alpha { xsd:float }?,
+            attribute parent { xsd:string }?,
+            [ ann:defaultValue = "false" ] attribute toplevel { xsd:boolean }?,
+            [ ann:defaultValue = "false" ] attribute movable { xsd:boolean }?,
+            [ ann:defaultValue = "false" ] attribute resizable { xsd:boolean }?,
+            [ ann:defaultValue = "PARENT" ] attribute frameStrata { FRAMESTRATA }?,
+            attribute frameLevel { xsd:int }?,
+            [ ann:defaultValue = "0" ] attribute id { xsd:int }?,
+            [ ann:defaultValue = "false" ] attribute enableMouse { xsd:boolean }?,
+            [ ann:defaultValue = "false" ] attribute enableKeyboard { xsd:boolean }?,
+            [ ann:defaultValue = "false" ] attribute clampedToScreen { xsd:boolean }?,
+            [ ann:defaultValue = "false" ] attribute protected { xsd:boolean }?,
+            [ ann:defaultValue = "0.0" ] attribute depth { xsd:float }?
+
+Frame = element Frame { FrameType }
+LayoutFrame |= Frame
+
+ButtonType = FrameType,
+             ( element NormalTexture { TextureType } |
+               element PushedTexture { TextureType } |
+               element DisabledTexture { TextureType } |
+               element HighlightTexture { TextureType } |
+               element ButtonText { FontStringType } |
+               element NormalFont { ButtonStyleType } |
+               element HighlightFont { ButtonStyleType } |
+               element DisabledFont { ButtonStyleType } |
+               element NormalColor { ColorType } |
+               element HighlightColor { ColorType } |
+               element DisabledColor { ColorType } |
+               element PushedTextOffset { Dimension }
+             )*,
+             attribute text { xsd:string }?,
+             attribute registerForClicks { xsd:string }?,
+             [ ann:defaultValue = "false" ] attribute motionScriptsWhileDisabled { xsd:boolean }?
+Button = element Button { ButtonType }
+Frame |= Button
+
+CheckButtonType = ButtonType,
+                  ( element CheckedTexture { TextureType } |
+                    element DisabledCheckedTexture { TextureType }
+                  )*,
+                  [ ann:defaultValue = "false" ] attribute checked { xsd:boolean }?
+CheckButton = element CheckButton { CheckButtonType }
+Button |= CheckButton
+
+StatusBarType = FrameType,
+                ( element BarTexture { TextureType } |
+                  element BarColor { ColorType }
+                )*,
+                [ ann:defaultValue = "ARTWORK" ] attribute drawLayer { DRAWLAYER }?,
+                attribute minValue { xsd:float }?,
+                attribute maxValue { xsd:float }?,
+                attribute defaultValue { xsd:float }?,
+                [ ann:defaultValue = "HORIZONTAL" ] attribute orientation { ORIENTATION }?,
+                [ ann:defaultValue = "false" ] attribute rotatesTexture { xsd:boolean }?
+StatusBar = element StatusBar { StatusBarType }
+Frame |= StatusBar
+
+SliderType = FrameType,
+             ( element ThumbTexture { TextureType } )*,
+             [ ann:defaultValue = "OVERLAY" ] attribute drawLayer { DRAWLAYER }?,
+             attribute minValue { xsd:float }?,
+             attribute maxValue { xsd:float }?,
+             attribute defaultValue { xsd:float }?,
+             attribute valueStep { xsd:float }?,
+             [ ann:defaultValue = "VERTICAL" ] attribute orientation { ORIENTATION }?
+Slider = element Slider { SliderType }
+Frame |= Slider
+
+EditBoxType = FrameType,
+              ( FontString |
+                element HighlightColor { ColorType } |
+                element TextInsets { Inset }
+              )*,
+              attribute font { xsd:string }?,
+              [ ann:defaultValue = "0" ] attribute letters { xsd:int }?,
+              [ ann:defaultValue = "0.5" ] attribute blinkSpeed { xsd:float }?,
+              [ ann:defaultValue = "false" ] attribute numeric { xsd:boolean }?,
+              [ ann:defaultValue = "false" ] attribute password { xsd:boolean }?,
+              [ ann:defaultValue = "false" ] attribute multiLine { xsd:boolean }?,
+              [ ann:defaultValue = "0" ] attribute historyLines { xsd:int }?,
+              [ ann:defaultValue = "true" ] attribute autoFocus { xsd:boolean }?,
+              [ ann:defaultValue = "false" ] attribute ignoreArrows { xsd:boolean }?,
+              [ ann:defaultValue = "false" ] attribute countInvisibleLetters { xsd:boolean }?
+EditBox = element EditBox { EditBoxType }
+Frame |= EditBox
+
+ColorSelectType = FrameType,
+                  ( element ColorWheelTexture { TextureType } |
+                    element ColorWheelThumbTexture { TextureType } |
+                    element ColorValueTexture { TextureType } |
+                    element ColorValueThumbTexture { TextureType })+
+ColorSelect = element ColorSelect { ColorSelectType }
+Frame |= ColorSelect
+
+ModelType = FrameType,
+            element FogColor { ColorType },
+            attribute file { xsd:string }?,
+            [ ann:defaultValue = "1.0" ] attribute scale { xsd:float }?,
+            [ ann:defaultValue = "0.0" ] attribute fogNear { xsd:float }?,
+            [ ann:defaultValue = "1.0" ] attribute fogFar { xsd:float }?,
+            [ ann:defaultValue = "1.0" ] attribute glow { xsd:float }?
+Model = element Model { ModelType }
+Frame |= Model
+ModelFFX = element ModelFFX { ModelType }
+Frame |= ModelFFX
+
+SimpleHTMLType = FrameType,
+                 FontString,
+                 ( element FontStringHeader1 { FontStringType } |
+                   element FontStringHeader2 { FontStringType } |
+                   element FontStringHeader3 { FontStringType }
+                 )*,
+                 attribute font { xsd:string }?,
+                 attribute file { xsd:string }?,
+                 [ ann:defaultValue = "|H%s|h%s|h" ] attribute hyperlinkFormat { xsd:string }?
+SimpleHTML = element SimpleHTML { SimpleHTMLType }
+Frame |= SimpleHTML
+
+MessageFrameType = FrameType,
+                   ( FontString | element TextInsets { Inset } )*,
+                   attribute font { xsd:string }?,
+                   [ ann:defaultValue = "true" ] attribute fade { xsd:boolean }?,
+                   [ ann:defaultValue = "3.0" ] attribute fadeDuration { xsd:float }?,
+                   [ ann:defaultValue = "10.0" ] attribute displayDuration { xsd:float }?,
+                   [ ann:defaultValue = "BOTTOM" ] attribute insertMode { INSERTMODE }?
+MessageFrame = element MessageFrame { MessageFrameType }
+Frame |= MessageFrame
+
+ScrollingMessageFrameType = FrameType,
+                            ( FontString | element TextInsets { Inset } )*,
+                            attribute font { xsd:string }?,
+                            [ ann:defaultValue = "true" ] attribute fade { xsd:boolean }?,
+                            [ ann:defaultValue = "3.0" ] attribute fadeDuration { xsd:float }?,
+                            [ ann:defaultValue = "10.0" ] attribute displayDuration { xsd:float }?,
+                            [ ann:defaultValue = "BOTTOM" ] attribute insertMode { INSERTMODE }?,
+                            [ ann:defaultValue = "8" ] attribute maxLines {xsd:int { minInclusive = "1" } }?
+ScrollingMessageFrame = element ScrollingMessageFrame { ScrollingMessageFrameType }
+Frame |= ScrollingMessageFrame
+
+ScrollFrameType = FrameType,
+                  element ScrollChild { Frame }?
+ScrollFrame = element ScrollFrame { ScrollFrameType }
+Frame |= ScrollFrame
+
+MovieFrameType = FrameType
+MovieFrame = element MovieFrame { MovieFrameType }
+Frame |= MovieFrame
+
+Ui = element Ui { ( element Include { attribute file { xsd:string } }* |
+                    element Script { attribute file { xsd:string } }* |
+                    Font* |
+                    LayoutFrame* |
+                    Animation* |
+                    AnimationGroup*
+                  )*
+                }
+
+WorldFrameType = FrameType
+WorldFrame = element WorldFrame { WorldFrameType }
+Frame |= WorldFrame
+
+GameTooltipType = FrameType
+GameTooltip = element GameTooltip { GameTooltipType }
+Frame |= GameTooltip
+
+CooldownType = FrameType,
+               [ ann:defaultValue = "false" ] attribute reverse { xsd:boolean }?,
+               [ ann:defaultValue = "false" ] attribute drawEdge { xsd:boolean }?
+Cooldown = element Cooldown { CooldownType }
+Frame |= Cooldown
+
+QuestPOIFrameType = FrameType,
+                    attribute filltexture { xsd:string }?,
+                    attribute bordertexture { xsd:string }?
+QuestPOIFrame = element QuestPOIFrame { QuestPOIFrameType }
+Frame |= QuestPOIFrame
+
+MinimapType = FrameType,
+              attribute minimapArrowModel { xsd:string }?,
+              attribute minimapPlayerModel { xsd:string }?
+Minimap = element Minimap { MinimapType }
+Frame |= Minimap
+
+PlayerModelType = ModelType
+PlayerModel = element PlayerModel { PlayerModelType }
+Frame |= PlayerModel
+
+DressUpModelType = PlayerModelType
+DressUpModel = element DressUpModel { DressUpModelType }
+Frame |= DressUpModel
+
+TabardModelType = PlayerModelType
+TabardModel = element TabardModel { TabardModelType }
+Frame |= TabardModel
+
+UnitButtonType = ButtonType
+
+TaxiRouteFrameType = FrameType
+TaxiRouteFrame = element TaxiRouteFrame { TaxiRouteFrameType }
+Frame |= TaxiRouteFrame
+
+ANIMLOOPTYPE = string "NONE" |
+               string "REPEAT" |
+               string "BOUNCE"
+
+ANIMSMOOTHTYPE = string "NONE" |
+                 string "IN" |
+                 string "OUT" |
+                 string "IN_OUT" |
+                 string "OUT_IN"
+
+ANIMCURVETYPE = string "NONE" |
+                string "SMOOTH"
+
+AnimOrderType = xsd:int { minInclusive = "1" maxInclusive = "100" }
+
+AnimScriptsType = ( element OnLoad { ScriptType } |
+                    element OnPlay { ScriptType } |
+                    element OnPause { ScriptType } |
+                    element OnStop { ScriptType } |
+                    element OnUpdate { ScriptType } |
+                    element OnFinished { ScriptType }
+                  )+
+
+AnimGroupScriptsType = ( element OnLoad { ScriptType } |
+                         element OnPlay { ScriptType } |
+                         element OnPause { ScriptType } |
+                         element OnStop { ScriptType } |
+                         element OnUpdate { ScriptType } |
+                         element OnFinished { ScriptType } |
+                         element OnLoop { ScriptType }
+                       )+
+
+AnimOriginType = element Offset { Dimension },
+                 [ ann:defaultValue = "CENTER" ] attribute point { FRAMEPOINT }?
+
+AnimationType = element Scripts { AnimScriptsType }*,
+                attribute name { xsd:string }?,
+                attribute inherits { xsd:string }?,
+                [ ann:defaultValue = "false" ] attribute virtual { xsd:boolean }?,
+                [ ann:defaultValue = "0.0" ] attribute startDelay { xsd:float }?,
+                [ ann:defaultValue = "0.0" ] attribute endDelay { xsd:float }?,
+                attribute duration { xsd:float }?,
+                attribute maxFramerate { xsd:float }?,
+                [ ann:defaultValue = "NONE" ] attribute smoothing { ANIMSMOOTHTYPE }?,
+                attribute order { AnimOrderType }?,
+                attribute parentKey { xsd:string }?
+Animation = element Animation { AnimationType }
+
+TranslationType = AnimationType,
+                  [ ann:defaultValue = "0.0" ] attribute offsetX { xsd:float }?,
+                  [ ann:defaultValue = "0.0" ] attribute offsetY { xsd:float }?
+Translation = element Translation { TranslationType }
+Animation |= Translation
+
+RotationType = AnimationType,
+               element Origin { AnimOriginType }?,
+               [ ann:defaultValue = "0.0" ] attribute degrees { xsd:float }?,
+               [ ann:defaultValue = "0.0" ] attribute radians { xsd:float }?
+Rotation = element Rotation { RotationType }
+Animation |= Rotation
+
+ScaleType = AnimationType,
+            element Origin { AnimOriginType }?,
+            [ ann:defaultValue = "1.0" ] attribute scaleX { xsd:float }?,
+            [ ann:defaultValue = "1.0" ] attribute scaleY { xsd:float }?
+Scale = element Scale { ScaleType }
+Animation |= Scale
+
+AlphaType = AnimationType,
+            [ ann:defaultValue = "0.0" ] attribute change { xsd:float }?
+Alpha = element Alpha { AlphaType }
+Animation |= Alpha
+
+ControlPointType = attribute name { xsd:string }?,
+                   [ ann:defaultValue = "0.0" ] attribute offsetX { xsd:float }?,
+                   [ ann:defaultValue = "0.0" ] attribute offsetY { xsd:float }?
+ControlPoint = element ControlPoint { ControlPointType }
+
+PathType = AnimationType,
+           ( element ControlPoints { ControlPointType } )*,
+           [ ann:defaultValue = "NONE" ] attribute curve { ANIMCURVETYPE }?
+Path = element Path { PathType }
+Animation |= Path
+
+AnimationGroupType = ( Animation |
+                       element Scripts { AnimGroupScriptsType } )*,
+                       attribute name { xsd:string }?,
+                       attribute inherits { xsd:string }?,
+                       [ ann:defaultValue = "false" ] attribute virtual { xsd:boolean }?,
+                       [ ann:defaultValue = "NONE" ] attribute looping { ANIMLOOPTYPE }?,
+                       attribute parentKey { xsd:string }?,
+                       [ ann:defaultValue = "0.0" ] attribute initialOffsetX { xsd:float }?,
+                       [ ann:defaultValue = "0.0" ] attribute initialOffsetY { xsd:float }?
+AnimationGroup = element AnimationGroup { AnimationGroupType }
+
+start = Ui

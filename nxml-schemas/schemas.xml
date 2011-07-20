@@ -1,0 +1,9 @@
+<locatingRules xmlns="http://thaiopensource.com/ns/locating-rules/1.0">
+  <transformURI fromPattern="*.xml" toPattern="*.rnc"/>
+  <documentElement localName="locatingRules" uri="locate.rnc"/>
+
+  <documentElement prefix="" localName="Ui" typeId="wowui"/>
+
+  <typeId id="wowui" uri="wowui.rnc"/>
+
+</locatingRules>
