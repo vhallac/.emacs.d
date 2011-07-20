@@ -24,3 +24,5 @@
 (define-key global-map (kbd "<f12>") 'org-agenda)
 (define-key global-map (kbd "<f11> I") 'bh/clock-in)
 (define-key global-map (kbd "<f11> O") 'bh/clock-out)
+
+(define-key global-map (kbd "C-x g") 'magit-status)

@@ -7,7 +7,10 @@
        erc-dcc-get-default-directory "f:\\zz_download\\erc_dcc"
        gforth-dir "c:/progs/gforth"
        js-js-tmpdir (getenv "TMP")
-       openssl-prg "f:/tools/msysgit/bin/openssl.exe")
+       openssl-prg "f:/tools/msysgit/bin/openssl.exe"
+       magit-git-executable "f:/tools/msysgit/bin/git.exe"
+       magit-gitk-executable "f:/tools/msysgit/bin/gitk"
+)
 
 ;; This is Billy-land. No /usr/include for you!
 (setq c-helper-global-search-list

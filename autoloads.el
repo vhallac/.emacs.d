@@ -28,6 +28,9 @@
   "Major mode for editing LUA code." t)
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
 
+(autoload 'magit-status "magit"
+  "It's Magic!" t)
+
 (autoload 'nxml-mode "nxml-mode"
   "Massive XML goodness" t)
 (add-to-list 'auto-mode-alist
