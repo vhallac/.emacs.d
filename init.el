@@ -25,8 +25,12 @@
 (load custom-file)
 
 ;; Load the autoload and keyboard setups
-(load-file "~/.emacs.d/autoloads.el")
-(load-file "~/.emacs.d/keyboard.el")
+(try-progn
+ "Cannot load autoloads"
+ (load-file "~/.emacs.d/autoloads.el"))
+(try-progn
+ "Cannot load keyboard setup"
+ (load-file "~/.emacs.d/keyboard.el"))
 
 ;; Set up customizations:
 ;; Each file of the form customize-<file>.el in the ~/.emacs.d/config directory
@@ -36,9 +40,12 @@
                  (replace-regexp-in-string "customize-\\|\.el" ""
                                            (file-name-nondirectory x))))
             (eval-after-load file-name
-              `(load-file ,x))))
+              `(try-progn
+                (concat "Cannot load configuration:" ,x)
+                (load-file ,x)))))
         (directory-files "~/.emacs.d/config" t "^customize-"))
 
 ;; Load the global config and tidbits
-(load-file "~/.emacs.d/globals.el")
-
+(try-progn
+ "Cannot load globals"
+ (load-file "~/.emacs.d/globals.el"))
