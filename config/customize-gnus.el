@@ -7,7 +7,7 @@
       '( (:source "~/.emacs.d/.secrets/authinfo.gpg" :host t :protocol t)))
 
 (setq gnus-select-method
-      '(nntp "news.solani.org"))
+      '(nntp "news.easynews.com"))
 
 (setq gnus-posting-styles
       '(
@@ -43,7 +43,10 @@
                       " s_client -connect %h:%p -no_ssl2 -ign_eof")))
 
 ;; html mail and foreign characters
-(setq mm-text-html-renderer 'w3m)
+(setq mm-text-html-renderer 'w3m
+      mm-inline-text-html-with-images t
+      mm-w3m-safe-url-regexp nil
+      mm-inline-large-images t)
 (setq mm-coding-system-priorities '(utf-8))
 
 ;; Use openssl for TLS - gnutls behaves badly under Win32
@@ -134,3 +137,7 @@
       (change-smtp))
     (funcall (symbol-value '%smtpmail-via-smtp) recipient smtpmail-text-buffer)))
 
+(setq gnus-use-adaptive-scoring '(word line))
+;; This is easier than making virtual folders for inbox+sent, IMO
+(setq mail-self-blind t
+      mail-user-agent 'gnus-user-agent)

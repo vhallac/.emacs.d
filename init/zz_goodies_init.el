@@ -72,3 +72,23 @@
 
 (add-hook 'before-save-hook
           'delete-trailing-whitespace)
+
+(defun vh/home ()
+  (interactive)
+  (find-file "~/org/home.org"))
+
+(defun vh/work ()
+  (interactive)
+  (find-file "~/org/work.org"))
+
+(defun vh/refile ()
+  (interactive)
+  (find-file "~/org/refile.org"))
+
+(require 'escreen)
+(require 'org-install)
+(require 'org-protocol)
+(require 'uniquify)
+;; Quack will be handling my scheming
+(eval-after-load "scheme" '(require 'quack))
+(require 'yasnippet)

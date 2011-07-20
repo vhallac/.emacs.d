@@ -1,17 +1,13 @@
-(autoload 'jabber-connect-all "jabber" "Load Jabber client" t)
-
-(define-key global-map (kbd "C-x C-j C-c") 'jabber-connect-all)
-
 (setq jabber-account-list
-      '(("vedathallac@gmail.com" 
+      '(("vedathallac@gmail.com"
          (:network-server  . "talk.google.com")
          (:machine-alias   . "gmail-1")
          (:connection-type . ssl))
-        ("dys.wowace@gmail.com" 
+        ("dys.wowace@gmail.com"
          (:network-server  . "talk.google.com")
          (:machine-alias   . "gmail-2")
          (:connection-type . ssl))
-        ("vhallac@chat.facebook.com" 
+        ("vhallac@chat.facebook.com"
          (:network-server  . "chat.facebook.com")
          (:machine-alias   . "facebook")
          (:port            . 5222)
@@ -34,7 +30,7 @@
 ;; I defined a new keyword :machine-alias for jabber-account-list entries to
 ;; handle multiple users on the same server.
 (defadvice jabber-connect (around get-password activate)
-  "Read password out of a specified netrc compatible authinfo file"  
+  "Read password out of a specified netrc compatible authinfo file"
   (let ((password (ad-get-arg 4)))
     (unless password
       (let* ((username (ad-get-arg 0))

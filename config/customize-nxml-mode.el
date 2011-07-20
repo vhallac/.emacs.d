@@ -1,19 +1,7 @@
-;;--
-;; Make sure nxml-mode can autoload
-;;--
-;;(load "rng-auto.el")
-
-;;--
-;; Load nxml-mode for files ending in .xml, .xsl, .rng, .xhtml
-;;--
-(add-to-list 'auto-mode-alist
-             '("\\.\\(x[ms]l\\|rng\\|x?html?\\)\\'" . nxml-mode))
-
 (setq
  nxml-child-indent 4
  nxml-outline-child-indent 4
  nxml-slash-auto-complete-flag t)
-
 
 (add-hook 'nxml-mode-hook
           '(lambda ()

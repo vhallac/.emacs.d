@@ -1,4 +1,2 @@
-(require 'uniquify)
-(setq 
- uniquify-buffer-name-style 'post-forward
- uniquify-separator ":")
+(setq uniquify-buffer-name-style 'post-forward
+      uniquify-separator ":")

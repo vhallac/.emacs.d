@@ -28,7 +28,16 @@
 ;; and load them
 (load-files "~/.emacs.d/init" ".*_init\\.el")
 
-
+;; Finally, set up customizations
+;; Each file of the form customize-<file>.el in the ~/.emacs.d/config directory
+;; is loaded via a call to (require '<file-name>) when <file> is loaded.
+(mapcar (lambda (x)
+          (let ((file-name
+                 (replace-regexp-in-string "customize-\\|\.el" ""
+                                           (file-name-nondirectory x))))
+            (eval-after-load file-name
+              `(load-file ,x))))
+        (directory-files "~/.emacs.d/config" t "^customize-"))
 
 (put 'narrow-to-region 'disabled nil)
 

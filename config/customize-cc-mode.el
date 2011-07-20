@@ -1,3 +1,4 @@
+(message "Configuring C modes")
 (require 'imenu)
 (require 'c-helper)
 (require 'completion)
@@ -272,12 +273,12 @@ extern \"C\" statements are added."
   (define-key c-mode-map [(control c) (control f)] 'c-helper-find-file)
   (define-key c-mode-map [(control c) (control v)] 'c-helper-find-include-file)
   (setq imenu-sort-function 'imenu--sort-by-position)
-  (imenu-add-to-menubar "Imenu")
+  ;(imenu-add-to-menubar "Imenu")
   (choose-indent-type)
   ; 17 Mar 2009-VH: Just go with the default (choose-c-style)
   ; Minor modes I like in my C environment
   (completion-mode)
-  (c-subword-mode)
+  ;(c-subword-mode)
   ;(camelCase-mode 1)
   (add-hook 'c-special-indent-hook 'ms-space-for-alignment nil t))
 
@@ -383,14 +384,12 @@ To enable it, do this, or similar:
             (insert-before-markers (make-string (/ anchor-col tab-width) ?\t))
             (insert-before-markers (make-string (- indent-col (current-column)) ?\ )))))))
 
-(custom-set-variables
- '(c-default-style "tda")
- '(c-echo-syntactic-information-p t)
- '(c-electric-pound-behavior (quote (alignleft)))
- '(c-font-lock-extra-types (quote ("FILE" "\\<[A-Z]+_[A-Z]*[a-z]+\\sw*\\>" "\\<[A-Za-z]\\sw*[a-z]\\sw*T\\>" "\\sw+_\\(\\|s\\)t" "\\<\\(u\\|\\)int\\(8\\|16\\|32\\|64\\)\\>" "THR_HANDLE" "\\sw+_STATUS" "bool" "true" "false" "BOOL" "TRUE" "FALSE")))
- '(c-indent-comments-syntactically-p t)
- '(c-macro-cppflags "-I../include -I../../include -I../../../include -I ../../../../include -I../../../../../include")
- '(c-macro-preprocessor "e:\\cygwin\\lib\\gcc-lib\\i686-pc-cygwin\\2.95.2\\cpp -C" t)
- '(c-macro-shrink-window-flag t)
- '(c-mode-common-hook (quote (vedat-c-mode-hook))))
-(custom-set-faces)
+(setq c-default-style "tda"
+      c-echo-syntactic-information-p t
+      c-electric-pound-behavior '(alignleft)
+      c-font-lock-extra-types '("FILE" "\\<[A-Z]+_[A-Z]*[a-z]+\\sw*\\>" "\\<[A-Za-z]\\sw*[a-z]\\sw*T\\>" "\\sw+_\\(\\|s\\)t" "\\<\\(u\\|\\)int\\(8\\|16\\|32\\|64\\)\\>" "THR_HANDLE" "\\sw+_STATUS" "bool" "true" "false" "BOOL" "TRUE" "FALSE")
+      c-indent-comments-syntactically-p t
+      c-macro-cppflags "-I../include -I../../include -I../../../include -I ../../../../include -I../../../../../include"
+      c-macro-preprocessor "e:\\cygwin\\lib\\gcc-lib\\i686-pc-cygwin\\2.95.2\\cpp -C"
+      c-macro-shrink-window-flag t
+      c-mode-common-hook '(vedat-c-mode-hook))

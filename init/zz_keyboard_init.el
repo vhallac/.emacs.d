@@ -17,6 +17,15 @@
 (define-key global-map (kbd "M-2") 'split-window-vertically)
 (define-key global-map (kbd "M-3") 'split-window-horizontally)
 
+(define-key global-map (kbd "C-x C-j C-c") 'jabber-connect-all)
+
+(define-key global-map (kbd "C-M-r") 'org-capture)
+(define-key global-map (kbd "C-c l") 'org-store-link)
+(define-key global-map (kbd "C-c a") 'org-agenda)
+(define-key global-map (kbd "<f12>") 'org-agenda)
+(define-key global-map (kbd "<f11> I") 'bh/clock-in)
+(define-key global-map (kbd "<f11> O") 'bh/clock-out)
+
 ; For console:
 ; Will add to this list as I encounter more mismatches
 (if window-system

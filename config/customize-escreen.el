@@ -1,4 +1,3 @@
-(load "escreen")
 (escreen-install)
 
 ;;(setq escreen-prefix-char "C-z")

@@ -1,4 +1,5 @@
 ;; TODO: This will need some simplification
+;; TODO: This is windows only, I think
 ;; Setup for PLT Scheme
 (defvar mzscheme-program (concat plt-dir "/mzscheme"))
 (setenv "PLTHOME" plt-dir)
@@ -7,57 +8,47 @@
 
 (setq quack-pretty-lambda-p t)
 
-;; Specify modes for Scheme file extensions
-(setq auto-mode-alist
-      (append '( ("\\.scm$" . scheme-mode)
-                 ("\\.ss$" . scheme-mode)
-                 ("\\.sch$" . scheme-mode))
-              auto-mode-alist))
+(define-key scheme-mode-map [f1]
+  (lambda ()
+    (interactive)
+    (ignore-errors
+      (let ((symbol (thing-at-point 'symbol)))
+        (info "(r5rs)")
+        (Info-index symbol)))))
+(define-key scheme-mode-map [f5]
+  (lambda ()
+    (interactive)
+    (run-scheme mzscheme-program)))
+(mapc (lambda (key-arg)
+        (define-key scheme-mode-map (car key-arg)
+          (eval `(lambda ()
+                   (interactive)
+                   (-test ,(cadr key-arg))))))
+      '(([(control c) (control m)] nil)
+        ([(control c) (h)]         :this)
+        ([(control c) (e)]         :expand)
+        ([(control c) (o)]         :expand-once)
+        ([(control c) (*)]         :expand*)
+        ([(control c) (p)]         :pp)))
+(define-key scheme-mode-map [(control c) (x)] 'scheme-send-dwim)
+(define-key scheme-mode-map [(control c) (\;)] 'insert-balanced-comments)
+(define-key scheme-mode-map [(control c) (:)] 'remove-balanced-comments)
+(define-key scheme-mode-map [(control c) (t)]
+  (lambda (prefix)
+    (interactive "P")
+    (-trace "trace" prefix)))
+(define-key scheme-mode-map [(control c) (T)]
+  (lambda (prefix)
+    (interactive "P")
+    (-trace "trace-all" prefix)))
 
-(eval-after-load "scheme"
-  '(progn
-      (require 'quack)))
-
-(add-hook 'scheme-mode-hook 
+(add-hook 'scheme-mode-hook
           (lambda ()
-            (define-key scheme-mode-map [f1]
-              '(lambda ()
-                 (interactive)
-                 (ignore-errors
-                   (let ((symbol (thing-at-point 'symbol)))
-                     (info "(r5rs)")
-                     (Info-index symbol)))))
-            (define-key scheme-mode-map [f5]
-              '(lambda ()
-                 (interactive)
-                 (run-scheme mzscheme-program)))
-            (mapc (lambda (key-arg)
-                    (define-key scheme-mode-map (car key-arg)
-                      (eval `(lambda ()
-                               (interactive)
-                               (-test ,(cadr key-arg))))))
-                  '(([(control c) (control m)] nil)
-                    ([(control c) (h)]         :this)
-                    ([(control c) (e)]         :expand)
-                    ([(control c) (o)]         :expand-once)
-                    ([(control c) (*)]         :expand*)
-                    ([(control c) (p)]         :pp)))
-	    (define-key scheme-mode-map [(control c) (x)] 'scheme-send-dwim)
-	    (define-key scheme-mode-map [(control c) (\;)] 'insert-balanced-comments)
-	    (define-key scheme-mode-map [(control c) (:)] 'remove-balanced-comments)
-	    (define-key scheme-mode-map [(control c) (t)]
-	      (lambda (prefix)
-            (interactive "P")
-            (-trace "trace" prefix)))
-	    (define-key scheme-mode-map [(control c) (T)]
-	      (lambda (prefix)
-            (interactive "P")
-            (-trace "trace-all" prefix)))
-        ;; Want this?
-	    (imenu-add-to-menubar "Symbols")
-	    (outline-minor-mode)
-	    (make-local-variable 'outline-regexp)
-	    (setq outline-regexp "^(.*")))
+            ;; Want this?
+            (imenu-add-to-menubar "Symbols")
+            (outline-minor-mode)
+            (make-local-variable 'outline-regexp)
+            (setq outline-regexp "^(.*")))
 
 (add-hook 'Info-mode-hook
 	  (lambda ()
@@ -66,9 +57,9 @@
 
 ;; Scheme-specific Functions
 (defun insert-balanced-comments (arg)
-  "Insert a set of balanced comments around the s-expression 
+  "Insert a set of balanced comments around the s-expression
 containing the point.  If this command is invoked repeatedly
-(without any other command occurring between invocations), the 
+(without any other command occurring between invocations), the
 comment progressively moves outward over enclosing expressions."
   (interactive "*p")
   (save-excursion
@@ -125,7 +116,7 @@ Eli Barzilay.  Actions: nil set current using sexp at point
  :pp          pprint current"
   (interactive (mzexpand-get-action))
   (comint-send-string (get-buffer-process "*scheme*")
-                      (format "(-test %S)" (or action 
+                      (format "(-test %S)" (or action
 					       (sexp-at-point))))
   (pop-to-buffer "*scheme*" t)
   (other-window 1))
