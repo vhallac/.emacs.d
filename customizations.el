@@ -37,9 +37,7 @@
  '(tab-width 4)
  '(tool-bar-mode nil nil (tool-bar))
  '(toolbar-visible-p nil)
- '(transient-mark-mode t)
- '(user-full-name "Vedat Hallac")
- '(user-mail-address "vedathallac@gmail.com"))
+ '(transient-mark-mode t))
 
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
