@@ -1,7 +1,7 @@
 ;;
 ;; Set up the load paths
 ;;
-(load-file "~/.emacs.d/init/loadpaths.el")
+(load-file "~/.emacs.d/loadpaths.el")
 
 ;;
 ;; Some macros to help with init scripts
@@ -12,7 +12,7 @@
 ;; Load the platform dependent setup
 ;;
 (load-files
- (concat "~/.emacs.d/init/" (symbol-name system-type) "/")
+ (concat "~/.emacs.d/platform/" (symbol-name system-type) "/")
  ".*\\.el")
 
 ;;
@@ -24,11 +24,11 @@
 (setq custom-file "~/.emacs.d/customizations.el")
 (load custom-file)
 
-;; Now, go through each file that ends with "_init.el" in the init directory,
-;; and load them
-(load-files "~/.emacs.d/init" ".*_init\\.el")
+;; Load the autoload and keyboard setups
+(load-file "~/.emacs.d/autoloads.el")
+(load-file "~/.emacs.d/keyboard.el")
 
-;; Finally, set up customizations
+;; Set up customizations:
 ;; Each file of the form customize-<file>.el in the ~/.emacs.d/config directory
 ;; is loaded via a call to (require '<file-name>) when <file> is loaded.
 (mapcar (lambda (x)
@@ -39,8 +39,6 @@
               `(load-file ,x))))
         (directory-files "~/.emacs.d/config" t "^customize-"))
 
-(put 'narrow-to-region 'disabled nil)
+;; Load the global config and tidbits
+(load-file "~/.emacs.d/globals.el")
 
-(server-start)
-
-(set-default-coding-systems 'utf-8)

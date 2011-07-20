@@ -85,10 +85,20 @@
   (interactive)
   (find-file "~/org/refile.org"))
 
+(put 'narrow-to-region 'disabled nil)
+
+(server-start)
+
+(set-default-coding-systems 'utf-8)
+
 (require 'escreen)
 (require 'org-install)
 (require 'org-protocol)
 (require 'uniquify)
 ;; Quack will be handling my scheming
 (eval-after-load "scheme" '(require 'quack))
+(require 'turkish-doubles)
+(set-language-environment "Turkish")
 (require 'yasnippet)
+(require 'zenburn)
+(color-theme-zenburn)

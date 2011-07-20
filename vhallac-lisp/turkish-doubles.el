@@ -61,5 +61,5 @@ Doubling the postfix separates the letter and postfix: e.g. aaa -> aa
     (eval-after-load "european"
       (setq turkish-info (assoc "Turkish" language-info-alist))
       (setcdr (assoc 'input-method (cdr turkish-info)) "turkish-doubles"))))
-    
-(set-language-environment "Turkish")
+
+(provide 'turkish-doubles)
