@@ -45,6 +45,14 @@
 (autoload 'python-mode "python" "Python editing mode." t)
 (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
 
+(autoload 'rhtml-mode "rhtml-mode"
+  "Major mode for editing .html.erb files." t)
+(add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . rhtml-mode))
+
+(autoload 'rinari-launch "rinari"
+  "Ruby on Rails not-IDE" t)
+(setq rinari-tags-file-name "TAGS")
+
 (autoload 'scheme-mode "scheme"
   "Gotta scheme sometimes" t)
 (add-to-list 'auto-mode-alist '("\\.s\\(s\\|c[mh]\\)$" . scheme-mode))
@@ -57,3 +65,4 @@
 (autoload 'virtualenv-activate "virtualenv"
   "Enable virtualenv usage for python" t)
 (setq virtualenv-use-ipython nil)
+
