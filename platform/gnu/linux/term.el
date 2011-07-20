@@ -18,3 +18,7 @@
 (define-key function-key-map "\e[1;5D" '[M-left])
 (define-key function-key-map "\e[13~" '[f3])
 (define-key function-key-map "\e[14~" '[f4])
+;; TODO: Fix these on a unix terminal. Or fix the ones above.
+(define-key key-translation-map (kbd "M-[ 1 ^") (kbd "C-<home>"))
+(define-key key-translation-map (kbd "<select>") (kbd "<end>"))
+(define-key key-translation-map (kbd "M-[ 4 ^") (kbd "C-<end>"))

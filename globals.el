@@ -54,10 +54,44 @@
       (list (line-beginning-position)
         (line-beginning-position 2)))))
 
- (defun insert-date ()
-   "Inserts the current date at point"
-   (interactive)
-   (insert (format-time-string "%d/%m/%Y")))
+(defun insert-date ()
+  "Inserts the current date at point"
+  (interactive)
+  (insert (format-time-string "%d/%m/%Y")))
+
+(defun match-parenthesis (arg)
+  "Match the current character according to the syntax table.
+
+   Based on the freely available match-paren.el by Kayvan Sylvan.
+   I merged code from goto-matching-paren-or-insert and match-it.
+
+   You can define new \"parentheses\" (matching pairs).
+   Example: angle brackets. Add the following to your .emacs file:
+
+    (modify-syntax-entry ?< \"(>\" )
+    (modify-syntax-entry ?> \")<\" )
+
+   You can set hot keys to perform matching with one keystroke.
+   Example: f6 and Control-C 6.
+
+    (global-set-key \"\\C-c6\" 'match-parenthesis)
+    (global-set-key [f6] 'match-parenthesis)
+
+   Simon Hawkin <cema@cs.umd.edu> 03/14/1998"
+  (interactive "p")
+  ;;The ?= can be anything that is not a ?\(or ?\)
+  (let ((syntax (char-syntax (or (char-after) ?=)))
+        (syntax2 (char-syntax (or (char-before) ?=))))
+    (cond
+     ((= syntax ?\()
+      (forward-sexp 1) (backward-char))
+     ((= syntax ?\))
+      (forward-char) (backward-sexp 1))
+     ((= syntax2 ?\()
+      (backward-char) (forward-sexp 1) (backward-char))
+     ((= syntax2 ?\))
+      (backward-sexp 1))
+     (t (message "No match")))))
 
 ;; Do not save duplicate kills into the kill ring
 (setq kill-do-not-save-duplicates t)
