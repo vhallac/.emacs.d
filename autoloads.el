@@ -14,7 +14,7 @@
 (autoload 'gnus "gnus"
   "Mail and news reader" t)
 
-(autoload 'iedit "iedit"
+(autoload 'iedit-mode "iedit"
   "Edit multiple regions with the same content simultaneously." t)
 
 (autoload 'jabber-connect-all "jabber" "Load Jabber client" t)
