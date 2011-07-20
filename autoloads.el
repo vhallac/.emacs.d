@@ -1,3 +1,8 @@
+;;; All autoloads for globally accessible functions are defined here.
+;;; In addition, when the configuration for the package is trivial (such as a
+;;; single setq), the setup is done in here as well.
+;;; For all other packages, the configuration is handled by the files
+;;; ~/.emacs.d/config/customization-<file>.el.
 (autoload 'choose-indent-type "choose-indent"
   "Choose indent type according to majority in file" t)
 
@@ -37,6 +42,9 @@
 
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
 
+(autoload 'python-mode "python" "Python editing mode." t)
+(add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
+
 (autoload 'scheme-mode "scheme"
   "Gotta scheme sometimes" t)
 (add-to-list 'auto-mode-alist '("\\.s\\(s\\|c[mh]\\)$" . scheme-mode))
@@ -45,3 +53,7 @@
   "Superior LISP Interaction Mode" t)
 (autoload 'slime "slime"
   "Superior LISP Interaction Mode" t)
+
+(autoload 'virtualenv-activate "virtualenv"
+  "Enable virtualenv usage for python" t)
+(setq virtualenv-use-ipython nil)
