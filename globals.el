@@ -112,6 +112,7 @@
 (set-default-coding-systems 'utf-8)
 
 (require 'escreen)
+(require 'midnight)
 (require 'org-install)
 (require 'org-protocol)
 (require 'uniquify)
