@@ -47,6 +47,7 @@
  '(default ((t (:background "#00005f" :foreground "white" :height 98 :foundry "outline" :family "Envy Code R"))))
  '(font-lock-string-face ((((class color) (min-colors 88) (background dark)) (:foreground "PeachPuff"))))
  '(highline-face ((t (:background "grey90"))))
+ '(magit-item-highlight ((t (:inherit highlight-current-line-face))))
  '(mmm-code-submode-face ((t (:background "grey35"))))
  '(mmm-default-submode-face ((t (:background "grey15"))))
  '(quack-pltish-comment-face ((((class color) (background light)) (:foreground "green4" :slant italic :weight bold))))
