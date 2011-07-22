@@ -1,3 +1,11 @@
 auto-save-list/*
 /tramp
 org-clock-save.el
+/.abbrev_defs
+/abbrev_defs
+/.org-id-locations
+/ac-comphist.dat
+/anything-c-adaptive-history
+/emms
+/server
+/url
