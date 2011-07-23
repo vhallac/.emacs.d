@@ -18,4 +18,4 @@
 	url = git://github.com/vhallac/org2blog
 [submodule "lisp/python-pkgs/virtualenv"]
 	path = lisp/python-pkgs/virtualenv
-	url = git://github.com/vhallac/virtualenv.el
+	url = git://github.com/vhallac/virtualenv
