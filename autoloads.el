@@ -65,7 +65,5 @@
 (autoload 'slime "slime"
   "Superior LISP Interaction Mode" t)
 
-(autoload 'virtualenv-activate "virtualenv"
+(autoload 'virtualenv-workon "virtualenv"
   "Enable virtualenv usage for python" t)
-(setq virtualenv-use-ipython nil)
-
