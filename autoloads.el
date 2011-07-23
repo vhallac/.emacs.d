@@ -52,6 +52,11 @@
   "Major mode for editing .html.erb files." t)
 (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . rhtml-mode))
 
+(add-to-list 'auto-mode-alist '("\\.rake$"    . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.gemspec$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.ru$"      . ruby-mode))
+(add-to-list 'auto-mode-alist '("Gemfile$"    . ruby-mode))
+
 (autoload 'rinari-launch "rinari"
   "Ruby on Rails not-IDE" t)
 (setq rinari-tags-file-name "TAGS")
