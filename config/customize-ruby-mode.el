@@ -80,19 +80,27 @@
   (interactive)
   (save-excursion
     (let ((block (ruby-get-containing-block)))
-      (goto-char (car block))
-      (save-match-data
-        (let ((strings (if (looking-at "do")
-                           (cons
-                            (if (= 3 (count-lines (car block) (cdr block)))
-                                "do *\\(|[^|]+|\\)? *\n *\\(.*?\\) *\n *end"
-                              "do *\\(|[^|]+|\\)? *\\(\\(.*\n?\\)+\\) *end")
-                            "{ \\1 \\2 }")
-                         (cons
-                          "{ *\\(|[^|]+|\\)? *\\(\\(.*\n?\\)+\\) *}"
-                          (if (= 1 (count-lines (car block) (cdr block)))
-                              "do \\1\n\\2\nend"
-                            "do \\1\\2end")))))
-          (when (re-search-forward (car strings) (cdr block) t)
-            (replace-match (cdr strings) t)
-            (indent-region (match-beginning 0) (match-end 0))))))))
+      (save-restriction
+        (narrow-to-region (car block) (cdr block))
+        (beginning-of-buffer)
+        (if (re-search-forward "\\`do" nil t)
+            (replace-match "{")
+          (if (re-search-forward "\\`{" nil t)
+              (replace-match "do")))
+        (if (re-search-forward "end\\'" nil t)
+            (replace-match "}")
+          (if (re-search-forward "}\\'" nil t)
+              (replace-match "end")))
+        (save-match-data
+          (beginning-of-buffer)
+          (when (looking-at "\\`{\\(?:[^\n]*\n\\)\\{2\\} *}\\'")
+            (dotimes (cnt 2)
+              (join-line t)
+              (if (not (char-equal (char-after (point)) 32)) (insert " "))))
+          (when (looking-at "\\`do *\\(\\(?:|[^|]+|\\)?\\)\\(?:[^\n]*?\\)\\( *end\\)\\'")
+            (goto-char (match-end 1))
+            (insert "\n")
+            (goto-char (1+ (match-beginning 2)))
+            (insert "\n"))
+          (setq block (cons (point-min) (point-max)))))
+      (indent-region (car block) (cdr block)))))
