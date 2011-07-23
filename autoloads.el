@@ -73,3 +73,7 @@
 (autoload 'virtualenv-activate "virtualenv"
   "Enable virtualenv usage for python" t)
 (setq virtualenv-use-ipython nil)
+
+(autoload 'yaml-mode "yaml-mode"
+  "Major mode for editing YAML files" t)
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
