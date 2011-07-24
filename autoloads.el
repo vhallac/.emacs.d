@@ -48,6 +48,10 @@
 (autoload 'python-mode "python" "Python editing mode." t)
 (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
 
+(autoload 'rainbow-mode "rainbow-mode"
+  "Displays color names with colored background." t)
+(add-hook 'css-mode-hook 'rainbow-mode)
+
 (autoload 'rhtml-mode "rhtml-mode"
   "Major mode for editing .html.erb files." t)
 (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . rhtml-mode))
