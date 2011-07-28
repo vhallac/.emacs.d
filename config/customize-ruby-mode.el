@@ -3,6 +3,8 @@
 (require 'yari)
 (require 'auto-complete)
 (require 'ruby-electric)
+(require 'yasnippet)
+(require 'ruby-compilation-rspec)
 
 (defun ruby-electric-strparam ()
   "Convert # to #{} when editing a string"
@@ -42,7 +44,6 @@
             (add-to-list 'ac-ignores "end")))
 
 (define-key ruby-mode-map (kbd "C-c d") 'yari-anything)
-(define-key ruby-mode-map (kbd "<tab>") 'yas/expand)
 (define-key ruby-mode-map (kbd "#") 'ruby-electric-strparam)
 (define-key ruby-mode-map (kbd "C-M-u") 'ruby-goto-containing-block-start)
 (define-key ruby-mode-map (kbd "C-c b") 'ruby-flip-containing-block-type)
