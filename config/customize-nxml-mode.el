@@ -1,6 +1,6 @@
 (setq
- nxml-child-indent 4
- nxml-outline-child-indent 4
+ nxml-child-indent 2
+ nxml-outline-child-indent 2
  nxml-slash-auto-complete-flag t)
 
 (add-hook 'nxml-mode-hook

@@ -5,5 +5,8 @@
   <documentElement prefix="" localName="Ui" typeId="wowui"/>
 
   <typeId id="wowui" uri="wowui.rnc"/>
-
+  <typeId id="html5" uri="html5.rnc"/>
+  <typeId id="xhtml5" uri="xhtml5.rnc"/>
+  <!-- This looks like a bit of a hack, but it should do for now -->
+  <uri pattern="*.html.erb" typeId="xhtml5" />
 </locatingRules>
