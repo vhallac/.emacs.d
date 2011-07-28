@@ -43,6 +43,38 @@
             (make-local-variable 'ac-ignores)
             (add-to-list 'ac-ignores "end")))
 
+(define-key ruby-mode-map (kbd "C-x C-t") 'ruby-compilation-this-rspec)
+
+(defconst spork-server-buffer-name "spork-server"
+  "The name of the buffer that runs spork server")
+
+(defun spork-inactive-p ()
+  (let* ((spork-buffer (get-buffer (concat "*" spork-server-buffer-name "*")))
+         (spork-process (and spork-buffer
+                             (get-buffer-process spork-buffer))))
+    (null spork-process)))
+
+(defun start-spork ()
+  (interactive)
+  (if (and (spork-inactive-p)
+           (executable-find "spork"))
+      (ruby-compilation-do spork-server-buffer-name
+                           (list "bundle" "exec" "spork"))))
+
+(defun ruby-compilation-this-rspec ()
+  (interactive)
+  (if (or (null buffer-file-name)
+          (not (string-match "_spec.rb$" buffer-file-name))
+          (spork-inactive-p))
+      (ruby-compilation-this-test)
+    (let ((test-name (ruby-compilation-this-test-name)))
+      (pop-to-buffer (ruby-compilation-do
+                      (ruby-compilation-this-test-buffer-name test-name)
+                      (list ruby-compilation-executable
+                            "--drb"
+                            (buffer-file-name)
+                            ruby-compilation-test-name-flag test-name))))))
+
 (define-key ruby-mode-map (kbd "C-c d") 'yari-anything)
 (define-key ruby-mode-map (kbd "#") 'ruby-electric-strparam)
 (define-key ruby-mode-map (kbd "C-M-u") 'ruby-goto-containing-block-start)
