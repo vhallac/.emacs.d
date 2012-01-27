@@ -1,11 +1,11 @@
 ;; TODO: This will need some simplification
-;; TODO: This is windows only, I think
+;; TODO: This is windows only, need to move bits of it around
+(setq quack-programs '("gsi -:d-" "C:/mitscheme/bin/mit-scheme.exe --interactive --emacs --library c:/mitscheme/lib" "bigloo" "csi" "csi -hygienic" "gosh" "gsi" "gsi ~~/syntax-case.scm -" "guile" "kawa" "mit-scheme" "mred -z" "mzscheme" "mzscheme -il r6rs" "mzscheme -il typed-scheme" "mzscheme -M errortrace" "mzscheme3m" "mzschemecgc" "rs" "scheme" "scheme48" "scsh" "sisc" "stklos" "sxi"))
 ;; Setup for PLT Scheme
 (defvar mzscheme-program (concat plt-dir "/mzscheme"))
 (setenv "PLTHOME" plt-dir)
 (setenv "PLTCOLLECTS" (concat plt-dir "collects"))
 ;;(setq quack-pltcollect-dirs (directory-files (concat plt-dir "collects") t))
-
 (setq quack-pretty-lambda-p t)
 
 (define-key scheme-mode-map [f1]
@@ -136,4 +136,3 @@ Eli Barzilay.  Actions: nil set current using sexp at point
 			  (format "(%s)" action))))
   (pop-to-buffer "*scheme*" t)
   (other-window 1))
-

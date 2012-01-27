@@ -1,5 +1,12 @@
-; Lazy mode on: Type y or n instead of full "yes" or "no"
+;; Lazy mode on: Type y or n instead of full "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
+
+;; Control newly created frames. Frame height is calculated according
+;; to font size in after-make-frame-functions callbacks (ui.el in
+;; platform directories).
+(setq default-frame-alist
+      '((menu-bar-lines . 0)
+	(width . 85)))
 
 (add-hook 'after-make-frame-functions
           (lambda (frame)
@@ -23,6 +30,9 @@
 
 ;; Interactively do things
 (ido-mode t)
+
+;; Highlight mathing parenthesis
+(show-paren-mode 1)
 
 (defadvice kill-ring-save (before slick-copy activate compile)
   "When called interactively with no active region, copy a single line instead."
@@ -77,12 +87,6 @@
       (backward-sexp 1))
      (t (message "No match")))))
 
-;; Do not save duplicate kills into the kill ring
-(setq kill-do-not-save-duplicates t)
-
-;; Tab either indents, or does completion
-(setq tab-always-indent 'complete)
-
 ;; browse-kill-ring mode for easy kill-ring history handling
 ;; Use M-y to paste from history
 (require 'browse-kill-ring)
@@ -107,7 +111,35 @@
 
 (server-start)
 
+;; Try to get the whole character encoding mess to a sensible default
 (set-default-coding-systems 'utf-8)
+(setq current-language-environment "Latin-1"
+      default-input-method "latin-1-prefix")
+
+;; General settings for editing environment
+(setq kill-do-not-save-duplicates t
+      next-line-add-newlines nil
+      require-final-newline t
+      tab-width 4
+      sentence-end-double-space nil
+      fill-column 80
+      indent-tabs-mode nil
+      case-fold-search nil
+      tab-always-indent 'complete)
+
+;; We don't need no backups. Yee-haw!
+(setq make-backup-files nil
+      auto-save-default nil)
+
+;; There are no scrollbars. I want to see location.
+(setq line-number-mode t
+      column-number-mode t)
+
+;; Other odd bits
+(setq compilation-scroll-output t
+      pop-up-windows t)
+
+(global-font-lock-mode 1)
 
 (require 'escreen)
 (require 'midnight)
