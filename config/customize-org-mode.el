@@ -68,7 +68,8 @@
  org-columns-default-format "%80ITEM(Task) %10Effort(Estim){:} %10CLOCKSUM{Total}"
  org-global-properties '(("Effort_ALL" . "0:0 0:10 0:30 1:00 2:00 3:00 4:00 8:00"))
  ;; Mark a task as DONE when archiving
- org-archive-mark-done nil)
+ org-archive-mark-done nil
+ org-return-follows-link t)
 
 (define-key org-mode-map (kbd "C-c C-p")
   (lambda ()
