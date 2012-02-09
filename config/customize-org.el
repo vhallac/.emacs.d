@@ -69,7 +69,12 @@
  org-global-properties '(("Effort_ALL" . "0:0 0:10 0:30 1:00 2:00 3:00 4:00 8:00"))
  ;; Mark a task as DONE when archiving
  org-archive-mark-done nil
- org-return-follows-link t)
+ org-return-follows-link t
+ org-export-html-style-extra "<style type=\"text/css\">
+<!--/*--><![CDATA[/*><!--*/
+.src { background-color: #3f3f3f; color: #dcdccc; }
+/*]]>*/-->
+</style>")
 
 (define-key org-mode-map (kbd "C-c C-p")
   (lambda ()
