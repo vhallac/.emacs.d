@@ -63,7 +63,7 @@
 
 (autoload 'rinari-launch "rinari"
   "Ruby on Rails not-IDE" t)
-(setq rinari-tags-file-name "TAGS")
+(defvar rinari-tags-file-name "TAGS")
 
 (autoload 'scheme-mode "scheme"
   "Gotta scheme sometimes" t)
@@ -76,8 +76,15 @@
 
 (autoload 'virtualenv-activate "virtualenv"
   "Enable virtualenv usage for python" t)
-(setq virtualenv-use-ipython nil)
+(defvar virtualenv-use-ipython nil)
 
 (autoload 'yaml-mode "yaml-mode"
   "Major mode for editing YAML files" t)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+
+(autoload 'eclim-manage-projects "eclim"
+  "Emacs-eclipse bridge" t)
+
+;; (autoload 'malabar-mode "malabar-mode"
+;;   "Java+Maven goodness" t)
+;; (add-to-list 'auto-mode-alist '("\\.java\\'" . malabar-mode))

@@ -1,3 +1,6 @@
+(eval-when-compile
+  (require 'escreen))
+
 (escreen-install)
 
 ;;(setq escreen-prefix-char "C-z")

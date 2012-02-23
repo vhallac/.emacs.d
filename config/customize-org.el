@@ -1,3 +1,10 @@
+(eval-when-compile
+  (require 'org)
+  (require 'org-publish)
+  (require 'org-archive)
+  (require 'org-html)
+  (require 'yasnippet))
+
 (setq
  org-enforce-todo-checkbox-dependencies t
  org-enforce-todo-dependencies t
@@ -81,15 +88,16 @@
     (interactive "")
     (org-publish-current-project)))
 
+(make-variable-buffer-local 'yas/trigger-key)
+
 (add-hook 'org-mode-hook
 	  (lambda ()
-        ;; yasnippet
-        (make-variable-buffer-local 'yas/trigger-key)
-        (setq yas/trigger-key [tab])
-        (define-key yas/keymap [tab] 'yas/next-field)
-        ;; flyspell mode to spell check everywhere
-        (flyspell-mode 1)
-        (auto-fill-mode t)))
+	    ;; yasnippet
+	    (setq yas/trigger-key [tab])
+	    (define-key yas/keymap [tab] 'yas/next-field)
+	    ;; flyspell mode to spell check everywhere
+	    (flyspell-mode 1)
+	    (auto-fill-mode t)))
 
 ;; I don't use this -- but set it in case I forget to specify a location in a
 ;; future template.

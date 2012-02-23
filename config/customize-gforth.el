@@ -1,3 +1,8 @@
+(eval-when-compile
+  (require 'forth-mode "gforth.el"))
+
+(defvar gforth-dir) 			; Defined in platform/**/paths.el
+
 ;; TODO: This is a windows-only setup. Use the path setup stuff.
 (add-hook 'forth-mode-hook
           (function (lambda ()

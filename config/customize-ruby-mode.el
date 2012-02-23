@@ -1,9 +1,10 @@
-(require 'rinari)
+(autoload 'ruby-electric-mode "ruby-electric.el")
+(autoload 'rinari-launch "rinari.el")
+(autoload 'yari-anything "yari.el")
+(autoload 'word-at-point "thingatpt.el")
+
 (require 'anything)
-(require 'yari)
-(require 'auto-complete)
-(require 'ruby-electric)
-(require 'yasnippet)
+(require 'auto-complete-config)
 (require 'ruby-compilation-rspec)
 
 (defun ruby-electric-strparam ()
@@ -115,7 +116,7 @@
     (let ((block (ruby-get-containing-block)))
       (save-restriction
         (narrow-to-region (car block) (cdr block))
-        (beginning-of-buffer)
+        (goto-char (point-min))
         (if (re-search-forward "\\`do" nil t)
             (replace-match "{")
           (if (re-search-forward "\\`{" nil t)
@@ -125,7 +126,7 @@
           (if (re-search-forward "}\\'" nil t)
               (replace-match "end")))
         (save-match-data
-          (beginning-of-buffer)
+          (goto-char (point-min))
           (when (looking-at "\\`{\\(?:[^\n]*\n\\)\\{2\\} *}\\'")
             (dotimes (cnt 2)
               (join-line t)

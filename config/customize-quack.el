@@ -1,3 +1,11 @@
+(eval-when-compile
+  (require 'quack)
+  (require 'info)
+  (require 'cl))
+
+(defvar plt-dir)			; Set in platform/**/paths.el
+(autoload 'outline-minor-mode "outline.el")
+
 ;; TODO: This will need some simplification
 ;; TODO: This is windows only, need to move bits of it around
 (setq quack-programs '("gsi -:d-" "C:/mitscheme/bin/mit-scheme.exe --interactive --emacs --library c:/mitscheme/lib" "bigloo" "csi" "csi -hygienic" "gosh" "gsi" "gsi ~~/syntax-case.scm -" "guile" "kawa" "mit-scheme" "mred -z" "mzscheme" "mzscheme -il r6rs" "mzscheme -il typed-scheme" "mzscheme -M errortrace" "mzscheme3m" "mzschemecgc" "rs" "scheme" "scheme48" "scsh" "sisc" "stklos" "sxi"))

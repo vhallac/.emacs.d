@@ -1,3 +1,6 @@
+(eval-when-compile
+  (require 'jabber))
+
 (setq jabber-account-list
       '(("vedathallac@gmail.com"
          (:network-server  . "talk.google.com")

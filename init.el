@@ -6,7 +6,10 @@
 ;;
 ;; Some macros to help with init scripts
 ;;
-(load "startupfuncs.el")
+;; XXX: How do you correctly handle a .el that defines both a macro and a function?
+(eval-when-compile
+  (load "startupfuncs.el"))
+(autoload 'load-files "startupfuncs.el")
 
 ;;
 ;; Load the platform dependent setup
@@ -35,15 +38,15 @@
 ;; Set up customizations:
 ;; Each file of the form customize-<file>.el in the ~/.emacs.d/config directory
 ;; is loaded via a call to (require '<file-name>) when <file> is loaded.
-(mapcar (lambda (x)
-          (let ((file-name
-                 (replace-regexp-in-string "customize-\\|\.el" ""
-                                           (file-name-nondirectory x))))
-            (eval-after-load file-name
-              `(try-progn
-                (concat "Cannot load configuration:" ,x)
-                (load-file ,x)))))
-        (directory-files "~/.emacs.d/config" t "^customize-"))
+(mapc (lambda (x)
+	(let ((file-name
+	       (replace-regexp-in-string "customize-\\|\.el" ""
+					 (file-name-nondirectory x))))
+	  (eval-after-load file-name
+	    `(try-progn
+	      (concat "Cannot load configuration:" ,x)
+	      (load-file ,x)))))
+      (directory-files "~/.emacs.d/config" t "^customize-"))
 
 ;; Load the global config and tidbits
 (try-progn

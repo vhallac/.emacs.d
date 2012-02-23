@@ -1,3 +1,6 @@
+(eval-when-compile
+  (require 'midnight))
+
 ; ;kill buffers if they were last disabled more than 15 minutes ago
 (setq clean-buffer-list-delay-special 900)
 

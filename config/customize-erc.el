@@ -1,3 +1,7 @@
+(eval-when-compile
+  (require 'erc)
+  (require 'erc-dcc))
+
 (setq erc-dcc-mode t
       erc-dcc-verbose t
       erc-modules '(autojoin button completion dcc fill irccontrols list match menu move-to-prompt netsplit networks noncommands readonly ring stamp track))

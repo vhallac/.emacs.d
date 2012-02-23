@@ -1,3 +1,6 @@
+(eval-when-compile
+  (require 'slime))
+
 (add-to-list 'lisp-mode-hook 'slime-mode)
 
 (slime-setup)

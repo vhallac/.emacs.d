@@ -1,4 +1,16 @@
+(eval-when-compile
+  (require 'message)
+  (require 'auth-source)
+  (require 'gnus-msg)
+  (require 'tls)
+  (require 'gnus-score)
+  (require 'gnus-topic)
+  (require 'starttls)
+  (require 'cl))
+
 (require 'gnus)
+
+(declare-function message-fetch-field "message.el")
 
 (setq user-full-name "Vedat Hallac"
       user-mail-address "vedathallac@gmail.com")
@@ -13,7 +25,7 @@
       '(
         (message-news-p (name "Vedat Hallac")
                         (address "vedat.hallac@mail.invalid"))
-        ("gmail-2" 
+        ("gmail-2"
          (name "Dys@Bloodfeather")
          (address "dys.wowace@gmail.com"))))
 
@@ -119,7 +131,7 @@
           when (string-match address from)
           do (cond
               ((memq auth-mech '(cram-md5 plain login))
-               (return (apply 'set-smtp (cons auth-mech auth-spec))))
+               (return (apply 'set-smtp 'auth-mech auth-spec)))
               ((eql auth-mech 'ssl)
                (return (apply 'set-smtp-ssl auth-spec)))
               (t (error "Unrecognized SMTP auth. mechanism: `%s'." auth-mech)))

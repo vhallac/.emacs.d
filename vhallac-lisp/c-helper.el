@@ -1,26 +1,27 @@
-(provide 'c-helper)
+(eval-when-compile
+  (require 'cl))
+
 (require 'etags)
 
-(setq c-helper-global-search-list nil)
-(setq c-helper-find-file-history nil)
-(setq c-helper-buffer-specific-dir-hook nil)
+(defvar c-helper-global-search-list nil)
+(defvar c-helper-find-file-history nil)
+(defvar c-helper-buffer-specific-dir-hook nil)
 
 ; Emacs compatibility functions
-(progn
-  (if (not (functionp 'buffer-tag-table-files))
-      (defun buffer-tag-table-files ()
-        (save-excursion
-          (if (visit-tags-table-buffer)
-              (let ((tag-path (file-name-directory (buffer-file-name))))
-                (mapcar '(lambda (file) (convert-standard-filename
-                                         (concat tag-path file)))
-                        (tags-table-files)))
-            nil))))
-  (if (not (functionp 'buffer-tag-table-list))
-      (defun buffer-tag-table-list ()
-        (save-excursion
-          (if (visit-tags-table-buffer)
-              (buffer-file-name))))))
+(unless (fboundp 'buffer-tag-table-files)
+    (defun buffer-tag-table-files ()
+      (save-excursion
+	(if (visit-tags-table-buffer)
+	    (let ((tag-path (file-name-directory (buffer-file-name))))
+	      (mapc '(lambda (file) (convert-standard-filename
+				     (concat tag-path file)))
+		    (tags-table-files)))
+	  nil))))
+(unless (fboundp 'buffer-tag-table-list)
+    (defun buffer-tag-table-list ()
+      (save-excursion
+	(if (visit-tags-table-buffer)
+	    (buffer-file-name)))))
 
 (defun partial-file-path-match (full-path partial-path)
   "Compare a full (at least fuller) path against a sub-path.
@@ -52,17 +53,17 @@ to the top list of directories is found."
              (contents (directory-files dir t))
              (files nil)
              (dirs nil))
-        (mapcar '(lambda (name)
-                   (cond ((and (file-directory-p name)
-                               (not (member
-                                     (file-name-nondirectory name)
-                                     '("." ".." "cvs" "CVS" "rcs" "RCS" ".svn"))))
-                          (setq dirs (cons name dirs)))
-                         ((and (not (file-directory-p name))
-                               (file-readable-p name))
-                          (setq files (cons (convert-standard-filename name) files))))
-                   nil)
-                contents)
+        (mapc '(lambda (name)
+		 (cond ((and (file-directory-p name)
+			     (not (member
+				   (file-name-nondirectory name)
+				   '("." ".." "cvs" "CVS" "rcs" "RCS" ".svn"))))
+			(setq dirs (cons name dirs)))
+		       ((and (not (file-directory-p name))
+			     (file-readable-p name))
+			(setq files (cons (convert-standard-filename name) files))))
+		 nil)
+	      contents)
         (while (and files (null name))
           (if (partial-file-path-match (car files) filename)
               (setq name (car files)))
@@ -92,9 +93,9 @@ See c-helper-include-path for the current include path."
   (progn
 	(if (or (not filename)
 			(eq (string-width filename) 0))
-		(setq filename (read-input "Please enter the file name: "
+		(setq filename (read-string "Please enter the file name: "
 								   ""
-								   c-helper-find-file-history
+								   'c-helper-find-file-history
 								   "")) )
 	(let ((dirs (append c-helper-global-search-list
                         (if (functionp c-helper-buffer-specific-dir-hook)
@@ -137,3 +138,4 @@ and finds it in the search path."
 			(error "No file specified in the #include statement")))
 	  (error "Not on a line with a #include statement"))))
 
+(provide 'c-helper)

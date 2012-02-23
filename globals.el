@@ -136,6 +136,7 @@
       column-number-mode t)
 
 ;; Other odd bits
+(eval-when-compile (require 'compile))
 (setq compilation-scroll-output t
       pop-up-windows t)
 

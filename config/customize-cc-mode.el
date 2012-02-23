@@ -1,3 +1,13 @@
+(eval-when-compile
+  (require 'cc-mode))
+
+(defvar c-syntactic-context)
+(defvar c-macro-cppflags)
+(defvar c-macro-preprocessor)
+(defvar c-macro-shrink-window-flag)
+(declare-function match-parenthesis "global.el")
+(declare-function choose-indent-type "choose-indent.el")
+
 (message "Configuring C modes")
 (require 'imenu)
 (require 'c-helper)
@@ -186,7 +196,7 @@ NOTE: This is no longer used, but left for future generations. ;-)"
 characters off from the end. The cursor position is where the header name goes"
        (beginning-of-line)
        (insert "#include <.h>\n")
-       (previous-line 1)
+       (forward-line -1)
        (end-of-line)
        (backward-char 3))
 
@@ -288,42 +298,11 @@ extern \"C\" statements are added."
                                  (interactive "")
                                  (compile "make")))
 
-(Windows
- (define-key global-map [(shift f7)]
-   '(lambda ()
-      (interactive "")
-      (compile "nmake -f nt.mak")))
- (define-key global-map [(control f7)]
-   '(lambda ()
-      (interactive "")
-      (compile "nmake -f nt.mak DEBUG=1")))
- (define-key global-map [(meta f7)]
-   '(lambda ()
-      (interactive "")
-      (compile "make -f Makefile.mak ARCH=arm"))))
-
-(GNULinux
- (define-key global-map [(shift f7)]
-   '(lambda ()
-      (interactive "")
-      (compile "make -f Makefile.mak")))
- (define-key global-map [(control f7)]
-   '(lambda ()
-      (interactive "")
-      (compile "DEBUG=1 make -f Makefile.mak"))))
-
 (define-key global-map [(control f4)]
   '(lambda ()
      (interactive "")
      (if (> (length (device-frame-list)) 1)
          (delete-frame))))
-
-(Windows
- (setq c-helper-global-search-list
-       (list "c:/Program Files/Microsoft Visual Studio/VC98/include")))
-(GNULinux
- (setq c-helper-global-search-list
-       (recursive-directory-list "/usr/include")))
 
 (defun choose-c-style ()
     "Checks whether the file has old style or new style indentation."

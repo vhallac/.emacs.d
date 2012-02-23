@@ -1,3 +1,6 @@
+(eval-when-compile
+  (require 'org-capture))
+
 ;; Remember and org-protocol setups
 (setq org-default-notes-file "~/org/refile.org")
 

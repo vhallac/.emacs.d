@@ -1,3 +1,9 @@
+(eval-when-compile
+  (require 'org-agenda)
+  (require 'cl))
+
+(declare-function org-agenda-files "org-agenda.el")
+
 ;; Agenda setup
 
 (setq org-agenda-files '("~/org/work.org"

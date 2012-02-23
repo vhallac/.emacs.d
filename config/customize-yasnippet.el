@@ -1,3 +1,8 @@
+(eval-when-compile
+  (require 'yasnippet))
+
+(declare-function yas/global-mode "yasnippet.el")
+
 (setq yas/root-directory "~/.emacs.d/snippets")
 (yas/load-directory yas/root-directory)
 (setq yas/trigger-key "M-/")

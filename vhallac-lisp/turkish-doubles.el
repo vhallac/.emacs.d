@@ -4,18 +4,20 @@
  "turkish-doubles" "Turkish" "TR<" t
  "Turkish (Türkçe) input method with double letter entry.
 
-Note for I, ı, İ, i.
-
+aa -> â
+cc -> ç
+gg -> ğ
+ii -> ı
+oo -> ö
+uu -> ü
+ss -> ş
 AA -> Â
 CC -> Ç
 GG -> Ğ
-I  -> I
-i  -> ı
 II -> İ
-ii -> i
 OO -> Ö
-SS -> Ş
 UU -> Ü
+SS -> Ş
 
 Doubling the postfix separates the letter and postfix: e.g. aaa -> aa
 " nil t nil nil nil nil nil nil nil nil t)
@@ -59,7 +61,8 @@ Doubling the postfix separates the letter and postfix: e.g. aaa -> aa
   (if turkish-info
       (setcdr (assoc 'input-method (cdr turkish-info)) "turkish-doubles")
     (eval-after-load "european"
-      (setq turkish-info (assoc "Turkish" language-info-alist))
-      (setcdr (assoc 'input-method (cdr turkish-info)) "turkish-doubles"))))
+      '(progn
+	 (setq turkish-info (assoc "Turkish" language-info-alist))
+	 (setcdr (assoc 'input-method (cdr turkish-info)) "turkish-doubles")))))
 
 (provide 'turkish-doubles)

@@ -1,5 +1,5 @@
-;; TODO: Make this into an autoload
-(require 'org2blog)
+(eval-when-compile
+  (require 'org2blog))
 
 (setq org2blog/wp-blog-alist
       '(("Dysaster Zone"

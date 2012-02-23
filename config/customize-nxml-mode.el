@@ -1,3 +1,6 @@
+(eval-when-compile
+  (require 'nxml-mode))
+
 (setq
  nxml-child-indent 2
  nxml-outline-child-indent 2

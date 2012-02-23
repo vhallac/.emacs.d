@@ -1,3 +1,12 @@
+(eval-when-compile
+  (require 'org-clock))
+
+(declare-function org-clock-out "org-clock.el")
+(declare-function org-clock-in "org-clock.el")
+
+ ;; Use the default task to clock in whenever you clock out
+(defvar bh/keep-clock-running nil)
+
 (setq
  org-clock-persist t
  ;; Yes it's long... but more is better ;)
@@ -20,9 +29,7 @@
  org-clock-report-include-clocking-task t
  ;; Change task state to NEXT from TODO when clocking in
  org-clock-in-switch-to-state 'bh/clock-in-to-next
- org-clock-modeline-total 'current
- ;; Use the default task to clock in whenever you clock out
- bh/keep-clock-running nil)
+ org-clock-modeline-total 'current)
 
 ;;; clocking functions
 ;; Resume clocking tasks when emacs is restarted
