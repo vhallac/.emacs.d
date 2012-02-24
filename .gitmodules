@@ -22,3 +22,6 @@
 [submodule "lisp/yaml-mode"]
 	path = lisp/yaml-mode
 	url = git://github.com/vhallac/yaml-mode
+[submodule "lisp/emacs-eclim"]
+	path = lisp/emacs-eclim
+	url = git://github.com/vhallac/emacs-eclim.git

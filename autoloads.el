@@ -81,3 +81,13 @@
 (autoload 'yaml-mode "yaml-mode"
   "Major mode for editing YAML files" t)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+
+(autoload 'eclim-manage-projects "eclim"
+  "Emacs-eclipse bridge" t)
+
+(autoload 'global-eclim-mode "eclim"
+  "Emacs-eclipse bridge - enable global mode" t)
+
+;; (autoload 'malabar-mode "malabar-mode"
+;;   "Java+Maven goodness" t)
+;; (add-to-list 'auto-mode-alist '("\\.java\\'" . malabar-mode))
