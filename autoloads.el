@@ -88,6 +88,5 @@
 (autoload 'global-eclim-mode "eclim"
   "Emacs-eclipse bridge - enable global mode" t)
 
-;; (autoload 'malabar-mode "malabar-mode"
-;;   "Java+Maven goodness" t)
-;; (add-to-list 'auto-mode-alist '("\\.java\\'" . malabar-mode))
+(autoload 'start-eclimd "eclimd"
+  "Manage eclimd from emacs" t)
