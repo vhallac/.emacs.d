@@ -9,4 +9,5 @@
   <typeId id="xhtml5" uri="xhtml5.rnc"/>
   <!-- This looks like a bit of a hack, but it should do for now -->
   <uri pattern="*.html.erb" typeId="xhtml5" />
+  <uri pattern="pom.xml" uri="maven-v4_0_0.rnc"/>
 </locatingRules>
