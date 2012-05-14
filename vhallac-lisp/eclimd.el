@@ -24,6 +24,8 @@
 ;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 ;; MA 02110-1301, USA.
 
+(require 'eclim)
+
 (defgroup eclimd nil
   "eclimd customizations"
   :prefix "eclimd-"
@@ -39,15 +41,19 @@
   "The workspace to use with eclimd"
   :group 'eclimd)
 
+(defvar eclimd-process-buffer nil
+  "Buffer used for communication with eclimd process")
+
+(defvar eclimd-process nil
+  "The active eclimd process")
+
 (defconst eclimd-process-buffer-name "eclimd")
 
-(defun have-eclimd-p ()
+(defun eclimd--executable-path ()
   (executable-find eclimd-executable))
 
-(defun eclimd-running-p ()
-  (let* ((eclimd-buffer (get-buffer (concat "*" eclimd-process-buffer-name "*")))
-         (eclimd-proc (get-buffer-process eclimd-buffer)))
-    (not (null eclimd-proc))))
+(defun eclimd--running-p ()
+  (not (null (get-buffer-process eclimd-process-buffer))))
 
 (defun eclimd--match-process-output (regexp proc)
   "Wait for the given process to output a string that matches the specified regexp.
@@ -78,11 +84,9 @@ The caller must use `save-match-data' to preserve the match data if necessary."
   "Wait for the eclimd server to become active.
 This function also waits for the eclimd server to report that it is started.
 It returns the port it is listening on"
-  (let* ((eclimd-buffer (get-buffer (concat "*" eclimd-process-buffer-name "*")))
-         (proc (get-buffer-process eclimd-buffer))
-	 (eclimd-start-regexp "Eclim Server Started on: \\(?:[0-9]+\\.\\)\\{3\\}[0-9]+:\\([0-9]+\\)"))
+  (let ((eclimd-start-regexp "Eclim Server Started on: \\(?:[0-9]+\\.\\)\\{3\\}[0-9]+:\\([0-9]+\\)"))
     (save-match-data
-      (let ((output (eclimd--match-process-output eclimd-start-regexp proc)))
+      (let ((output (eclimd--match-process-output eclimd-start-regexp eclimd-process)))
 	(when output
 	  (setq eclimd-port (match-string 1 output))
 	  (message (concat "eclimd serving at port " eclimd-port)))))
@@ -90,26 +94,29 @@ It returns the port it is listening on"
 
 (defun start-eclimd (workspace-dir)
   (interactive (list (read-directory-name "Workspace directory: "
-					    eclimd-default-workspace)))
-  (when (and (have-eclimd-p)
-	     (not (eclimd-running-p)))
-    (message (concat "Starting eclimd for workspace: " workspace-dir "..."))
-    (make-comint eclimd-process-buffer-name
-		 eclimd-executable
-		 nil
-		 (concat "-Dosgi.instance.area.default="
-			 (replace-regexp-in-string "~" "@user.home" workspace-dir)))
-    (wait-eclimd-start)))
+					    eclimd-default-workspace nil t)))
+  (let ((eclimd-prog (eclimd--executable-path)))
+    (when (and eclimd-prog
+	       (not (eclimd--running-p)))
+      (message (concat "Starting eclimd for workspace: " workspace-dir "..."))
+      (setq eclimd-process-buffer
+	    (make-comint eclimd-process-buffer-name
+			 eclimd-prog
+			 nil
+			 (concat "-Dosgi.instance.area.default="
+				 (replace-regexp-in-string "~" "@user.home" workspace-dir))))
+      (setq eclimd-process (get-buffer-process eclimd-process-buffer))
+      (wait-eclimd-start))))
 
 (defun stop-eclimd ()
   (interactive)
-  (let* ((eclimd-buffer (get-buffer (concat "*" eclimd-process-buffer-name "*")))
-         (eclimd-proc (get-buffer-process eclimd-buffer)))
-    (when eclimd-proc
-      (eclim/execute-command "shutdown")
-      (eclimd--match-process-output "Process eclimd finished" eclimd-proc)
-      (delete-process eclimd-proc))
-    (when eclimd-buffer
-      (kill-buffer eclimd-buffer))))
+  (when eclimd-process
+    (eclim/execute-command "shutdown")
+    (eclimd--match-process-output "Process eclimd finished" eclimd-process)
+    (delete-process eclimd-process)
+    (setq eclimd-process nil))
+  (when eclimd-process-buffer
+    (kill-buffer eclimd-process-buffer)
+    (setq eclimd-process-buffer nil)))
 
 (provide 'eclimd)
