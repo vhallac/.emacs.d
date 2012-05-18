@@ -120,12 +120,14 @@
 (setq kill-do-not-save-duplicates t
       next-line-add-newlines nil
       require-final-newline t
-      tab-width 4
       sentence-end-double-space nil
-      fill-column 80
-      indent-tabs-mode nil
-      case-fold-search nil
       tab-always-indent 'complete)
+
+;; These become buffer local when set, so I use setq-default
+(setq-default tab-width 4
+              fill-column 80
+              indent-tabs-mode nil
+              case-fold-search nil)
 
 ;; We don't need no backups. Yee-haw!
 (setq make-backup-files nil
