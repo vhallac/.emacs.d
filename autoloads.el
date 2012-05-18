@@ -90,3 +90,8 @@
 
 (autoload 'start-eclimd "eclimd"
   "Manage eclimd from emacs" t)
+
+(autoload 'groovy-mode "groovy-mode"
+  "Major mode for handling groovy and gradle files" t)
+(add-to-list 'auto-mode-alist '("\\.gr\\(oovy\\|adle\\)$" . groovy-mode))
+
