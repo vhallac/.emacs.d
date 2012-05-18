@@ -25,3 +25,6 @@
 [submodule "lisp/emacs-eclim"]
 	path = lisp/emacs-eclim
 	url = git://github.com/vhallac/emacs-eclim.git
+[submodule "lisp/gradle-el"]
+	path = lisp/gradle-el
+	url = git://github.com/vhallac/gradle-el
