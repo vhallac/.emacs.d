@@ -1,6 +1,6 @@
 ;; Set paths for various executables I use
 (setq  gnuserv-program "F:\\tools\\bin\\gnuserv.exe"
-       ispell-program-name "c:\\program files\\aspell\\bin\\aspell.exe"
+       ispell-program-name "c:\\program files (x86)\\aspell\\bin\\aspell.exe"
        lua-default-application "f:\\tools\\wow-lua\\lua-wow.exe"
        epg-gpg-program "c:/Program Files (x86)/Gnu/GnuPG/gpg2.exe"
        plt-dir "c:/plt/"
