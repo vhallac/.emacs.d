@@ -10,77 +10,45 @@
   "An Emacs Internet Relay Chat client" t)
 
 (autoload 'forth-mode "gforth.el")
-(setq auto-mode-alist (cons '("\\.fs\\'" . forth-mode)
-                            auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.fs$" . forth-mode))
 (autoload 'forth-block-mode "gforth.el")
-(setq auto-mode-alist (cons '("\\.fb\\'" . forth-block-mode)
-                            auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.fb$" . forth-block-mode))
 
 (autoload 'gnus "gnus"
   "Mail and news reader" t)
-
-(autoload 'iedit-mode "iedit"
-  "Edit multiple regions with the same content simultaneously." t)
-
-(autoload 'jabber-connect-all "jabber" "Load Jabber client" t)
-
-(autoload 'lua-mode "lua-mode.el"
-  "Major mode for editing LUA code." t)
-(add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
-
-(autoload 'magit-status "magit"
-  "It's Magic!" t)
 
 (autoload 'nxml-mode "nxml-mode"
   "Massive XML goodness" t)
 (add-to-list 'auto-mode-alist
              '("\\.\\(x[ms]l\\|rng\\|x?html?\\)\\'" . nxml-mode))
 
-(autoload 'org2blog/wp-mode "org2blog"
-  "Blog posts from org mode" t)
 (autoload 'bh/clock-in "org-clock"
   "Custom clock-in function: loaded in customize-org-clock")
 (autoload 'bh/clock-out "org-clock"
   "Custom clock-out function: loaded in customize-org-clock")
 
-(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
+;; (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
 
 (autoload 'python-mode "python" "Python editing mode." t)
 (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
 
-(autoload 'rainbow-mode "rainbow-mode"
-  "Displays color names with colored background." t)
+;; Display the color specifications in CSS with the specified color.
 (add-hook 'css-mode-hook 'rainbow-mode)
 
+;; TODO: Move to rhtml-mode package
 (autoload 'rhtml-mode "rhtml-mode"
   "Major mode for editing .html.erb files." t)
 (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . rhtml-mode))
 
-(add-to-list 'auto-mode-alist '("\\.rake$"    . ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.gemspec$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.ru$"      . ruby-mode))
-(add-to-list 'auto-mode-alist '("Gemfile$"    . ruby-mode))
-
-(autoload 'rinari-launch "rinari"
-  "Ruby on Rails not-IDE" t)
-(defvar rinari-tags-file-name "TAGS")
+(add-to-list 'auto-mode-alist '("\\(?:\\.\\(?:gemspec\\|r\\(?:ake\\|[ub]\\)\\)\\|Gemfile\\)\\$" . ruby-mode))
 
 (autoload 'scheme-mode "scheme"
   "Gotta scheme sometimes" t)
 (add-to-list 'auto-mode-alist '("\\.s\\(s\\|c[mh]\\)$" . scheme-mode))
 
-(autoload 'slime-mode "slime"
-  "Superior LISP Interaction Mode" t)
-(autoload 'slime "slime"
-  "Superior LISP Interaction Mode" t)
-
 (autoload 'virtualenv-activate "virtualenv"
   "Enable virtualenv usage for python" t)
 (defvar virtualenv-use-ipython nil)
-
-(autoload 'yaml-mode "yaml-mode"
-  "Major mode for editing YAML files" t)
-(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
 (autoload 'eclim-manage-projects "eclim"
   "Emacs-eclipse bridge" t)
@@ -91,7 +59,12 @@
 (autoload 'start-eclimd "eclimd"
   "Manage eclimd from emacs" t)
 
-(autoload 'groovy-mode "groovy-mode"
-  "Major mode for handling groovy and gradle files" t)
-(add-to-list 'auto-mode-alist '("\\.gr\\(oovy\\|adle\\)$" . groovy-mode))
+;; Let groovy mode handle gradle files
+(add-to-list 'auto-mode-alist '("\\.gradle$" . groovy-mode))
 
+;; Hooks to launch rinari. I am not adding any others, because I don't want
+;; rinari to jump in for everything. Normally, I would have javascript, css,
+;; etc. modes added here. In case rinari is no activated automatically,
+;; executing `rinari-launch' will do the trick.
+(setq rinari-major-modes (list 'ruby-mode-hook 'yaml-mode-hook 'rhtml-mode-hook
+                               'rspec-mode-hook))

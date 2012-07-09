@@ -10,6 +10,14 @@
 (eval-when-compile
   (load "startupfuncs.el"))
 (autoload 'load-files "startupfuncs.el")
+(autoload 'try-progn "startupfuncs.el")
+
+;;
+;; Initialize packages
+;;
+(try-progn
+ "Cannot initialize package system"
+ (load-file "~/.emacs.d/init-packages.el"))
 
 ;;
 ;; Load the platform dependent setup
