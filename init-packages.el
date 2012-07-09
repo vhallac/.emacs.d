@@ -23,14 +23,17 @@
 (add-to-list 'load-path (expand-file-name "elpa" "~/.emacs.d/"))
 
 (when (not (require 'package nil t))
-  ;; Cannot load the package.el file. Try to load one off the net.
+  ;; Cannot load the package.el file. Try to load the last one that works with emacs23.
   (let ((buffer (url-retrieve-synchronously
-                 "http://tromey.com/elpa/package-install.el")))
+                 "http://repo.or.cz/w/emacs.git/blob_plain/1a0a666f941c99882093d7bd08ced15033bc3f0c:/lisp/emacs-lisp/package.el")))
     (save-excursion
       (set-buffer buffer)
+      (setq buffer-file-name
+            (expand-file-name "package.el" (file-name-as-directory "~/.emacs.d/elpa/")))
       (goto-char (point-min))
-      (re-search-forward "^$" nil 'move)
-      (eval-region (point) (point-max))
+      (search-forward-regexp "^;;;")
+      (kill-region (point-min) (point-at-bol))
+      (save-buffer)
       (kill-buffer (current-buffer))))
   ;; Bail out if it doesn't work a second time...
   (require 'package))
@@ -44,7 +47,8 @@
         ("copcu" . "http://cop.cuyuz.biz/elpa/")))
 ;; Packages I add will live in http://cop.cuyuz.biz/elpa
 
-;; Fix load path for pacakges I need early
+;; Fix load path for packages I need early.
+;; Also check if they are installed, and install them if needed.
 (defun elpa-dir (package-name)
   (expand-file-name (car
 		     (file-name-all-completions package-name
@@ -55,5 +59,18 @@
                         "browse-kill-ring"
                         "escreen"
                         "yasnippet"
-                        "color-theme")))
-  (mapc (lambda (pkg) (add-to-list 'load-path (elpa-dir pkg))) early-packages))
+                        "color-theme"))
+      refreshed-p)
+  (mapc (lambda (pkg)
+	  (let ((pkg-symbol (intern pkg)))
+	    (when (not (package-installed-p pkg-symbol))
+	      (when (not refreshed-p)
+		(package-refresh-contents)
+		(setq refreshed-p t))
+	      (package-install pkg-symbol)))
+	    (add-to-list 'load-path (elpa-dir pkg)))
+	early-packages))
+
+;; Fudge needed for color-theme on emacs-23: it complains about missing themes directory
+(when (< emacs-major-version 24)
+  (make-directory (expand-file-name "themes" (elpa-dir "color-theme"))))
