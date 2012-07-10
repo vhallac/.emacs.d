@@ -38,8 +38,10 @@
   ;; Bail out if it doesn't work a second time...
   (require 'package))
 
-(when (< emacs-major-version 24)
-    (package-initialize))
+;; Initialize module if we made it this far.
+;; Do not activate packages yet. It should happen after I've got a chance to
+;; initialize package configuration variables.
+(package-initialize t)
 
 (mapc (lambda (elt)
         (add-to-list 'package-archives elt))
