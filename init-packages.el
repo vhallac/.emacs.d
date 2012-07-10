@@ -38,6 +38,9 @@
   ;; Bail out if it doesn't work a second time...
   (require 'package))
 
+(when (< emacs-major-version 24)
+    (package-initialize))
+
 (mapc (lambda (elt)
         (add-to-list 'package-archives elt))
       '(("melpa" . "http://melpa.milkbox.net/packages/")
@@ -73,4 +76,6 @@
 
 ;; Fudge needed for color-theme on emacs-23: it complains about missing themes directory
 (when (< emacs-major-version 24)
-  (make-directory (expand-file-name "themes" (elpa-dir "color-theme"))))
+  (let ((themes-dir (expand-file-name "themes" (elpa-dir "color-theme"))))
+    (when (not (file-directory-p themes-dir))
+      (make-directory themes-dir))))
