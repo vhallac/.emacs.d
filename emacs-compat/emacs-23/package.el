@@ -173,6 +173,11 @@
 
 (require 'tabulated-list)
 
+;; emacs23-compat:
+;; We don't have condition-case-unless-debug in emacs 23. Shortcut it
+(defmacro condition-case-unless-debug (var bodyform &rest handlers)
+  `(condition-case ,var ,bodyform ,@handlers))
+
 (defconst package-subdirectory-regexp
   "\\([^.].*?\\)-\\([0-9]+\\(?:[.][0-9]+\\|\\(?:pre\\|beta\\|alpha\\)[0-9]+\\)*\\)"
   "Regular expression matching the name of a package subdirectory.
@@ -1087,7 +1092,7 @@ The file can either be a tar file or an Emacs Lisp file."
 		      (file-name-as-directory
 		       (expand-file-name package-user-dir)))
 	(progn
-	  (delete-directory dir t t)
+	  (delete-directory dir t)
 	  (message "Package `%s-%s' deleted." name version))
       ;; Don't delete "system" packages
       (error "Package `%s-%s' is a system package, not deleting"
