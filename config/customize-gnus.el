@@ -105,19 +105,32 @@
 ;; - cert is ??? (certificate of the server?)
 (defvar smtp-accounts
   '( (ssl "vedathallac@gmail.com" "gmail-1" "smtp.googlemail.com" 587)
-     (ssl "dys.wowace@gmail.com" "gmail-2" "smtp.googlemail.com" 587)))
+     (ssl "dys.wowace@gmail.com" "gmail-2" "smtp.googlemail.com" 587)
+     (ssl "vedat@android.ciyiz.biz" "gmail-android" "smtp.googlemail.com" 587)))
 
-(defun set-smtp-common (alias server port &optional user password)
-  "Set the common fields of the supplied parameters"
-  (unless user
-    (let ((port-name (format "%s" port)))
-      (multiple-value-setq
-          (user password)
-        (auth-source-user-or-password '("login" "password") alias port-name))))
-  (setq smtpmail-auth-credentials (list (list server port user password))
-        smtpmail-smtp-server server
-        smtpmail-smtp-service port)
-  (message "Setting SMTP server to `%s:%s' for user `%s'." server port user))
+(if (>= emacs-major-version 24)
+    (defun set-smtp-common (alias server port &optional user password)
+      ;; TODO: I need both alias and real server entries in my authinfo
+      ;; for this method. I don't like it. Need a better way to handle it.
+      (unless user
+        (setq user (plist-get (car (auth-source-search :host alias
+                                                       :port 587))
+                              :user)))
+      (setq smtpmail-smtp-user user
+            smtpmail-smtp-server server
+            smtpmail-smtp-service port))
+
+  (defun set-smtp-common (alias server port &optional user password)
+    "Set the common fields of the supplied parameters"
+    (unless user
+      (let ((port-name (format "%s" port)))
+        (multiple-value-setq
+            (user password)
+          (auth-source-user-or-password '("login" "password") alias port-name))))
+    (setq smtpmail-auth-credentials (list (list server port user password))
+          smtpmail-smtp-server server
+          smtpmail-smtp-service port)
+    (message "Setting SMTP server to `%s:%s' for user `%s'." server port user)))
 
 (defun set-smtp (mech alias server port &optional user password)
   "Set related SMTP variables for supplied parameters."
