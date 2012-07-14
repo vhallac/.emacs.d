@@ -22,12 +22,15 @@
       '(nntp "news.easynews.com"))
 
 (setq gnus-posting-styles
-      '(
-        (message-news-p (name "Vedat Hallac")
-                        (address "vedat.hallac@mail.invalid"))
+      '(((message-news-p)
+         (name "Vedat Hallac")
+         (address "vedat.hallac@mail.invalid"))
         ("gmail-2"
          (name "Dys@Bloodfeather")
-         (address "dys.wowace@gmail.com"))))
+         (address "dys.wowace@gmail.com"))
+        ("gmail-android"
+         (name "Vedat Hallac")
+         (address "vedat@android.ciyiz.biz"))))
 
 (setq gnus-secondary-select-methods
       (list
@@ -40,6 +43,14 @@
                 (gnus-check-new-newsgroups nil)
                 (gnus-ignored-newsgroups "^to\\.\\|^[0-9. 	]+\\( \\|$\\)\\|^[\”]\”[#’()]"))
        '(nnimap "gmail-2"
+                (nnimap-address "imap.gmail.com")
+                (nnimap-server-port 993)
+                (nnimap-stream tls)
+                (nnimap-list-pattern ("INBOX" "*"))
+                (nnimap-expunge-on-close always)
+                (gnus-check-new-newsgroups nil)
+                (gnus-ignored-newsgroups "^to\\.\\|^[0-9. 	]+\\( \\|$\\)\\|^[\”]\”[#’()]"))
+       '(nnimap "gmail-android"
                 (nnimap-address "imap.gmail.com")
                 (nnimap-server-port 993)
                 (nnimap-stream tls)
