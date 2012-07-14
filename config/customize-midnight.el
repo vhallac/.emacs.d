@@ -18,5 +18,7 @@
 ;; keep these buffer untouched
 (setq clean-buffer-list-kill-never-buffer-names '("*Messages*" "*cmd*" "*scratch*"
                                                   "*w3m*" "*w3m-cache*"
-                                                  "*Inferior Octave*")
-      clean-buffer-list-kill-never-regexps '("^\\*EMMS Playlist\\*.*$"))
+                                                  "*Group*")
+      clean-buffer-list-kill-never-regexps '("^\\*EMMS Playlist\\*.*$"
+                                             "^\\*Article "
+                                             "^\\*Summary "))
