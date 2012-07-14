@@ -15,7 +15,6 @@
 (define-key global-map (kbd "M-2") 'split-window-vertically)
 (define-key global-map (kbd "M-3") 'split-window-horizontally)
 
-(define-key global-map (kbd "C-;") 'iedit-mode)
 (define-key global-map (kbd "C-x C-j C-c") 'jabber-connect-all)
 
 (define-key global-map (kbd "C-M-r") 'org-capture)
@@ -26,3 +25,5 @@
 (define-key global-map (kbd "<f11> O") 'bh/clock-out)
 
 (define-key global-map (kbd "C-x g") 'magit-status)
+
+(define-key global-map (kbd "C-;") 'mark-more-like-this-extended)
