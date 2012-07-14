@@ -162,3 +162,9 @@
 ;; This is easier than making virtual folders for inbox+sent, IMO
 (setq mail-self-blind t
       mail-user-agent 'gnus-user-agent)
+
+;; tells gnus to get new mail and also display all old mail
+(define-key gnus-summary-mode-map (kbd "C-c C-c")
+  (lambda ()
+    (interactive)
+    (gnus-summary-rescan-group 'all)))
