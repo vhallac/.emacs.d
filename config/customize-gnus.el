@@ -139,15 +139,13 @@
 
 (require 'smtpmail)
 
-(defvar %smtpmail-via-smtp (symbol-function 'smtpmail-via-smtp))
-
-(defun smtpmail-via-smtp (recipient smtpmail-text-buffer)
+(defadvice smtpmail-via-smtp (around set-smtp-server-from-sender activate)
   ;; Not sure if this is the right way, but it seems to prevent the password
   ;; lingering around in the variable.
   (let ((smtpmail-auth-credentials nil))
     (with-current-buffer smtpmail-text-buffer
       (change-smtp))
-    (funcall (symbol-value '%smtpmail-via-smtp) recipient smtpmail-text-buffer)))
+    ad-do-it))
 
 (setq gnus-use-adaptive-scoring '(word line))
 ;; This is easier than making virtual folders for inbox+sent, IMO
