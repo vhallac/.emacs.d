@@ -55,16 +55,11 @@
         ("tromey" . "http://tromey.com/elpa/")
         ("gnu" . "http://elpa.gnu.org/packages/")
         ("copcu" . "http://cop.cuyuz.biz/elpa/")))
-;; Packages I add will live in http://cop.cuyuz.biz/elpa
 
 ;; Fix load path for packages I need early.
 ;; Also check if they are installed, and install them if needed.
-(defun elpa-dir (package-name)
-  (expand-file-name (car
-		     (file-name-all-completions package-name
-						package-user-dir))
-		     package-user-dir))
-
+;; These packages may end up causing side effects before configuration. Check
+;; their autoload files to be sure they are safe.
 (let ((early-packages '("zenburn"
                         "browse-kill-ring"
                         "escreen"
@@ -72,14 +67,14 @@
                         "color-theme"))
       refreshed-p)
   (mapc (lambda (pkg)
-	  (let ((pkg-symbol (intern pkg)))
-	    (when (not (package-installed-p pkg-symbol))
-	      (when (not refreshed-p)
-		(package-refresh-contents)
-		(setq refreshed-p t))
-	      (package-install pkg-symbol)))
-	    (add-to-list 'load-path (elpa-dir pkg)))
-	early-packages))
+          (let ((pkg-symbol (intern pkg)))
+            (when (not (package-installed-p pkg-symbol))
+              (when (not refreshed-p)
+                (package-refresh-contents)
+                (setq refreshed-p t))
+              (package-install pkg-symbol))
+            (package-activate pkg-symbol nil)))
+        early-packages))
 
 ;; Fudge needed for color-theme on emacs-23: it complains about missing themes directory
 (when (< emacs-major-version 24)
