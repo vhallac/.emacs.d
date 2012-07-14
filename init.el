@@ -60,3 +60,6 @@
 (try-progn
  "Cannot load globals"
  (load-file "~/.emacs.d/globals.el"))
+
+;; And finally, activate all packages
+(package-initialize)
