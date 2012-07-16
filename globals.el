@@ -146,13 +146,11 @@
 
 (require 'escreen)
 (require 'midnight)
-(require 'org-install)
 (require 'org-protocol)
 (require 'uniquify)
 ;; Quack will be handling my scheming
 (eval-after-load "scheme" '(require 'quack))
 (require 'turkish-doubles)
 (set-language-environment "Turkish")
-(require 'yasnippet)
 (require 'zenburn)
 (color-theme-zenburn)
