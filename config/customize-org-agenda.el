@@ -6,10 +6,11 @@
 
 ;; Agenda setup
 
-(setq org-agenda-files '("~/org/work.org"
-                         "~/org/home.org"
-                         "~/org/refile.org"
-                         "~/org/uki.org"))
+(setq org-agenda-files (mapcar #'expand-file-name
+                               '("~/org/work.org"
+                                 "~/org/home.org"
+                                 "~/org/refile.org"
+                                 "~/org/uki.org")))
 
 (setq org-agenda-include-all-todo t)
 (setq org-agenda-time-grid '((daily today) "----------------" (800 1000 1200 1400 1600 1800 2000)))
@@ -140,3 +141,16 @@
               (when face (return face)))))))
 
 (setq org-agenda-include-diary t)
+
+;; Search all my org files
+;; `recursive-directory-list' comes from ~/.emacs.d/loadpaths.el
+(setq org-agenda-text-search-extra-files
+  (apply #'append (mapcar (lambda (dir)
+          (directory-files dir t ".*\\.org$"))
+        (recursive-directory-list "~/org"))))
+
+;; Do not duplicate agenda files in extra files
+(mapc (lambda (agenda-file)
+        (setq org-agenda-text-search-extra-files
+              (delete agenda-file org-agenda-text-search-extra-files)))
+      org-agenda-files)
