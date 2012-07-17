@@ -77,6 +77,12 @@
         early-packages))
 
 ;; Fudge needed for color-theme on emacs-23: it complains about missing themes directory
+(defun elpa-dir (package-name)
+  (expand-file-name (car
+		     (file-name-all-completions package-name
+						package-user-dir))
+		     package-user-dir))
+
 (when (< emacs-major-version 24)
   (let ((themes-dir (expand-file-name "themes" (elpa-dir "color-theme"))))
     (when (not (file-directory-p themes-dir))
