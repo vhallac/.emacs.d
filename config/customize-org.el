@@ -80,7 +80,8 @@
 <!--/*--><![CDATA[/*><!--*/
 .src { background-color: #3f3f3f; color: #dcdccc; }
 /*]]>*/-->
-</style>")
+</style>"
+ org-src-fontify-natively t)
 
 (define-key org-mode-map (kbd "C-c C-p")
   (lambda ()
