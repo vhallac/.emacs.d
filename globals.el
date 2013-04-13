@@ -152,5 +152,3 @@
 (eval-after-load "scheme" '(require 'quack))
 (require 'turkish-doubles)
 (set-language-environment "Turkish")
-(require 'zenburn)
-(color-theme-zenburn)
