@@ -152,3 +152,7 @@
 (eval-after-load "scheme" '(require 'quack))
 (require 'turkish-doubles)
 (set-language-environment "Turkish")
+(put 'dired-find-alternate-file 'disabled nil)
+
+;; Enable cua-selection-mode globally for rectangle selection goodness
+(cua-selection-mode 1)
