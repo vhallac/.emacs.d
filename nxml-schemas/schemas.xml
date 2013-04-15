@@ -4,10 +4,14 @@
 
   <documentElement prefix="" localName="Ui" typeId="wowui"/>
 
+  <namespace ns="http://maven.apache.org/POM/4.0.0" uri="maven-v4_0_0.rnc"/>
+
   <typeId id="wowui" uri="wowui.rnc"/>
   <typeId id="html5" uri="html5.rnc"/>
   <typeId id="xhtml5" uri="xhtml5.rnc"/>
-  <!-- This looks like a bit of a hack, but it should do for now -->
+  <typeId id="spring-beans" uri="spring-beans.rnc"/>
+  <typeId id="struts" uri="struts-config_1.2.rnc"/>
+  <!-- These looks like a bit of a hack, but it should do for now -->
   <uri pattern="*.html.erb" typeId="xhtml5" />
-  <uri pattern="pom.xml" uri="maven-v4_0_0.rnc"/>
+  <uri pattern="build*.xml" uri="ant.rnc"/>
 </locatingRules>
