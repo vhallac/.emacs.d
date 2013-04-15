@@ -21,4 +21,5 @@
                                                   "*Group*")
       clean-buffer-list-kill-never-regexps '("^\\*EMMS Playlist\\*.*$"
                                              "^\\*Article "
-                                             "^\\*Summary "))
+                                             "^\\*Summary "
+                                             ".*\\.org"))
