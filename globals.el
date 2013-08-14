@@ -146,7 +146,6 @@
 
 (require 'escreen)
 (require 'midnight)
-(require 'org-protocol)
 (require 'uniquify)
 ;; Quack will be handling my scheming
 (eval-after-load "scheme" '(require 'quack))
