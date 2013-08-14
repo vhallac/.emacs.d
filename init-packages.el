@@ -54,6 +54,7 @@
         ("marmalade" . "http://marmalade-repo.org/packages/")
         ("tromey" . "http://tromey.com/elpa/")
         ("gnu" . "http://elpa.gnu.org/packages/")
+        ("org" . "http://orgmode.org/elpa/")
         ("copcu" . "http://cop.cuyuz.biz/elpa/")))
 
 ;; Fix load path for packages I need early.
