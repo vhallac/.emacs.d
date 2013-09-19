@@ -1,6 +1,5 @@
 (defun setup-initial-frame (&optional frame)
   (when (window-system frame)
-    (message "Adjusting!!!")
     (setup-ui-face frame)
     (if (>= (x-display-pixel-height) 800)
         (setq initial-frame-alist '((height . 55))))))
