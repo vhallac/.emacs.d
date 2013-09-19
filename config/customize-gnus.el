@@ -30,7 +30,10 @@
          (address "dys.wowace@gmail.com"))
         ("gmail-android"
          (name "Vedat Hallac")
-         (address "vedat@android.ciyiz.biz"))))
+         (address "vedat@android.ciyiz.biz"))
+        ("outlook-pia"
+         (name "Vedat Hallaç")
+         (address "vedat.hallac@pia-team.com"))))
 
 (setq gnus-secondary-select-methods
       (list
@@ -54,6 +57,14 @@
                 (nnimap-address "imap.gmail.com")
                 (nnimap-server-port 993)
                 (nnimap-stream tls)
+                (nnimap-list-pattern ("INBOX" "*"))
+                (nnimap-expunge-on-close always)
+                (gnus-check-new-newsgroups nil)
+                (gnus-ignored-newsgroups "^to\\.\\|^[0-9. 	]+\\( \\|$\\)\\|^[\”]\”[#’()]"))
+       '(nnimap "outlook-pia"
+                (nnimap-address "imap-mail.outlook.com")
+                (nnimaxsp-server-port 993)
+                (nnimap-stream ssl)
                 (nnimap-list-pattern ("INBOX" "*"))
                 (nnimap-expunge-on-close always)
                 (gnus-check-new-newsgroups nil)
@@ -106,7 +117,8 @@
 (defvar smtp-accounts
   '( (ssl "vedathallac@gmail.com" "gmail-1" "smtp.googlemail.com" 587)
      (ssl "dys.wowace@gmail.com" "gmail-2" "smtp.googlemail.com" 587)
-     (ssl "vedat@android.ciyiz.biz" "gmail-android" "smtp.googlemail.com" 587)))
+     (ssl "vedat@android.ciyiz.biz" "gmail-android" "smtp.googlemail.com" 587)
+     (ssl "vedat.hallac@pia-team.com" "outlook-pia" "smtp.live.com" 587)))
 
 (if (>= emacs-major-version 24)
     (defun set-smtp-common (alias server port &optional user password)
