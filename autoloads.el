@@ -68,3 +68,6 @@
 ;; executing `rinari-launch' will do the trick.
 (setq rinari-major-modes (list 'ruby-mode-hook 'yaml-mode-hook 'rhtml-mode-hook
                                'rspec-mode-hook))
+
+(autoload 'vh-eval-and-replace "elisp-helper"
+  "Replace last regexp in any buffer" t)

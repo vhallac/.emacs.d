@@ -27,3 +27,5 @@
 (define-key global-map (kbd "C-x g") 'magit-status)
 
 (define-key global-map (kbd "C-;") 'mark-more-like-this-extended)
+
+(define-key global-map (kbd "C-c e") 'vh-eval-and-replace)
