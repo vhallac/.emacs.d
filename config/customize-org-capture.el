@@ -19,4 +19,11 @@
          :clock-in t :clock-resume t)
         ("a" "appointment" entry
          (file+headline "~/org/appointments.org" "Appointments")
-         "* %? :APPOINTMENT:\n %U")))
+         "* %? :APPOINTMENT:\n %U")
+        ("l" "Ledger entries")
+        ("li" "Credit Card" plain
+         (file+olp "~/org/finance.org" "Expenses" "Review")
+         "%(subst-char-in-string ?- ?/ (org-read-date)) %^{Payee}\n  Liabilities:CC:ING Bonus  \n  Expenses:%^{Account}  %^{Amount}\n")
+        ("lc" "Cash" plain
+         (file+olp "~/org/finance.org" "Expenses" "Review")
+         "%(subst-char-in-string ?- ?/ (org-read-date)) * %^{Payee}\n  Assets:Cash\n  Expenses:%^{Account}  %^{Amount}\n")))
