@@ -1,4 +1,5 @@
 (eval-when-compile
+  (require 'org)
   (require 'org2blog))
 
 (setq org2blog/wp-blog-alist

@@ -1,4 +1,5 @@
 (eval-when-compile
+  (require 'org)
   (require 'org-clock))
 
 (declare-function org-clock-out "org-clock.el")
@@ -29,7 +30,8 @@
  org-clock-report-include-clocking-task t
  ;; Change task state to NEXT from TODO when clocking in
  org-clock-in-switch-to-state 'bh/clock-in-to-next
- org-clock-modeline-total 'current)
+ org-clock-modeline-total 'current
+ org-clock-rounding-minutes 15)
 
 ;;; clocking functions
 ;; Resume clocking tasks when emacs is restarted

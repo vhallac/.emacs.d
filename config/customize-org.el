@@ -2,7 +2,7 @@
   (require 'org)
   (require 'org-publish)
   (require 'org-archive)
-  (require 'org-html))
+  (require 'ox-html))
 
 (setq
  org-enforce-todo-checkbox-dependencies t
@@ -71,17 +71,17 @@
  ;; Column view and estimates
  ;; org-columns-default-format
  ;;   "%80ITEM(Task) %TAGS(Context) %7TODO(To Do) %10Effort(Estim){:} %10CLOCKSUM{Total}"
- org-columns-default-format "%80ITEM(Task) %10Effort(Estim){:} %10CLOCKSUM{Total}"
+ org-columns-default-format "%80ITEM(Task) %10Effort(Estim){:} %10CLOCKSUM(Total){:}"
  org-global-properties '(("Effort_ALL" . "0:0 0:10 0:30 1:00 2:00 3:00 4:00 8:00"))
  ;; Mark a task as DONE when archiving
  org-archive-mark-done nil
- org-return-follows-link t
- org-export-html-style-extra "<style type=\"text/css\">
+ org-html-head-extra "<style type=\"text/css\">
 <!--/*--><![CDATA[/*><!--*/
 .src { background-color: #3f3f3f; color: #dcdccc; }
 /*]]>*/-->
 </style>"
- org-src-fontify-natively t)
+ org-src-fontify-natively t
+ org-time-clocksum-use-effort-durations t)
 
 (define-key org-mode-map (kbd "C-c C-p")
   (lambda ()
