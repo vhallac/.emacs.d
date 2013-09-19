@@ -193,3 +193,18 @@
   (lambda ()
     (interactive)
     (gnus-summary-rescan-group 'all)))
+
+(when (require 'bbdb nil t)
+  (bbdb-initialize 'gnus)
+
+  (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
+  (setq bbdb-update-records-p 'query
+        bbdb-mua-update-interactive-p '(search . query)
+        ;; bbdb-accept-message-alist '( ("From" . "@pia-team\.com")
+        ;;                              ("From" . "@\\(?:milleni\\|turkcell\\)\.com\.tr"))
+        bbdb/gnus-score-default 10
+        bbdb-mua-summary-unify-format-letter "B" ; use %uB for names
+        gnus-summary-line-format "%U%R%z%I%(%[%4L: %-23,23uB%]%) %s\n"
+
+        )
+  )
