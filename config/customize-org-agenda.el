@@ -9,8 +9,7 @@
 (setq org-agenda-files (mapcar #'expand-file-name
                                '("~/org/work.org"
                                  "~/org/home.org"
-                                 "~/org/refile.org"
-                                 "~/org/uki.org")))
+                                 "~/org/refile.org")))
 
 (setq org-agenda-include-all-todo t)
 (setq org-agenda-time-grid '((daily today) "----------------" (800 1000 1200 1400 1600 1800 2000)))
