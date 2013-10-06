@@ -83,10 +83,10 @@
  org-src-fontify-natively t
  org-time-clocksum-use-effort-durations t)
 
-(define-key org-mode-map (kbd "C-c C-p")
-  (lambda ()
-    (interactive "")
-    (org-publish-current-project)))
+(define-key org-mode-map (kbd "C-c C-p") (lambda ()
+                                           (interactive "")
+                                           (org-publish-current-project)))
+(define-key org-mode-map (kbd "C-c ;") nil)
 
 (add-hook 'org-mode-hook
 	  (lambda ()
