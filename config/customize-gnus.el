@@ -86,16 +86,15 @@
 ;; Use openssl for TLS - gnutls behaves badly under Win32
 (require 'smtp-openssl)
 
-(setq gnus-use-adaptive-scoring t)
 (setq gnus-score-expiry-days 60)
 (setq gnus-default-adaptive-score-alist
       '((gnus-unread-mark)
-        (gnus-ticked-mark (from 4))
-        (gnus-dormant-mark (from 5))
-        (gnus-saved-mark (from 20) (subject 5))
-        (gnus-del-mark (from -2) (subject -5))
-        (gnus-read-mark (from 2) (subject 1))
-        (gnus-killed-mark (from 0) (subject -3))))
+        (gnus-ticked-mark (from 40))
+        (gnus-dormant-mark (from 50))
+        (gnus-saved-mark (from 200) (subject 50))
+        (gnus-del-mark (from -20) (subject -50))
+        (gnus-read-mark (from 20) (subject 10))
+        (gnus-killed-mark (from -10) (subject -30))))
 
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 (setq gnus-topic-line-format "%i[ %0{%(%n (new: %A)%)%} ]\n")
