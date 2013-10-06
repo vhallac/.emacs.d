@@ -208,6 +208,14 @@
         )
   )
 
+;; Work-around for GMail's internal folders: When the IMAP folder contains
+;; characters [ and ] (actually any regexp character), the function
+;; `gnus-score-find-bnews' cannot return the ADAPT file name. This causes ADAPT
+;; files to be generated, but not used in these groups.
+;; The following setting ensures these two characters are never used in ADAPT
+;; file names.
+(setq nnheader-file-name-translation-alist '((?[ . ?_) (?] . ?_)) )
+
 (defun mimedown ()
   (interactive)
   (save-excursion
