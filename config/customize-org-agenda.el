@@ -10,6 +10,7 @@
 
 (setq org-agenda-files (mapcar #'expand-file-name
                                '("~/org/work.org"
+                                 "~/org/pia/"
                                  "~/org/home.org"
                                  "~/org/refile.org")))
 
