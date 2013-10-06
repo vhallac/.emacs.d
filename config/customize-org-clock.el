@@ -34,6 +34,7 @@
 
 ;;; clocking functions
 ;; Resume clocking tasks when emacs is restarted
+;; FIXME: This is useless where it is... I think.
 (org-clock-persistence-insinuate)
 
 (add-hook 'org-clock-out-hook 'bh/remove-empty-drawer-on-clock-out 'append)
