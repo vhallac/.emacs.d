@@ -28,8 +28,8 @@
  org-time-stamp-rounding-minutes '(15 15)
  ;; TODO sequences
  org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
-                     (sequence "WAITING(w@/!)" "SOMEDAY(s!)" "|"
-                               "CANCELLED(c@/!)")
+                     (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|"
+                               "CANCELLED(c@/!)" "PHONE" "MEETING")
                      (sequence "QUOTE(q!)" "QUOTED(Q!)" "|"
                                "APPROVED(A@)" "EXPIRED(E@)" "REJECTED(R@)")
                      (sequence "OPEN(O)" "|" "CLOSED(C)"))
@@ -37,8 +37,10 @@
                           ("NEXT"      :foreground "blue"         :weight bold)
                           ("DONE"      :foreground "forest green" :weight bold)
                           ("WAITING"   :foreground "yellow"       :weight bold)
-                          ("SOMEDAY"   :foreground "goldenrod"    :weight bold)
+                          ("HOLD"      :foreground "goldenrod"    :weight bold)
                           ("CANCELLED" :foreground "orangered"    :weight bold)
+                          ("PHONE"     :foreground "forest green" :weight bold)
+                          ("MEETING"   :foreground "forest green" :weight bold)
                           ("QUOTE"     :foreground "hotpink"      :weight bold)
                           ("QUOTED"    :foreground "indianred1"   :weight bold)
                           ("APPROVED"  :foreground "forest green" :weight bold)
@@ -48,11 +50,11 @@
                           ("CLOSED"    :foreground "forest green" :weight bold))
  org-todo-state-tags-triggers '(("CANCELLED" ("CANCELLED" . t))
                                 ("WAITING" ("WAITING" . t))
-                                ("SOMEDAY" ("WAITING" . t))
-                                (done ("WAITING"))
-                                ("TODO" ("WAITING") ("CANCELLED"))
-                                ("NEXT" ("WAITING"))
-                                ("DONE" ("WAITING") ("CANCELLED")))
+                                ("HOLD" ("WAITING" . t) ("HOLD" . t))
+                                (done ("WAITING") ("HOLD"))
+                                ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+                                ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
+                                ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))
  org-treat-S-cursor-todo-selection-as-state-change nil
  ;; Separate drawers for clocking and logs
  org-drawers '("PROPERTIES" "LOGBOOK" "CLOCK")
