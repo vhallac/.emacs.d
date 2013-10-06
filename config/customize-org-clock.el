@@ -30,8 +30,7 @@
  org-clock-report-include-clocking-task t
  ;; Change task state to NEXT from TODO when clocking in
  org-clock-in-switch-to-state 'bh/clock-in-to-next
- org-clock-modeline-total 'current
- org-clock-rounding-minutes 15)
+ org-clock-modeline-total 'current)
 
 ;;; clocking functions
 ;; Resume clocking tasks when emacs is restarted
