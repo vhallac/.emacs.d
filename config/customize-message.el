@@ -1,8 +1,9 @@
+
 (when (require 'bbdb nil t)
   (bbdb-initialize 'message)
   (bbdb-insinuate-message)
 
-  (setq bbdb-mua-pop-up t
+  (setq bbdb-mua-pop-up nil
         bbdb-complete-mail-allow-cycling t))
 
 (setq message-alternative-emails (regexp-opt '("vedathallac@gmail.com"
