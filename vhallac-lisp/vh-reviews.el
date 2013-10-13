@@ -50,9 +50,6 @@ Example:
 (defun vh/review-base-date ()
   (apply 'encode-time (org-read-date-analyze "-fri" nil '(0 0 0))))
 
-(defun vh/format-item-with-percent (format-str time percent-of)
-  (format format-str biz-time (vh/percent-of biz-time percent-of)))
-
 (defun sacha/get-weekly-report (quantified-items last-week-items next-week-items)
   (let* ((base-date (vh/review-base-date))
          (start (format-time-string "%Y-%m-%d" (days-to-time (- (time-to-number-of-days base-date) 6))))
