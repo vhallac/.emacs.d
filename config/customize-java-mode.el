@@ -20,6 +20,5 @@
 (add-to-list 'java-mode-hook
 	     '(lambda ()
 		(c-set-style "java-custom")
-		(if (eclim--running-p)
-		    (eclim-mode))))
-
+		(when (eclim--running-p)
+          (eclim-mode))))
