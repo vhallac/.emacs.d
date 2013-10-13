@@ -17,6 +17,13 @@
          (file+headline "~/org/refile.org" "Notes")
          "* %? :NOTE:\n  %U\n  %a\n"
          :clock-in t :clock-resume t)
+        ("q" "Quick note" item
+         (file+headline "~/org/review.org" "Quick notes"))
+        ("s" "Schedule" entry
+         (file+headline "~/org/refile.org" "Quick Schedule")
+         "* TODO %?\n  SCHEDULED: %t\n  %i")
+        ("c" "Quick note on clocked task" item
+         (clock))
         ("a" "appointment" entry
          (file+headline "~/org/appointments.org" "Appointments")
          "* %? :APPOINTMENT:\n %U")
