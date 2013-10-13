@@ -25,7 +25,6 @@
  org-return-follows-link t
  org-special-ctrl-a/e t
  org-use-fast-todo-selection t
- org-time-stamp-rounding-minutes '(15 15)
  ;; TODO sequences
  org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
                      (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|"
@@ -75,6 +74,7 @@
  ;;   "%80ITEM(Task) %TAGS(Context) %7TODO(To Do) %10Effort(Estim){:} %10CLOCKSUM{Total}"
  org-columns-default-format "%80ITEM(Task) %10Effort(Estim){:} %10CLOCKSUM(Total){:}"
  org-global-properties '(("Effort_ALL" . "0:0 0:10 0:30 1:00 2:00 3:00 4:00 8:00"))
+ org-time-clocksum-format '(:hours "%d" :require-hours t :minutes ":%02d" :require-minutes t)
  ;; Mark a task as DONE when archiving
  org-archive-mark-done nil
  org-html-head-extra "<style type=\"text/css\">
