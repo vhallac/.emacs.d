@@ -7,8 +7,8 @@
 (declare-function org-agenda-files "org-agenda.el")
 
 ;; Agenda setup
-
-(setq org-agenda-files (mapcar #'expand-file-name
+(setq org-agenda-start-on-weekday 6     ;Weeks start on saturday (for review purposes)
+      org-agenda-files (mapcar #'expand-file-name
                                '("~/org/work.org"
                                  "~/org/pia/"
                                  "~/org/home.org"
@@ -96,13 +96,15 @@
           (org-agenda-skip-function 'bh/skip-non-projects)
           (org-agenda-sorting-strategy
            '(category-keep))))
-        ("w" "Waiting Tasks" tags-todo "-CANCELLED+WAITING/!"
+        ("W" "Waiting Tasks" tags-todo "-CANCELLED+WAITING/!"
          ((org-agenda-overriding-header "Waiting and Postponed tasks"))
          (org-tags-match-list-sublevels nil))
         ("A" "Tasks to Archive" tags "-REFILE/"
          ((org-agenda-overriding-header "Tasks to Archive")
           (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
-          (org-tags-match-list-sublevels nil)))))
+          (org-tags-match-list-sublevels nil)))
+        ("w" "Weekly review" agenda ""
+         ((org-agenda-span 7) (org-agenda-log-mode 1)))))
 
 (setq org-agenda-auto-exclude-function 'bh/org-auto-exclude-function)
 
