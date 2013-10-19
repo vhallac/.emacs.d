@@ -24,7 +24,7 @@
 (defun vh/make-item-prefix (&optional indent &rest type)
   (let ((prefix (concat (make-string (or indent 0) ?\ ) "- ")))
     (if (eq (car type) 'checkbox)
-        (concat prefix "[" (if (cdr type) "X" " ") "] ")
+        (concat prefix "[" (if (cadr type) "X" " ") "] ")
       prefix)))
 
 (defun vh/extract-items (key items &optional indent &rest item-type)
@@ -43,7 +43,8 @@ Example:
                              (lambda (x) (when (equal (car x) key) (cdr x)))
                              items))))
     (let ((retval (mapconcat 'identity (sort filtered 'string<) (concat "\n" prefix))))
-      (if (not (string-empty-p retval))
+      (if (and retval
+               (> (length retval) 0))
           (concat prefix retval "\n")
         retval))))
 
