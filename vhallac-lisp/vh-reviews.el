@@ -152,10 +152,7 @@ Example:
 (defun sacha/org-summarize-focus-areas ()
   "Summarize previous and upcoming tasks as a list."
   (interactive)
-  ;; For now, sacha/get-quantified-data returns Sacha's data. So it is disabled.
-  ;; Once it starts working, I need to update sacha/get-weekly-report function
-  ;; to match my data - or even better yet, to be configurable.
-  (let ((string (sacha/get-weekly-report (if nil (sacha/get-quantified-data) (list))
+  (let ((string (sacha/get-weekly-report (sacha/get-quantified-data)
                                          (sacha/get-last-week-items)
                                          (sacha/get-next-week-items))))
     (if (called-interactively-p 'any)
