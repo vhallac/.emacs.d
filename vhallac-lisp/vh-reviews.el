@@ -19,7 +19,8 @@
 (defun vh/percent-of (h total)
   (if (eq total 'weekly)
       (/ h 1.68)
-    (/ h (* total 0.01))))
+    (if (eq 0 total) 0.0
+      (/ h (* total 0.01)))))
 
 (defun vh/make-item-prefix (&optional indent &rest type)
   (let ((prefix (concat (make-string (or indent 0) ?\ ) "- ")))
