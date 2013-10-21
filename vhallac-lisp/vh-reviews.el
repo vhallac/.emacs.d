@@ -56,43 +56,37 @@ Example:
   (let* ((base-date (vh/review-base-date))
          (start (format-time-string "%Y-%m-%d" (days-to-time (- (time-to-number-of-days base-date) 6))))
          (end (format-time-string "%Y-%m-%d" (days-to-time (1+ (time-to-number-of-days base-date)))))
-         (biz-time (sacha/quantified-get-hours "Business" quantified-items)))
+         (biz-time (sacha/quantified-get-hours "Paid Work" quantified-items)))
 
     (concat
-     (format "- *Business* (%.1fh - %d%%)\n"
+     (format "- *Paid Work* (%.1fh - %d%%)\n"
              biz-time
              (vh/percent-of biz-time 'weekly))
      (vh/extract-items "business" last-week-items 2 'checkbox t)
      (vh/extract-items "business-next" next-week-items 2 'checkbox nil)
      "\n"
-     (format "  - *Earn* (%.1fh - %d%% of Business)\n"
-             (sacha/quantified-get-hours "Business - Earn" quantified-items)
-             (vh/percent-of (sacha/quantified-get-hours "Business - Earn" quantified-items) biz-time))
      (format "  - *Build* (%.1fh - %d%% of Business)\n"
              (sacha/quantified-get-hours "Business - Build" quantified-items)
              (vh/percent-of (sacha/quantified-get-hours "Business - Build" quantified-items) biz-time))
-     (format "    - *Quantified Awesome* (%.1fh)\n"
-             (sacha/quantified-get-hours "Business - Build - Quantified Awesome" quantified-items))
-     (format "    - *Drawing* (%.1fh)\n"
-             (sacha/quantified-get-hours '("Business - Build - Drawing" "Business - Build - Book review")  quantified-items))
-     (format "    - *Paperwork* (%.1fh)\n"
-             (sacha/quantified-get-hours "Business - Build - Paperwork"  quantified-items))
-     (format "  - *Connect* (%.1fh - %d%% of Business)\n"
-             (sacha/quantified-get-hours "Business - Connect" quantified-items)
-             (vh/percent-of (sacha/quantified-get-hours "Business - Connect" quantified-items) biz-time))
-     (format "- *Relationships* (%.1fh - %d%%)\n"
-             (sacha/quantified-get-hours '("Discretionary - Social" "Discretionary - Family") quantified-items)
-             (vh/percent-of (sacha/quantified-get-hours '("Discretionary - Social" "Discretionary - Family") quantified-items) 'weekly))
-     (vh/extract-items "relationships" last-week-items 2 'checkbox t)
-     (vh/extract-items "relationships-next" next-week-items 2 'checkbox nil)
+     (format "  - *Mentor* (%.1fh - %d%% of Business)\n"
+             (sacha/quantified-get-hours "Business - Mentor" quantified-items)
+             (vh/percent-of (sacha/quantified-get-hours "Business - Mentor" quantified-items) biz-time))
+     (format "  - *Research* (%.1fh - %d%% of Business)\n"
+             (sacha/quantified-get-hours "Business - Research" quantified-items)
+             (vh/percent-of (sacha/quantified-get-hours "Business - Research" quantified-items) biz-time))
+     (format "- *Social* (%.1fh - %d%%)\n"
+             (sacha/quantified-get-hours '("People" "Discretionary - Family") quantified-items)
+             (vh/percent-of (sacha/quantified-get-hours '("People" "Discretionary - Family") quantified-items) 'weekly))
+     (vh/extract-items "social" last-week-items 2 'checkbox t)
+     (vh/extract-items "social-next" next-week-items 2 'checkbox nil)
      "\n"
      (format "- *Discretionary - Productive* (%.1fh - %d%%)\n"
              (sacha/quantified-get-hours "Discretionary - Productive" quantified-items)
              (vh/percent-of (sacha/quantified-get-hours "Discretionary - Productive" quantified-items) 'weekly))
      (vh/extract-items "life" last-week-items 2 'checkbox t)
      (vh/extract-items "life-next" next-week-items 2 'checkbox nil)
-     (format "  - *Writing* (%.1fh)\n"
-             (sacha/quantified-get-hours "Discretionary - Productive - Writing" quantified-items))
+     (format "- *Discretionary - Read* (%.1fh)\n"
+             (sacha/quantified-get-hours "Discretionary - Read" quantified-items))
      (format "- *Discretionary - Play* (%.1fh - %d%%)\n"
              (sacha/quantified-get-hours "Discretionary - Play" quantified-items)
              (vh/percent-of (sacha/quantified-get-hours "Discretionary - Play" quantified-items) 'weekly))
@@ -111,6 +105,8 @@ Example:
   '(("routines" "skip")
     ("business" "business")
     ("people" "people")
+    ("friend" "social")
+    ("family" "social")
     ("default" "life")))
 
 (defun vh/key-from-category (category)
@@ -170,7 +166,7 @@ Example:
     (insert
      (concat
       "*** Weekly review: Week ending " (format-time-string "%B %e, %Y" base-date) "  :weekly:\n"
-      "*Blog posts*\n\n"
+      "*Quick Notes*\n\n"
       "*Focus areas and time review*\n\n"
       (sacha/org-summarize-focus-areas)
       "\n"))))
