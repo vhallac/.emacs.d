@@ -387,3 +387,11 @@ When not restricted, skip project and sub-project tasks, habits, and project rel
         (setq org-agenda-text-search-extra-files
               (delete agenda-file org-agenda-text-search-extra-files)))
       org-agenda-files)
+
+;; Monkey patch agenda dimmed task function to skip tasks blocked by checkboxes
+(defadvice org-agenda-dim-blocked-tasks (around vh/org-agenda-dont-dim-checkbox-blocks activate)
+  ;; Not sure if this is the right way, but it seems to prevent the password
+  ;; lingering around in the variable.
+  (let ((org-blocker-hook org-blocker-hook))
+    (remove-hook 'org-blocker-hook 'org-block-todo-from-checkboxes)
+    ad-do-it))
