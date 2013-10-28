@@ -9,6 +9,8 @@
  org-enforce-todo-dependencies t
  org-hide-leading-stars t
  org-log-done 'time
+ org-log-reschedule 'note
+ org-log-redeadline 'note
  org-publish-project-alist '(("org-notes-static"
                               :base-directory "~/org/notes"
                               :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
