@@ -21,7 +21,9 @@
 (setq org-agenda-log-mode-items '(clock))
 
 (setq org-agenda-custom-commands
-      '(("N" "Notes" tags "NOTE"
+      '(("u" "Unscheduled" todo ""
+         ((org-agenda-todo-ignore-scheduled t)))
+        ("N" "Notes" tags "NOTE"
          ((org-agenda-overriding-header "Notes")
           (org-tags-match-list-sublevels t)))
         ("h" "Habits" tags-todo "STYLE=\"habit\""
