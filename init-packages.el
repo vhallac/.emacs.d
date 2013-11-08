@@ -64,7 +64,6 @@
 (let ((early-packages '("zenburn"
                         "browse-kill-ring"
                         "escreen"
-                        "yasnippet"
                         "color-theme"))
       refreshed-p)
   (mapc (lambda (pkg)
