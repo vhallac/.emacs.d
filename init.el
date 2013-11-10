@@ -67,10 +67,10 @@
 	      (load-file ,x)))))
       (directory-files "~/.emacs.d/config" t "^customize-"))
 
+;; And finally, activate all packages
+(package-initialize)
+
 ;; Load the global config and tidbits
 (try-progn
  "Cannot load globals"
  (load-file "~/.emacs.d/globals.el"))
-
-;; And finally, activate all packages
-(package-initialize)
