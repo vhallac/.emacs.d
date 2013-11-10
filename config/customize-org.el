@@ -81,7 +81,8 @@
  org-archive-mark-done nil
  org-html-head-extra "<style type=\"text/css\">
 <!--/*--><![CDATA[/*><!--*/
-.src { background-color: #3f3f3f; color: #dcdccc; }
+pre.src {overflow-x: auto; }
+.src { background-color: #f5deb3; color: #black;}
 /*]]>*/-->
 </style>"
  org-src-fontify-natively t
