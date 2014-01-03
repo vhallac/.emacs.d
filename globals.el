@@ -38,7 +38,6 @@
   "When called interactively with no active region, copy a single line instead."
   (interactive
    (if mark-active (list (region-beginning) (region-end))
-     (message "Copied line")
      (list (line-beginning-position) (line-beginning-position 2)))))
 
 (defadvice kill-region (before slick-cut activate compile)
@@ -152,6 +151,3 @@
 (require 'turkish-doubles)
 (set-language-environment "Turkish")
 (put 'dired-find-alternate-file 'disabled nil)
-
-;; Enable cua-selection-mode globally for rectangle selection goodness
-(cua-selection-mode 1)

@@ -25,6 +25,16 @@
 
 (define-key global-map (kbd "C-c g") 'magit-status)
 
-(define-key global-map (kbd "C-;") 'mark-more-like-this-extended)
-
 (define-key global-map (kbd "C-c e") 'vh-eval-and-replace)
+
+;; Multiple cursors
+(define-key global-map (kbd "C-c m l") 'mc/edit-lines)
+(define-key global-map (kbd "C-c m m") 'mc/mark-more-like-this-extended)
+(define-key global-map (kbd "C-c m p") 'mc/mark-previous-symbol-like-this)
+(define-key global-map (kbd "C-c m n") 'mc/mark-next-symbol-like-this)
+(define-key global-map (kbd "C-c m i") 'mc/insert-numbers)
+
+(when (package-installed-p 'expand-region)
+  (define-key global-map (kbd "C-c v") 'er/expand-region))
+
+(define-key global-map (kbd"C-c x b") 'org-switchb)
