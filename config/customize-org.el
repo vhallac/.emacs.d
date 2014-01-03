@@ -92,6 +92,9 @@ pre.src {overflow-x: auto; }
                                            (interactive "")
                                            (org-publish-current-project)))
 (define-key org-mode-map (kbd "C-c ;") nil)
+;; I keep pressing this combo by mistake (when scheduling)
+;; Disabling for now.
+(define-key org-mode-map (kbd "C-c C-x C-s") nil)
 
 (add-hook 'org-mode-hook
 	  (lambda ()
