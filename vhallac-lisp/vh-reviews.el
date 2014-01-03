@@ -2,7 +2,8 @@
 ;; comes from
 ;; http://dl.dropboxusercontent.com/u/3968124/sacha-emacs.html#weekly-review
 
-(require 'quantified)
+;; Disabling quantifiedawesome.org use:
+;; (require 'quantified)
 
 (defun sacha/quantified-get-hours (category time-summary)
   "Return the number of hours based on the time summary."
@@ -141,10 +142,12 @@ Example:
                           "-next")))
 
 (defun sacha/get-quantified-data ()
-  (let* ((base-date (vh/review-base-date))
-         (start (format-time-string "%Y-%m-%d" (days-to-time (- (time-to-number-of-days base-date) 6))))
-         (end (format-time-string "%Y-%m-%d" (days-to-time (1+ (time-to-number-of-days base-date))))))
-    (quantified-summarize-time start end)))
+  ;; Disabling use of quantified.org
+  (when nil
+    (let* ((base-date (vh/review-base-date))
+           (start (format-time-string "%Y-%m-%d" (days-to-time (- (time-to-number-of-days base-date) 6))))
+           (end (format-time-string "%Y-%m-%d" (days-to-time (1+ (time-to-number-of-days base-date))))))
+      (quantified-summarize-time start end))))
 
 (defun sacha/org-summarize-focus-areas ()
   "Summarize previous and upcoming tasks as a list."
