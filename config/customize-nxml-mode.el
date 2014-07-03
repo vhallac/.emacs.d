@@ -6,6 +6,8 @@
  nxml-outline-child-indent 2
  nxml-slash-auto-complete-flag t)
 
+(define-key nxml-mode-map (kbd "C-c k c") 'comment-region)
+
 (add-hook 'nxml-mode-hook
           '(lambda ()
              (choose-indent-type)
