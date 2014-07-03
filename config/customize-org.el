@@ -29,7 +29,7 @@
  org-use-fast-todo-selection t
  ;; TODO sequences
  org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
-                     (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|"
+                     (sequence "WAITING(w@/!)" "|" "HOLD(h@/!)"
                                "CANCELLED(c@/!)" "PHONE" "MEETING")
                      (sequence "QUOTE(q!)" "QUOTED(Q!)" "|"
                                "APPROVED(A@)" "EXPIRED(E@)" "REJECTED(R@)")
