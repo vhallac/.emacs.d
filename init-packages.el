@@ -64,7 +64,11 @@
 (let ((early-packages '("zenburn"
                         "browse-kill-ring"
                         "escreen"
-                        "color-theme"))
+                        "color-theme"
+                        "paredit"
+                        "ace-window"
+                        "ace-jump-mode"
+                        "ace-jump-buffer"))
       refreshed-p)
   (mapc (lambda (pkg)
           (let ((pkg-symbol (intern pkg)))
