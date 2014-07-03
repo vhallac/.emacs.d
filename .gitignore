@@ -11,3 +11,6 @@ org-clock-save.el
 /server
 /url
 /elpa
+/semanticdb
+/srecode-map.el
+/bookmarks
