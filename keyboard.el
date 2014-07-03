@@ -33,6 +33,10 @@
 (define-key global-map (kbd "C-c m p") 'mc/mark-previous-symbol-like-this)
 (define-key global-map (kbd "C-c m n") 'mc/mark-next-symbol-like-this)
 (define-key global-map (kbd "C-c m i") 'mc/insert-numbers)
+(define-key global-map (kbd "C-c m s") 'mc/mark-all-symbols-like-this-in-defun)
+(define-key global-map (kbd "C-c m S") 'mc/mark-all-symbols-like-this)
+
+
 
 (when (package-installed-p 'expand-region)
   (define-key global-map (kbd "C-c v") 'er/expand-region))
