@@ -42,3 +42,7 @@
   (define-key global-map (kbd "C-c v") 'er/expand-region))
 
 (define-key global-map (kbd"C-c x b") 'org-switchb)
+
+(define-key global-map (kbd"C-x o") 'ace-window)
+(define-key global-map (kbd"M-g j") 'ace-jump-mode)
+(define-key global-map (kbd"M-g b") 'ace-jump-buffer)
