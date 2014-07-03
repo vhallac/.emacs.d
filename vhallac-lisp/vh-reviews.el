@@ -53,6 +53,31 @@ Example:
 (defun vh/review-base-date ()
   (apply 'encode-time (org-read-date-analyze "-fri" nil '(0 0 0))))
 
+(defun vh/get-simple-weekly-report (last-week-items next-week-items)
+  (let* ((base-date (vh/review-base-date))
+         (start (format-time-string "%Y-%m-%d" (days-to-time (- (time-to-number-of-days base-date) 6))))
+         (end (format-time-string "%Y-%m-%d" (days-to-time (1+ (time-to-number-of-days base-date))))))
+
+    (concat
+     "- *Paid Work*\n"
+     (vh/extract-items "business" last-week-items 2 'checkbox t)
+     (vh/extract-items "business-next" next-week-items 2 'checkbox nil)
+     "\n"
+     "  - *Build*\n"
+     "  - *Mentor*\n"
+     "  - *Research*\n"
+     "- *Social*\n"
+     (vh/extract-items "social" last-week-items 2 'checkbox t)
+     (vh/extract-items "social-next" next-week-items 2 'checkbox nil)
+     "\n"
+     "- *Discretionary*\n"
+     (vh/extract-items "life" last-week-items 2 'checkbox t)
+     (vh/extract-items "life-next" next-week-items 2 'checkbox nil)
+     "  - *Productive*\n"
+     "  - *Read*\n"
+     "  - *Play*\n"
+     "  - *Exercise*\n")))
+
 (defun sacha/get-weekly-report (quantified-items last-week-items next-week-items)
   (let* ((base-date (vh/review-base-date))
          (start (format-time-string "%Y-%m-%d" (days-to-time (- (time-to-number-of-days base-date) 6))))
@@ -152,9 +177,8 @@ Example:
 (defun sacha/org-summarize-focus-areas ()
   "Summarize previous and upcoming tasks as a list."
   (interactive)
-  (let ((string (sacha/get-weekly-report (sacha/get-quantified-data)
-                                         (sacha/get-last-week-items)
-                                         (sacha/get-next-week-items))))
+  (let ((string (vh/get-simple-weekly-report (sacha/get-last-week-items)
+                                             (sacha/get-next-week-items))))
     (if (called-interactively-p 'any)
         (insert string)
       string)))
@@ -168,7 +192,7 @@ Example:
                            org-agenda-files)))
     (insert
      (concat
-      "*** Weekly review: Week ending " (format-time-string "%B %e, %Y" base-date) "  :weekly:\n"
+      "**** Weekly review: Week ending " (format-time-string "%B %e, %Y" base-date) "  :weekly:\n"
       "*Quick Notes*\n\n"
       "*Focus areas and time review*\n\n"
       (sacha/org-summarize-focus-areas)
