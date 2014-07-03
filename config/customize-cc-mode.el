@@ -372,3 +372,7 @@ To enable it, do this, or similar:
       c-macro-preprocessor "e:\\cygwin\\lib\\gcc-lib\\i686-pc-cygwin\\2.95.2\\cpp -C"
       c-macro-shrink-window-flag t
       c-mode-common-hook '(vedat-c-mode-hook))
+
+; Newer emacs versions define java-mode in cc-mode. Make sure java-mode is
+; properly initialized.
+(load-file "~/.emacs.d/config/customize-java-mode.el")
