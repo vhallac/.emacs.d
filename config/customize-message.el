@@ -1,3 +1,7 @@
+(eval-when-compile
+  (require 'message))
+
+(require 'smtpmail)
 
 (when (require 'bbdb nil t)
   (bbdb-initialize 'message)

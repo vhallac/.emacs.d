@@ -1,6 +1,7 @@
 (eval-when-compile
   (require 'smtpmail))
 
+(setq mail-host-address "hallac.net")
 
 ;; Set up multiple SMTP accounts
 ;; Available SMTP accounts.
