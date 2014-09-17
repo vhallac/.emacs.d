@@ -12,6 +12,7 @@
                                                "vedat@android.ciyiz.biz"
                                                "vedat@oyun.cuyuz.biz"
                                                "vedathallac@yandex.com"
+                                               "vedat@hallac.net"
                                                "vedat.hallac@pia-team.com")))
 (defun pia-insert-html-sig ()
   (interactive)

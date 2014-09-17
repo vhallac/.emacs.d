@@ -117,7 +117,8 @@
   '( (ssl "vedathallac@gmail.com" "gmail-1" "smtp.googlemail.com" 587)
      (ssl "dys.wowace@gmail.com" "gmail-2" "smtp.googlemail.com" 587)
      (ssl "vedat@android.ciyiz.biz" "gmail-android" "smtp.googlemail.com" 587)
-     (ssl "vedat.hallac@pia-team.com" "outlook-pia" "smtp.live.com" 587)))
+     (ssl "vedat.hallac@pia-team.com" "outlook-pia" "smtp.live.com" 587)
+     (ssl "vedat@hallac.net" "hallac-net" "smtp.yandex.com" 587)))
 
 (if (>= emacs-major-version 24)
     (defun set-smtp-common (alias server port &optional user password)
