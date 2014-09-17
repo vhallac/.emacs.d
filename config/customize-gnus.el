@@ -15,9 +15,6 @@
 (setq user-full-name "Vedat Hallac"
       user-mail-address "vedathallac@gmail.com")
 
-(setq auth-sources
-      '( (:source "~/.emacs.d/.secrets/authinfo.gpg" :host t :protocol t)))
-
 (setq gnus-select-method
       '(nntp "news.easynews.com"))
 
