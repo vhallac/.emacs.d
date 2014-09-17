@@ -14,7 +14,7 @@
                (scroll-bar-mode -1)
                (set-cursor-color "light green"))
              (blink-cursor-mode -1)
-             (setq transient-mark-mode t)
+             (setq transient-mark-mode nil)
              (menu-bar-mode -1)
              (tool-bar-mode -1)))
 
