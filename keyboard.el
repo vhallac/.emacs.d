@@ -20,8 +20,6 @@
 (define-key global-map (kbd "C-c l") 'org-store-link)
 (define-key global-map (kbd "C-c a") 'org-agenda)
 (define-key global-map (kbd "<f12>") 'org-agenda)
-(define-key global-map (kbd "<f11> I") 'bh/clock-in)
-(define-key global-map (kbd "<f11> O") 'bh/clock-out)
 
 (define-key global-map (kbd "C-c g") 'magit-status)
 
@@ -30,13 +28,15 @@
 ;; Multiple cursors
 (define-key global-map (kbd "C-c m l") 'mc/edit-lines)
 (define-key global-map (kbd "C-c m m") 'mc/mark-more-like-this-extended)
-(define-key global-map (kbd "C-c m p") 'mc/mark-previous-symbol-like-this)
-(define-key global-map (kbd "C-c m n") 'mc/mark-next-symbol-like-this)
+(define-key global-map (kbd "C-c m p") 'mc/mark-previous-word-like-this)
+(define-key global-map (kbd "C-c m n") 'mc/mark-next-word-like-this)
+(define-key global-map (kbd "C-c m P") 'mc/mark-previous-symbol-like-this)
+(define-key global-map (kbd "C-c m N") 'mc/mark-next-symbol-like-this)
 (define-key global-map (kbd "C-c m i") 'mc/insert-numbers)
 (define-key global-map (kbd "C-c m s") 'mc/mark-all-symbols-like-this-in-defun)
 (define-key global-map (kbd "C-c m S") 'mc/mark-all-symbols-like-this)
-
-
+(define-key global-map (kbd "C-c m w") 'mc/mark-all-symbols-like-this-in-defun)
+(define-key global-map (kbd "C-c m W") 'mc/mark-all-symbols-like-this)
 
 (when (package-installed-p 'expand-region)
   (define-key global-map (kbd "C-c v") 'er/expand-region))
