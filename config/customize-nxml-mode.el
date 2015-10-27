@@ -2,9 +2,9 @@
   (require 'nxml-mode))
 
 (setq
- nxml-child-indent 2
- nxml-outline-child-indent 2
- nxml-slash-auto-complete-flag t)
+ nxml-child-indent 4
+ nxml-outline-child-indent 4
+ nxml-slash-auto-complete-flag nil)
 
 (define-key nxml-mode-map (kbd "C-c k c") 'comment-region)
 
