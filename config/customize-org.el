@@ -1,6 +1,5 @@
 (eval-when-compile
   (require 'org)
-  (require 'org-publish)
   (require 'org-archive)
   (require 'ox-html))
 
