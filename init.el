@@ -59,13 +59,13 @@
 ;; is loaded via a call to (require '<file-name>) when <file> is loaded.
 (mapc (lambda (x)
 	(let ((file-name
-	       (replace-regexp-in-string "customize-\\|\.el" ""
+	       (replace-regexp-in-string "^customize-\\|\\\.el$" ""
 					 (file-name-nondirectory x))))
 	  (eval-after-load file-name
 	    `(try-progn
 	      (concat "Cannot load configuration:" ,x)
 	      (load-file ,x)))))
-      (directory-files "~/.emacs.d/config" t "^customize-"))
+      (directory-files "~/.emacs.d/config" t "^customize-.*el$"))
 
 ;; And finally, activate all packages
 (package-initialize)
