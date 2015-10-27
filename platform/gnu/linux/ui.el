@@ -11,11 +11,13 @@
     (setup-ui-face frame)))
 
 (defun setup-ui-face (&optional frame)
-    ;; Emacs discards my font configuration from ~/.emacs.d/customizations.el
-    ;; Adding a replica here to ensure it gets set properly.
+  ;; Emacs discards my font configuration from ~/.emacs.d/customizations.el
+  ;; Adding a replica here to ensure it gets set properly.
   (when frame (select-frame frame))
   (set-face-font 'default "Envy Code R")
-  (set-face-attribute 'default nil :height 98))
+  (let* ((ydpi (/ (* 25 (x-display-pixel-height)) (x-display-mm-height)))
+         (height (if (> ydpi 100) 125 105)))
+    (set-face-attribute 'default nil :height height)))
 
 ;; If not in daemon mode, just  setup te initial frame
 ;; Otherwise, add the hook to set the frame up
@@ -34,7 +36,6 @@
       (setenv "DISPLAY"
               (terminal-name))
     (setenv "GPG_TTY"
-            (terminal-name))
-    (setenv "DISPLAY")))
+            (terminal-name))))
 
 (add-hook 'window-configuration-change-hook 'wg/kludge-gpg-agent)
