@@ -28,7 +28,7 @@
         ("gmail-android"
          (name "Vedat Hallac")
          (address "vedat@android.ciyiz.biz"))
-        ("outlook-pia"
+        ("gmail-pia"
          (name "Vedat Hallaç")
          (address "vedat.hallac@pia-team.com"))))
 
@@ -58,10 +58,10 @@
                 (nnimap-expunge-on-close always)
                 (gnus-check-new-newsgroups nil)
                 (gnus-ignored-newsgroups "^to\\.\\|^[0-9. 	]+\\( \\|$\\)\\|^[\”]\”[#’()]"))
-       '(nnimap "outlook-pia"
-                (nnimap-address "imap-mail.outlook.com")
-                (nnimaxsp-server-port 993)
-                (nnimap-stream ssl)
+       '(nnimap "gmail-pia"
+                (nnimap-address "imap.gmail.com")
+                (nnimap-server-port 993)
+                (nnimap-stream tls)
                 (nnimap-list-pattern ("INBOX" "*"))
                 (nnimap-expunge-on-close always)
                 (gnus-check-new-newsgroups nil)
