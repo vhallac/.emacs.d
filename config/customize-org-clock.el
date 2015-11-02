@@ -46,7 +46,7 @@
   (interactive)
   (save-excursion
     (beginning-of-line 0)
-    (org-remove-empty-drawer-at "CLOCK" (point))))
+    (org-remove-empty-drawer-at (point))))
 
 ;; Change task state to NEXT from TODO when clocking in
 (defun bh/clock-in-to-next (kw)
