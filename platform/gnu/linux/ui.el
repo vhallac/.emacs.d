@@ -26,12 +26,6 @@
   (add-hook 'after-make-frame-functions 'setup-ui-frame))
 
 (defun wg/kludge-gpg-agent ()
-  ;; For this to work, after you start gpg-agent, dump the contents of file
-  ;; to /tmp/vedat.gpgagent.info file
-  (with-temp-buffer
-    (insert-file-contents "/tmp/vedat.gpgagent.info")
-    (when (/= (point-min) (point-max))
-      (setenv "GPG_AGENT_INFO" (buffer-substring (point-min) (point-at-eol)))))
   (if (display-graphic-p)
       (setenv "DISPLAY"
               (terminal-name))
