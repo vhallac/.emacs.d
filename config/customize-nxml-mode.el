@@ -13,7 +13,9 @@
              (choose-indent-type)
              ;; Add my schema files to RNG search path
              (add-to-list 'rng-schema-locating-files
-                "~/.emacs.d/nxml-schemas/schemas.xml")))
+                          "~/.emacs.d/nxml-schemas/schemas.xml")
+             (add-to-list 'rng-schema-locating-files
+                          "~/.emacs.d/nxml-schemas/libvirt/schemas.xml")))
 
 ;; Add some mmm goodies for World of Warcraft XML files
 ;;  (require 'mmm-auto)

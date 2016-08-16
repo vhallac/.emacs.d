@@ -1,0 +1,55 @@
+# A Relax NG schema for common libvirt XML storage elements
+
+# This schema is not designed for standalone use; another file
+# must include both this file and basictypes.rng
+encryption =
+  element encryption {
+    attribute format { "default" | "qcow" },
+    secret*
+  }
+secret =
+  element secret {
+    attribute type { "passphrase" },
+    attribute uuid { UUID }
+  }
+compat =
+  element compat {
+    xsd:string { pattern = "[0-9]+\.[0-9]+" }
+  }
+fileFormatFeatures =
+  element features {
+    element lazy_refcounts { empty }?
+  }
+# split the list of known storage formats into two, those where
+# we know how to follow backing chains, and all others
+storageFormatBacking = "cow" | "qcow" | "qcow2" | "qed" | "vmdk"
+storageFormat =
+  "raw"
+  | "dir"
+  | "bochs"
+  | "cloop"
+  | "dmg"
+  | "iso"
+  | "vpc"
+  | "vdi"
+  | "fat"
+  | "vhd"
+  | "ploop"
+  | storageFormatBacking
+storageStartupPolicy =
+  # Use a combine='choice' override in client files that want to
+  # add additional attributes to a <source> sub-element
+  # associated with a storage source
+  notAllowed
+storageSourceExtra =
+  # Use a combine='choice' override in client files that want to
+  # add additional elements as siblings of a <source> sub-element
+  # associated with a storage source
+  notAllowed
+permissions =
+  element permissions {
+    element mode { octalMode }?
+    & element owner { unsignedInt | "-1" }?
+    & element group { unsignedInt | "-1" }?
+    & element label { text }?
+  }?

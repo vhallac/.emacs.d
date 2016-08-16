@@ -14,4 +14,6 @@
   <!-- These looks like a bit of a hack, but it should do for now -->
   <uri pattern="*.html.erb" typeId="xhtml5" />
   <uri pattern="build*.xml" uri="ant.rnc"/>
+  <typeId id="domain" uri="libvirt/domain.rnc"/>
+
 </locatingRules>

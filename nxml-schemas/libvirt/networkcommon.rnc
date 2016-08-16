@@ -1,0 +1,83 @@
+# network-related definitions used in multiple grammars
+
+virtualPortProfileID = xsd:string { maxLength = "39" }
+virtualPortProfile =
+  element virtualport {
+    attribute type { "802.1Qbg" },
+    element parameters {
+      attribute managerid { uint8range }?,
+      attribute typeid { uint24range }?,
+      attribute typeidversion { uint8range }?,
+      attribute instanceid { UUID }?
+    }?
+  }
+  | element virtualport {
+      attribute type { "802.1Qbh" },
+      element parameters {
+        attribute profileid { virtualPortProfileID }?
+      }?
+    }
+  | element virtualport {
+      attribute type { "openvswitch" },
+      element parameters {
+        attribute profileid { virtualPortProfileID }?,
+        attribute interfaceid { UUID }?
+      }?
+    }
+  | element virtualport {
+      attribute type { "midonet" },
+      element parameters {
+        attribute interfaceid { UUID }
+      }
+    }
+  | # use this when no type attribute is present
+    element virtualport {
+      element parameters {
+        attribute managerid { uint8range }?,
+        attribute typeid { uint24range }?,
+        attribute typeidversion { uint8range }?,
+        attribute instanceid { UUID }?,
+        attribute profileid { virtualPortProfileID }?,
+        attribute interfaceid { UUID }?
+      }?
+    }
+bandwidth =
+  element bandwidth {
+    element inbound { bandwidth-attributes, empty }?
+    & element outbound { bandwidth-attributes, empty }?
+  }
+bandwidth-attributes =
+  attribute average { speed }?,
+  attribute peak { speed }?,
+  attribute floor { speed }?,
+  attribute burst { BurstSize }?
+speed = xsd:unsignedInt { pattern = "[0-9]+" minInclusive = "1" }
+BurstSize = xsd:unsignedInt { pattern = "[0-9]+" minInclusive = "1" }
+unsignedShort =
+  xsd:integer { minInclusive = "0" maxInclusive = "65535" }
+protocol = xsd:string { pattern = "(tcp)|(udp)" }
+addr-family = xsd:string { pattern = "(ipv4)|(ipv6)" }
+vlan =
+  element vlan {
+    attribute trunk { "yes" }?,
+    element tag {
+      attribute id {
+        xsd:unsignedInt { maxInclusive = "4095" }
+      },
+      attribute nativeMode { "tagged" | "untagged" }?,
+      empty
+    }+
+  }
+port = xsd:integer { minInclusive = "1" maxInclusive = "65535" }
+# The (static) route element specifies a network address and gateway
+# address to access that network. Both the network address and
+# the gateway address must be specified.
+route =
+  element route {
+    attribute family { addr-family }?,
+    attribute address { ipAddr },
+    (attribute netmask { ipv4Addr }
+     | attribute prefix { ipPrefix })?,
+    attribute gateway { ipAddr },
+    attribute metric { unsignedInt }?
+  }

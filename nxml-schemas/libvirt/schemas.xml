@@ -1,0 +1,7 @@
+<locatingRules xmlns="http://thaiopensource.com/ns/locating-rules/1.0">
+    <uri resource="../../../../../tmp/t.xml" uri="domain.rnc"/>
+  <transformURI fromPattern="*.xml" toPattern="*.rnc"/>
+
+  <documentElement localName="domain" uri="domain.rnc"/>
+
+</locatingRules>

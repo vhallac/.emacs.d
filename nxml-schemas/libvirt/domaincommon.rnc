@@ -1,0 +1,1740 @@
+namespace ns1 = "http://libvirt.org/schemas/domain/qemu/1.0"
+
+# domain-related definitions used in multiple grammars
+include "basictypes.rnc"
+include "storagecommon.rnc"
+include "networkcommon.rnc"
+# description and title element, may be placed anywhere under the root
+description = element description { text }
+title =
+  element title {
+    xsd:string {
+      # Use literal newline instead of \n for bug in libxml2 2.7.6
+      pattern = "[^\x{a}" ~ "]+"
+    }
+  }
+# We handle only document defining a domain
+domain =
+  element domain {
+    hvs,
+    ids,
+    (title?
+     & description?
+     & metadata?
+     & cpu?
+     & sysinfo?
+     & os
+     & clock
+     & resources
+     & features
+     & events
+     & pm?
+     & idmap?
+     & devices?
+     & seclabel*
+     & qemucmdline?
+     & keywrap?)
+  }
+seclabel =
+  element seclabel {
+    attribute model { text }?,
+    ((# with dynamic label (default), relabel must be yes, baselabel
+      # is optional, and label and imagelabel are output-only
+      attribute type { "dynamic" }?,
+      attribute relabel { "yes" }?,
+      (element label { text }?
+       & element imagelabel { text }?
+       & element baselabel { text }?))
+     | (# with static label, relabel can be either format (default
+        # no), label is required, imagelabel is output-only, and no
+        # baselabel is present
+        attribute type { "static" },
+        attribute relabel { virYesNo }?,
+        (element label { text }
+         & element imagelabel { text }?))
+     | (# with none, relabel must be no if present
+        attribute type { "none" },
+        attribute relabel { "no" }?))
+  }
+devSeclabel =
+  element seclabel {
+    # A per-device seclabel override is more limited, either
+    # relabel=no or a <label> must be present on input;
+    # output also can include labelskip=yes.
+    attribute model { text }?,
+    (attribute relabel { "no" }
+     | attribute labelskip { "yes" }
+     | (attribute relabel { "yes" }?,
+        element label { text }+))
+  }
+hvs =
+  attribute type {
+    "qemu"
+    | "kqemu"
+    | "kvm"
+    | "xen"
+    | "lxc"
+    | "uml"
+    | "openvz"
+    | "test"
+    | "vmware"
+    | "hyperv"
+    | "vbox"
+    | "phyp"
+    | "parallels"
+    | "bhyve"
+  }
+os = osxen | oshvm | osexe
+osxen =
+  (bootloader?,
+   element os { ostypexen, osbootkernel })
+  | (bootloader,
+     element os { ostypexen, osbootkernel? }?)
+oshvm =
+  bootloader?,
+  element os {
+    ostypehvm
+    & element loader {
+        attribute readonly { "yes" | "no" }?,
+        attribute type { "rom" | "pflash" }?,
+        absFilePath
+      }?
+    & element nvram {
+        attribute template { absFilePath }?,
+        absFilePath?
+      }?
+    & osbootkernel?
+    & osbootdev*
+    & element bootmenu {
+        attribute enable { virYesNo },
+        attribute timeout { unsignedShort }?
+      }?
+    & smbios?
+    & bios?
+  }
+ostypexen =
+  element type {
+    attribute arch { "i686" | "x86_64" | "ia64" }?,
+    attribute machine { "xenpv" | "xenner" }?,
+    ("xen" | "linux")
+  }
+ostypehvm =
+  element type {
+    archList?,
+    attribute machine {
+      xsd:string { pattern = "[a-zA-Z0-9_\.\-]+" }
+    }?,
+    "hvm"
+  }
+archList =
+  attribute arch {
+    "armv7l"
+    | "aarch64"
+    | "i686"
+    | "x86_64"
+    | "mips"
+    | "ppc"
+    | "ppc64"
+    | "ppc64le"
+    | "s390"
+    | "s390x"
+    | "sparc"
+  }
+osexe =
+  element os {
+    element type { archList?, "exe" },
+    (element init { absFilePath }?
+     & element initarg { text }*)
+  }
+keywrap =
+  element keywrap {
+    element cipher {
+      attribute name { "aes" | "dea" },
+      attribute state { virOnOff }
+    }+
+  }
+# The Identifiers can be:
+# - an optional id attribute with a number on the domain element
+# - a mandatory name
+# - an optional uuid
+ids =
+  attribute id { unsignedInt }?,
+  (element name { domainName }
+   & element uuid { UUID }?)
+idmap =
+  element idmap {
+    element uid {
+      attribute start { unsignedInt },
+      attribute target { unsignedInt },
+      attribute count { unsignedInt },
+      empty
+    }*
+    & element gid {
+        attribute start { unsignedInt },
+        attribute target { unsignedInt },
+        attribute count { unsignedInt },
+        empty
+      }*
+  }
+# Resources usage defines the amount of memory (maximum and possibly
+# current usage) and number of virtual CPUs used by that domain.
+# We can't check here the rule that currentMemory <= memory
+resources =
+  element memory {
+    scaledInteger,
+    attribute dumpCore { virOnOff }?
+  }?
+  & element maxMemory {
+      scaledInteger,
+      attribute slots { unsignedInt }
+    }?
+  & element currentMemory { scaledInteger }?
+  & element memoryBacking {
+      element hugepages {
+        element page {
+          attribute size { unsignedLong },
+          attribute unit { unit }?,
+          attribute nodeset { cpuset }?,
+          empty
+        }*
+      }?
+      & element nosharepages { empty }?
+      & element locked { empty }?
+    }?
+  & element vcpu {
+      attribute placement { "static" | "auto" }?,
+      attribute cpuset { cpuset }?,
+      attribute current { countCPU }?,
+      countCPU
+    }?
+  & element iothreads { unsignedInt }?
+  & element iothreadids {
+      element iothread {
+        attribute id { unsignedInt }
+      }*
+    }?
+  & blkiotune?
+  & memtune?
+  & cputune?
+  & numatune?
+  & respartition?
+# The Blkio cgroup related tunables would go in the blkiotune
+blkiotune =
+  element blkiotune {
+    # I/O weight the VM can use
+    element weight { weight }?
+    & element device {
+        element path { absFilePath }
+        & element weight { weight }?
+        & element read_iops_sec { xsd:unsignedInt }?
+        & element write_iops_sec { xsd:unsignedInt }?
+        & element read_bytes_sec { xsd:unsignedLong }?
+        & element write_bytes_sec { xsd:unsignedLong }?
+      }*
+  }
+# All the memory/swap related tunables would go in the memtune
+memtune =
+  element memtune {
+    # Maximum memory the VM can use
+    element hard_limit { scaledInteger }?,
+    # Minimum memory ascertained for the VM during contention
+    element soft_limit { scaledInteger }?,
+    # Minimum amount of memory required to start the VM
+    element min_guarantee { scaledInteger }?,
+    # Maximum swap area the VM can use
+    element swap_hard_limit { scaledInteger }?
+  }
+# All the cpu related tunables would go in the cputune
+cputune =
+  element cputune {
+    element shares { cpushares }?
+    & element period { cpuperiod }?
+    & element quota { cpuquota }?
+    & element emulator_period { cpuperiod }?
+    & element emulator_quota { cpuquota }?
+    & element vcpupin {
+        attribute vcpu { vcpuid },
+        attribute cpuset { cpuset }
+      }*
+    & element emulatorpin {
+        attribute cpuset { cpuset }
+      }?
+    & element iothreadpin {
+        attribute iothread { unsignedInt },
+        attribute cpuset { cpuset }
+      }*
+    & element vcpusched {
+        attribute vcpus { cpuset }?,
+        schedparam
+      }*
+    & element iothreadsched {
+        attribute iothreads { cpuset }?,
+        schedparam
+      }*
+  }
+schedparam =
+  attribute scheduler { "batch" | "idle" }
+  | (attribute scheduler { "fifo" | "rr" },
+     attribute priority { unsignedShort })
+# All the NUMA related tunables would go in the numatune
+numatune =
+  element numatune {
+    element memory {
+      attribute mode { "strict" | "preferred" | "interleave" }?,
+      ((attribute placement { "static" }?,
+        attribute nodeset { cpuset }?)
+       | attribute placement { "auto" })
+    }?
+    & element memnode {
+        attribute cellid { unsignedInt },
+        attribute mode { "strict" | "preferred" | "interleave" },
+        attribute nodeset { cpuset }
+      }*
+  }
+respartition =
+  element resource {
+    element partition { absFilePath }
+  }
+clock =
+  element clock {
+    ((attribute offset { "localtime" | "utc" },
+      attribute adjustment { timeDelta | "reset" }?)
+     | (attribute offset { "timezone" },
+        attribute timezone { timeZone }?)
+     | (attribute offset { "variable" },
+        attribute adjustment { timeDelta }?,
+        attribute basis { "utc" | "localtime" }?)),
+    timer*
+  }?
+timer =
+  element timer {
+    ((attribute name { "platform" | "rtc" },
+      attribute track { "boot" | "guest" | "wall" }?,
+      tickpolicy?)
+     | (attribute name { "tsc" },
+        tickpolicy?,
+        attribute frequency { unsignedInt }?,
+        attribute mode {
+          "auto" | "native" | "emulate" | "paravirt" | "smpsafe"
+        }?)
+     | (attribute name { "hpet" | "pit" },
+        tickpolicy?)
+     | attribute name { "kvmclock" | "hypervclock" }),
+    attribute present { virYesNo }?,
+    empty
+  }
+tickpolicy =
+  attribute tickpolicy { "delay" | "merge" | "discard" }
+  | (attribute tickpolicy { "catchup" },
+     element catchup {
+       attribute threshold { unsignedInt }?,
+       attribute slew { unsignedInt }?,
+       attribute limit { unsignedInt }?
+     }?)
+# A bootloader may be used to extract the OS information instead of
+# defining the OS parameter in the instance. It points just to the
+# binary or script used to extract the data from the first disk device.
+bootloader =
+  element bootloader { absFilePath | empty }?
+  & element bootloader_args { text }?
+osbootkernel =
+  element kernel { absFilePath }?
+  & element initrd { absFilePath }?
+  & element root { absFilePath }?
+  & element cmdline { text }?
+  & element dtb { absFilePath }?
+osbootdev =
+  element boot {
+    attribute dev { "hd" | "fd" | "cdrom" | "network" },
+    empty
+  }
+diskspec =
+  diskDriver?
+  & diskMirror?
+  & diskAuth?
+  & target
+  & deviceBoot?
+  & element backenddomain {
+      attribute name { domainName },
+      empty
+    }?
+  & element readonly { empty }?
+  & element shareable { empty }?
+  & element transient { empty }?
+  & element serial { diskSerial }?
+  & encryption?
+  & diskIoTune?
+  & alias?
+  & address?
+  & geometry?
+  & diskBlockIo?
+  & element wwn { wwn }?
+  & element vendor {
+      xsd:string { pattern = "[x20-x7E]{0,8}" }
+    }?
+  & element product {
+      xsd:string { pattern = "[x20-x7E]{0,16}" }
+    }?
+snapshot = attribute snapshot { "no" | "internal" | "external" }
+lease =
+  element lease {
+    element lockspace { text }
+    & element key { text }
+    & element target {
+        attribute path { text },
+        attribute offset { unsignedInt }?
+      }
+  }
+startupPolicy =
+  attribute startupPolicy { "mandatory" | "requisite" | "optional" }
+# A disk description can be either of type file or block
+# The name of the attribute on the source element depends on the type
+#
+disk =
+  element disk {
+    ((attribute device { "floppy" | "disk" | "cdrom" }?,
+      (diskSource & diskSpecsExtra))
+     | (attribute device { "lun" },
+        rawIO?,
+        sgIO?,
+        ((diskSourceNetwork | diskSourceBlock) & diskSpecsExtra))),
+    snapshot?
+  }
+diskSpecsExtra = storageSourceExtra & diskBackingChain
+diskBackingChain = diskBackingStore | diskBackingStoreLast
+diskBackingStore =
+  element backingStore {
+    attribute index { positiveInteger },
+    (diskSource & diskBackingChain & diskFormat)
+  }
+diskFormat =
+  element format {
+    attribute type { storageFormat },
+    empty
+  }
+diskBackingStoreLast = element backingStore { empty }?
+diskSource =
+  diskSourceFile
+  | diskSourceBlock
+  | diskSourceDir
+  | diskSourceNetwork
+  | diskSourceVolume
+diskSourceFile =
+  attribute type { "file" }?,
+  (element source {
+     attribute file { absFilePath }?,
+     storageStartupPolicy?,
+     devSeclabel*
+   }?)
+diskSourceBlock =
+  attribute type { "block" },
+  (element source {
+     attribute dev { absFilePath }?,
+     storageStartupPolicy?,
+     devSeclabel*
+   }?)
+diskSourceDir =
+  attribute type { "dir" },
+  (element source {
+     attribute dir { absFilePath },
+     storageStartupPolicy?,
+     empty
+   }?)
+diskSourceNetwork =
+  attribute type { "network" },
+  (element source {
+     attribute protocol {
+       "nbd"
+       | "rbd"
+       | "sheepdog"
+       | "gluster"
+       | "iscsi"
+       | "http"
+       | "https"
+       | "ftp"
+       | "ftps"
+       | "tftp"
+     },
+     attribute name { text }?,
+     element host {
+       (attribute transport { "tcp" | "rdma" }?,
+        attribute name { dnsName | ipAddr },
+        attribute port { unsignedInt }?)
+       | (attribute transport { "unix" },
+          attribute socket { absFilePath })
+     }*,
+     element snapshot {
+       attribute name { genericName },
+       empty
+     }?,
+     element config {
+       attribute file { absFilePath },
+       empty
+     }?,
+     empty
+   })
+diskSourceVolume =
+  attribute type { "volume" },
+  (element source {
+     attribute pool { genericName },
+     attribute volume { volName },
+     attribute mode { "host" | "direct" }?,
+     storageStartupPolicy?,
+     devSeclabel*
+   }?)
+diskTarget =
+  xsd:string { pattern = "(ioemu:)?(fd|hd|sd|vd|xvd|ubd)[a-zA-Z0-9_]+" }
+target =
+  element target {
+    attribute dev { diskTarget },
+    attribute bus {
+      "ide"
+      | "fdc"
+      | "scsi"
+      | "virtio"
+      | "xen"
+      | "usb"
+      | "uml"
+      | "sata"
+      | "sd"
+    }?,
+    attribute tray { "open" | "closed" }?,
+    attribute removable { virOnOff }?
+  }
+geometry =
+  element geometry {
+    attribute cyls { xsd:integer },
+    attribute heads { xsd:integer },
+    attribute secs { xsd:integer },
+    attribute trans { "auto" | "none" | "lba" }?
+  }
+diskBlockIo =
+  element blockio {
+    attribute logical_block_size { xsd:integer }?,
+    attribute physical_block_size { xsd:integer }?
+  }
+# Disk may use a special driver for access.
+diskDriver =
+  element driver {
+    driverFormat?,
+    driverCache?,
+    driverErrorPolicy?,
+    driverRerrorPolicy?,
+    driverIO?,
+    ioeventfd?,
+    event_idx?,
+    copy_on_read?,
+    discard?,
+    driverIOThread?,
+    empty
+  }
+driverFormat =
+  attribute name { genericName },
+  attribute type {
+    storageFormat
+    | [
+        # back-compat for 'raw'
+        
+      ]
+      "aio"
+  }?
+driverCache =
+  attribute cache {
+    "none" | "writeback" | "writethrough" | "directsync" | "unsafe"
+  }
+driverErrorPolicy =
+  attribute error_policy { "stop" | "report" | "ignore" | "enospace" }
+driverRerrorPolicy =
+  attribute rerror_policy { "stop" | "report" | "ignore" }
+driverIO = attribute io { "threads" | "native" }
+ioeventfd = attribute ioeventfd { virOnOff }
+event_idx = attribute event_idx { virOnOff }
+copy_on_read = attribute copy_on_read { virOnOff }
+discard = attribute discard { "unmap" | "ignore" }
+driverIOThread = attribute iothread { unsignedInt }
+controller =
+  element controller {
+    attribute index { unsignedInt },
+    (alias?
+     & address?
+     & (# fdc/ide/sata/ccid have only the common attributes
+        (attribute type { "fdc" | "ide" | "sata" | "ccid" })
+        | # scsi has an optional attribute "model"
+          (attribute type { "scsi" },
+           attribute model {
+             "auto"
+             | "buslogic"
+             | "lsilogic"
+             | "lsisas1068"
+             | "vmpvscsi"
+             | "ibmvscsi"
+             | "virtio-scsi"
+             | "lsisas1078"
+           }?)
+        | # usb has an optional attribute "model", and optional subelement "master"
+          (attribute type { "usb" },
+           attribute model {
+             "piix3-uhci"
+             | "piix4-uhci"
+             | "ehci"
+             | "ich9-ehci1"
+             | "ich9-uhci1"
+             | "ich9-uhci2"
+             | "ich9-uhci3"
+             | "vt82c686b-uhci"
+             | "pci-ohci"
+             | "nec-xhci"
+             | "none"
+           }?,
+           usbmaster?)
+        | # pci has an optional attribute "model"
+          (attribute type { "pci" },
+           #  *-root controllers have an optional element "pcihole64"
+           ((attribute model { "pci-root" | "pcie-root" },
+             element pcihole64 { scaledInteger }?)
+            | attribute model { "pci-bridge" | "dmi-to-pci-bridge" }))
+        | # virtio-serial has optional "ports" and "vectors"
+          (attribute type { "virtio-serial" },
+           attribute ports { unsignedInt }?,
+           attribute vectors { unsignedInt }?))
+     & element driver {
+         attribute queues { unsignedInt }?,
+         attribute cmd_per_lun { unsignedInt }?,
+         attribute max_sectors { unsignedInt }?
+       }?)
+  }
+filesystem =
+  element filesystem {
+    ((attribute type { "file" },
+      fsDriver?,
+      (element source {
+         attribute file { absFilePath },
+         empty
+       }))
+     | (attribute type { "block" },
+        fsDriver?,
+        (element source {
+           attribute dev { absFilePath },
+           empty
+         }))
+     | (# type='mount' is default
+        attribute type { "mount" }?,
+        fsDriver?,
+        (element source {
+           attribute dir { absDirPath },
+           empty
+         }))
+     | (attribute type { "bind" }?,
+        fsDriver?,
+        (element source {
+           attribute dir { absDirPath },
+           empty
+         }))
+     | (attribute type { "template" },
+        fsDriver?,
+        (element source {
+           attribute name { genericName },
+           empty
+         }))
+     | (attribute type { "ram" },
+        fsDriver?,
+        (element source {
+           attribute usage { unsignedLong },
+           attribute units { unit }?,
+           empty
+         }))),
+    (element target {
+       attribute dir { text },
+       empty
+     }
+     & attribute accessmode { "passthrough" | "mapped" | "squash" }?
+     & element readonly { empty }?
+     & alias?
+     & address?),
+    (element space_hard_limit { scaledInteger }?
+     & element space_soft_limit { scaledInteger }?)
+  }
+fsDriver =
+  element driver {
+    # Annoying inconsistency. 'disk' uses 'name'
+    # for this kind of info, and 'type' for the
+    # storage format. We need the latter too, so
+    # had to invent a new attribute name
+    attribute type { "path" | "handle" | "loop" | "nbd" | "ploop" }?,
+    attribute format { storageFormat }?,
+    attribute wrpolicy { "immediate" }?,
+    empty
+  }
+# An interface description can either be of type bridge in which case
+# it will use a bridging source, or of type ethernet which uses a device
+# source and a device target instead. They both share a set of interface
+# options. FIXME
+interface =
+  element interface {
+    ((attribute type { "bridge" },
+      (element source {
+         attribute bridge { deviceName },
+         empty
+       }?
+       & virtualPortProfile?
+       & interface-options))
+     | (attribute type { "ethernet" },
+        (element source {
+           attribute dev { deviceName },
+           empty
+         }?
+         & interface-options))
+     | (attribute type { "vhostuser" },
+        (element source {
+           attribute type { "unix" },
+           attribute path { absFilePath },
+           attribute mode { "server" | "client" },
+           empty
+         }
+         & interface-options))
+     | (attribute type { "network" },
+        (element source {
+           attribute network { deviceName },
+           attribute portgroup { deviceName }?,
+           empty
+         }
+         & virtualPortProfile?
+         & interface-options))
+     | (attribute type { "direct" },
+        (element source {
+           attribute dev { deviceName },
+           attribute mode { bridgeMode }?,
+           empty
+         }
+         & virtualPortProfile?
+         & interface-options))
+     | (attribute type { "user" },
+        (interface-options))
+     | (attribute type { "internal" },
+        (element source {
+           attribute name { deviceName },
+           empty
+         }
+         & interface-options))
+     | (attribute type { "mcast" | "client" },
+        (element source {
+           attribute address { ipv4Addr },
+           attribute port { PortNumber },
+           empty
+         }
+         & interface-options))
+     | (attribute type { "server" },
+        (element source {
+           attribute address { ipv4Addr }?,
+           attribute port { PortNumber },
+           empty
+         }
+         & interface-options))
+     | (attribute type { "hostdev" },
+        attribute managed { virYesNo }?,
+        (element source {
+           attribute missing { virYesNo }?,
+           ((usbproduct, usbaddress?)
+            | element address {
+                (attribute type { "pci" },
+                 pciaddress)
+                | (attribute type { "usb" },
+                   attribute bus { usbAddr },
+                   attribute device { usbPort })
+              })
+         }
+         & virtualPortProfile?
+         & interface-options))),
+    attribute trustGuestRxFilters { virYesNo }?
+  }
+# The interface options possible are:
+#   - the MAC address
+#   - the IP address bound to the interface
+#   - the name of the script used to set up the binding
+#   - the target device used
+#   - boot order
+#   - link state
+interface-options =
+  element link {
+    attribute state { "up" | "down" },
+    empty
+  }?
+  & element target {
+      attribute dev { deviceName },
+      empty
+    }?
+  & element guest {
+      (attribute dev { deviceName }?
+       & attribute actual { deviceName }?),
+      empty
+    }?
+  & element mac {
+      attribute address { uniMacAddr },
+      empty
+    }?
+  & element ip {
+      attribute address { ipAddr },
+      attribute family { addr-family }?,
+      attribute prefix { ipPrefix }?,
+      empty
+    }*
+  & route*
+  & element script {
+      attribute path { filePath },
+      empty
+    }?
+  & element backenddomain {
+      attribute name { domainName },
+      empty
+    }?
+  & element model {
+      attribute type {
+        xsd:string { pattern = "[a-zA-Z0-9\-_]+" }
+      },
+      empty
+    }?
+  & element backend {
+      attribute tap { absFilePath }?,
+      attribute vhost { absFilePath }?
+    }?
+  & element driver {
+      (attribute name { "kvm" | "vfio" }
+       | (attribute name { "qemu" | "vhost" }?,
+          attribute queues { positiveInteger }?,
+          attribute txmode { "iothread" | "timer" }?,
+          ioeventfd?,
+          event_idx?)),
+      (element host {
+         attribute csum { virOnOff }?,
+         attribute gso { virOnOff }?,
+         attribute tso4 { virOnOff }?,
+         attribute tso6 { virOnOff }?,
+         attribute ecn { virOnOff }?,
+         attribute ufo { virOnOff }?,
+         attribute mrg_rxbuf { virOnOff }?
+       }?
+       & element guest {
+           attribute csum { virOnOff }?,
+           attribute tso4 { virOnOff }?,
+           attribute tso6 { virOnOff }?,
+           attribute ecn { virOnOff }?,
+           attribute ufo { virOnOff }?
+         }?)
+    }?
+  & alias?
+  & address?
+  & element filterref { filterref-node-attributes }?
+  & element tune {
+      # size of send buffer for network tap devices
+      element sndbuf { unsignedInt }?
+    }?
+  & deviceBoot?
+  & rom?
+  & bandwidth?
+  & vlan?
+# An emulator description is just a path to the binary used for the task
+emulator = element emulator { absFilePath }
+# A graphic description, currently in Xen only 2 types are supported:
+#   - sdl with optional display, xauth and fullscreen
+#   - vnc with a required port and optional listen IP address, password
+#     and keymap
+graphic =
+  element graphics {
+    (attribute type { "sdl" },
+     attribute display { text }?,
+     attribute xauth { text }?,
+     attribute fullscreen { virYesNo }?)
+    | (attribute type { "vnc" },
+       ((attribute port { PortNumber }?,
+         attribute autoport { virYesNo }?,
+         attribute websocket { PortNumber }?,
+         attribute listen { addrIPorName }?,
+         attribute sharePolicy {
+           "allow-exclusive" | "force-shared" | "ignore"
+         }?)
+        | attribute socket { absFilePath }?),
+       attribute passwd { text }?,
+       attribute keymap { text }?,
+       attribute passwdValidTo { xsd:dateTime }?,
+       attribute connected { "keep" }?,
+       listenElements)
+    | (attribute type { "spice" },
+       attribute port { PortNumber }?,
+       attribute tlsPort { PortNumber }?,
+       attribute autoport { virYesNo }?,
+       attribute listen { addrIPorName }?,
+       attribute passwd { text }?,
+       attribute keymap { text }?,
+       attribute passwdValidTo { xsd:dateTime }?,
+       attribute connected { "fail" | "disconnect" | "keep" }?,
+       attribute defaultMode { "any" | "secure" | "insecure" }?,
+       (listenElements
+        & element channel {
+            attribute name {
+              "main"
+              | "display"
+              | "inputs"
+              | "cursor"
+              | "playback"
+              | "record"
+              | "smartcard"
+              | "usbredir"
+            },
+            attribute mode { "any" | "secure" | "insecure" },
+            empty
+          }*
+        & element image {
+            attribute compression {
+              "auto_glz" | "auto_lz" | "quic" | "glz" | "lz" | "off"
+            },
+            empty
+          }?
+        & element jpeg {
+            attribute compression { "auto" | "never" | "always" },
+            empty
+          }?
+        & element zlib {
+            attribute compression { "auto" | "never" | "always" },
+            empty
+          }?
+        & element playback {
+            attribute compression { virOnOff },
+            empty
+          }?
+        & element streaming {
+            attribute mode { "filter" | "all" | "off" },
+            empty
+          }?
+        & element clipboard {
+            attribute copypaste { virYesNo },
+            empty
+          }?
+        & element mouse {
+            attribute mode { "server" | "client" },
+            empty
+          }?
+        & element filetransfer {
+            attribute enable { virYesNo },
+            empty
+          }?))
+    | (attribute type { "rdp" },
+       attribute port { PortNumber }?,
+       attribute autoport { virYesNo }?,
+       attribute replaceUser { virYesNo }?,
+       attribute multiUser { virYesNo }?,
+       attribute listen { addrIPorName }?,
+       listenElements)
+    | (attribute type { "desktop" },
+       attribute display { text }?,
+       attribute fullscreen { virYesNo }?)
+  }
+listenElements =
+  element listen {
+    (attribute type { "address" },
+     attribute address { addrIPorName })
+    | (attribute type { "network" },
+       attribute network { text },
+       attribute address { addrIPorName }?)
+  }*
+# A video adapter description, allowing configuration of device
+# model, number of virtual heads, video ram size, and for qxl
+# both ram bar sizes.
+video =
+  element video {
+    element model {
+      (attribute type { "vga" | "cirrus" | "vmvga" | "xen" | "vbox" }
+       | (attribute type { "qxl" },
+          attribute ram { unsignedInt }?,
+          attribute vgamem { unsignedInt }?)),
+      attribute vram { unsignedInt }?,
+      attribute heads { unsignedInt }?,
+      attribute primary { virYesNo }?,
+      element acceleration {
+        attribute accel3d { virYesNo }?,
+        attribute accel2d { virYesNo }?
+      }?
+    }?,
+    alias?,
+    address?
+  }
+# When a certain event happens, multiple policies can be applied
+# depends on what happened:
+events =
+  element on_reboot { offOptions }?
+  & element on_poweroff { offOptions }?
+  & element on_crash { crashOptions }?
+  & element on_lockfailure { lockfailureOptions }?
+# Options when a domain terminates:
+# destroy: The domain is cleaned up
+# restart: A new domain is started in place of the old one
+# preserve: The domain will remain in memory until it is destroyed manually
+# rename-restart: a variant of the previous one but where the old domain is
+#                 renamed before being saved to allow a restart
+offOptions = "destroy" | "restart" | "preserve" | "rename-restart"
+# Options when a domain crashes:
+# destroy: The domain is cleaned up
+# restart: A new domain is started in place of the old one
+# preserve: The domain will remain in memory until it is destroyed manually
+# rename-restart: a variant of the previous one but where the old domain is
+#                 renamed before being saved to allow a restart
+# coredump-destroy: The crashed domain's core will be dumped, and then the
+#                   domain will be terminated completely and all resources
+#                   released
+# coredump-restart: The crashed domain's core will be dumped, and then the
+#                   domain will be restarted with the same configuration
+crashOptions =
+  "destroy"
+  | "restart"
+  | "preserve"
+  | "rename-restart"
+  | "coredump-destroy"
+  | "coredump-restart"
+# Options when resource locks are lost:
+# poweroff: power off the domain
+# restart: power off the domain and start it up again to reacquire the
+#          locks
+# pause: pause the execution of the domain so that it can be manually
+#        resumed when lock issues are solved
+# ignore: keep the domain running
+lockfailureOptions = "poweroff" | "restart" | "pause" | "ignore"
+# Control ACPI sleep states (dis)allowed for the domain
+# For each of the states the following rules apply:
+# on: the state will be forcefully enabled
+# off: the state will be forcefully disabled
+# not specified: hypervisor will be left to decide its defaults
+pm =
+  element pm {
+    (element suspend-to-mem { suspendChoices }?
+     & element suspend-to-disk { suspendChoices }?),
+    empty
+  }
+suspendChoices = attribute enabled { virYesNo }?
+# Specific setup for a qemu emulated character device.  Note: this
+# definition doesn't fully specify the constraints on this node.
+qemucdev =
+  qemucdevSrcType,
+  attribute tty { absFilePath }?,
+  (qemucdevSrcDef & qemucdevTgtDef? & alias? & address?)
+qemucdevConsoleTgtType =
+  attribute type {
+    "xen"
+    | "serial"
+    | "uml"
+    | "virtio"
+    | "lxc"
+    | "openvz"
+    | "sclp"
+    | "sclplm"
+  }
+qemucdevSerialTgtType =
+  attribute type { "isa-serial" | "usb-serial" | "pci-serial" }
+qemucdevTgtDef =
+  element target {
+    (qemucdevConsoleTgtType? | qemucdevSerialTgtType?)
+    & attribute port { text }?
+  }
+qemucdevSrcTypeChoice =
+  "dev"
+  | "file"
+  | "pipe"
+  | "unix"
+  | "tcp"
+  | "udp"
+  | "null"
+  | "stdio"
+  | "vc"
+  | "pty"
+  | "spicevmc"
+  | "spiceport"
+  | "nmdm"
+usbdevfilter =
+  element usbdev {
+    attribute allow { virYesNo },
+    attribute class { usbClass | usbIdDefault }?,
+    attribute vendor { usbId | usbIdDefault }?,
+    attribute product { usbId | usbIdDefault }?,
+    attribute version { usbVersion | usbIdDefault }?
+  }
+qemucdevSrcType = attribute type { qemucdevSrcTypeChoice }
+qemucdevSrcDef =
+  element source {
+    attribute mode { text }?,
+    attribute path { text }?,
+    attribute host { text }?,
+    attribute service { text }?,
+    attribute wiremode { text }?,
+    attribute channel { text }?,
+    attribute master { text }?,
+    attribute slave { text }?,
+    devSeclabel*
+  }*,
+  element protocol {
+    attribute type { "raw" | "telnet" | "telnets" | "tls" }?
+  }?
+# The description for a console
+# just a tty device
+console =
+  element console {
+    (attribute tty { absFilePath }?,
+     empty)
+    | (qemucdev)
+  }
+codec =
+  element codec {
+    attribute type { "duplex" | "micro" }
+  }
+sound =
+  element sound {
+    attribute model {
+      "sb16" | "es1370" | "pcspk" | "ac97" | "ich6" | "ich9" | "usb"
+    },
+    (alias? & address? & (codec)*)
+  }
+watchdog =
+  element watchdog {
+    attribute model { "i6300esb" | "ib700" },
+    attribute action {
+      "reset" | "shutdown" | "poweroff" | "pause" | "none" | "dump"
+    }?,
+    alias?,
+    address?
+  }
+nvram = element nvram { address? }
+shmem =
+  element shmem {
+    attribute name { text },
+    (element size { scaledInteger }?
+     & element server {
+         attribute path { absFilePath }?
+       }?
+     & element msi {
+         ioeventfd?,
+         attribute vectors { unsignedInt }?
+       }?
+     & address?)
+  }
+memballoon =
+  element memballoon {
+    attribute model { "virtio" | "xen" | "none" },
+    (alias?
+     & address?
+     & element stats {
+         attribute period { positiveInteger }
+       }?)
+  }
+parallel = element parallel { qemucdev }
+serial = element serial { qemucdev }
+guestfwdTarget =
+  element target {
+    attribute type { "guestfwd" },
+    attribute address { text },
+    attribute port { text }
+  }
+virtioTarget =
+  element target {
+    attribute type { "virtio" },
+    attribute name { text }?,
+    attribute state { "connected" | "disconnected" }?
+  }
+channel =
+  element channel {
+    qemucdevSrcType,
+    (qemucdevSrcDef
+     & (guestfwdTarget | virtioTarget)
+     & alias?
+     & address?)
+  }
+smartcard =
+  element smartcard {
+    (attribute mode { "host" }
+     # might need to add optional database element here later
+     
+     | (attribute mode { "host-certificates" },
+        certificate,
+        certificate,
+        certificate,
+        element database { absDirPath }?)
+     | (attribute mode { "passthrough" },
+        qemucdevSrcType,
+        (qemucdevSrcDef & qemucdevTgtDef?))),
+    alias?,
+    address?
+  }
+certificate = element certificate { text }
+tpm =
+  element tpm {
+    attribute model { "tpm-tis" }?,
+    tpm-backend,
+    alias?
+  }
+tpm-backend =
+  element backend {
+    (attribute type { "passthrough" },
+     tpm-passthrough-device)
+  }
+tpm-passthrough-device =
+  element device {
+    attribute path { filePath }?
+  }?
+input =
+  element input {
+    attribute type { "tablet" | "mouse" | "keyboard" },
+    attribute bus { "ps2" | "usb" | "xen" }?,
+    alias?,
+    address?
+  }
+hub =
+  element hub {
+    attribute type { "usb" },
+    alias?,
+    address?
+  }
+redirdev =
+  element redirdev {
+    attribute bus { "usb" },
+    attribute type { qemucdevSrcTypeChoice },
+    qemucdevSrcDef,
+    alias?,
+    address?,
+    deviceBoot?
+  }
+redirfilter = element redirfilter { usbdevfilter* }
+hostdev =
+  element hostdev {
+    (hostdevsubsys | hostdevcaps)
+    & alias?
+    & deviceBoot?
+    & rom?
+    & address?
+    & element readonly { empty }?
+    & element shareable { empty }?
+  }
+hostdevsubsys =
+  attribute mode { "subsystem" }?,
+  attribute managed { virYesNo }?,
+  (hostdevsubsyspci | hostdevsubsysusb | hostdevsubsysscsi)
+hostdevcaps =
+  attribute mode { "capabilities" },
+  (hostdevcapsstorage | hostdevcapsmisc | hostdevcapsnet)
+hostdevsubsyspci =
+  attribute type { "pci" },
+  (element driver {
+     attribute name { "kvm" | "vfio" | "xen" },
+     empty
+   }?
+   & element source {
+       startupPolicy?,
+       element address { pciaddress }
+     })
+hostdevsubsysusb =
+  attribute type { "usb" },
+  element source {
+    startupPolicy?,
+    ((usbproduct, usbaddress?) | usbaddress)
+  }
+hostdevsubsysscsi =
+  attribute type { "scsi" },
+  sgIO?,
+  rawIO?,
+  element source {
+    (# scsi_host adapter
+     attribute protocol {
+       [
+         # scsi_host, default, optional
+         
+       ]
+       "adapter"
+     }?,
+     (sourceinfoadapter
+      & element address { scsiaddress }))
+    | (# iscsi adapter
+       attribute protocol {
+         [
+           # iscsi, required
+           
+         ]
+         "iscsi"
+       },
+       attribute name { text },
+       (element host {
+          attribute name { text },
+          attribute port { PortNumber }?,
+          empty
+        }+
+        & diskAuth?))
+  }
+hostdevcapsstorage =
+  attribute type { "storage" },
+  element source {
+    element block { absFilePath }
+  }
+hostdevcapsmisc =
+  attribute type { "misc" },
+  element source {
+    element char { absFilePath }
+  }
+hostdevcapsnet =
+  attribute type { "net" },
+  (element source {
+     element interface { deviceName }
+   }
+   & element ip {
+       attribute address { ipAddr },
+       attribute family { addr-family }?,
+       attribute prefix { ipPrefix }?,
+       empty
+     }*
+   & route*)
+usbproduct =
+  element vendor {
+    attribute id { usbId }
+  },
+  element product {
+    attribute id { usbId }
+  }
+usbaddress =
+  element address {
+    attribute bus { usbAddr },
+    attribute device { usbPort }
+  }
+scsiaddress =
+  attribute bus { driveBus },
+  attribute target { driveTarget },
+  attribute unit { driveUnit }
+usbportaddress =
+  attribute bus { usbAddr },
+  attribute port { usbPort }
+spaprvioaddress = attribute reg { spaprvioReg }?
+ccwaddress =
+  (attribute cssid { ccwCssidRange },
+   attribute ssid { ccwSsidRange },
+   attribute devno { ccwDevnoRange })?
+driveaddress =
+  attribute controller { driveController }?,
+  attribute bus { driveBus }?,
+  attribute target { driveTarget }?,
+  attribute unit { driveUnit }?
+virtioserialaddress =
+  attribute controller { driveController },
+  attribute bus { driveBus }?,
+  attribute port { driveUnit }?
+ccidaddress =
+  attribute controller { driveController },
+  attribute slot { driveUnit }?
+dimmaddress =
+  attribute slot { unsignedInt }?,
+  attribute base { hexuint }?
+devices =
+  element devices {
+    emulator?
+    & (disk
+       | controller
+       | lease
+       | filesystem
+       | interface
+       | input
+       | sound
+       | hostdev
+       | graphic
+       | video
+       | console
+       | parallel
+       | serial
+       | channel
+       | smartcard
+       | hub
+       | redirdev
+       | redirfilter
+       | rng
+       | tpm
+       | shmem
+       | memorydev)*
+    & watchdog?
+    & memballoon?
+    & nvram?
+    & panic?
+  }
+# A set of optional features: PAE, APIC, ACPI, GIC,
+# HyperV Enlightenment, KVM features, paravirtual spinlocks and HAP support
+features =
+  element features {
+    element pae { empty }?
+    & element apic {
+        attribute eoi { virOnOff }?
+      }?
+    & element acpi { empty }?
+    & element hap { empty }?
+    & hyperv?
+    & element viridian { empty }?
+    & kvm?
+    & element privnet { empty }?
+    & element pvspinlock { featurestate?, empty }?
+    & capabilities?
+    & pmu?
+    & element vmport {
+        attribute state { virOnOff }?
+      }?
+    & element gic {
+        attribute version { positiveInteger }?
+      }?
+  }?
+# CPU specification
+cpu =
+  element cpu {
+    cpuMode?,
+    cpuMatch?,
+    (cpuModel? & cpuVendor? & cpuTopology? & cpuFeature* & cpuNuma?)
+  }
+cpuMode =
+  attribute mode { "custom" | "host-model" | "host-passthrough" }
+cpuMatch = attribute match { "minimum" | "exact" | "strict" }
+cpuModel =
+  element model {
+    attribute fallback { "allow" | "forbid" }?,
+    attribute vendor_id {
+      xsd:string { pattern = "[^,]{12}" }
+    }?,
+    (text | empty)
+  }
+cpuVendor = element vendor { text }
+cpuFeature =
+  element feature {
+    attribute policy {
+      "force" | "require" | "optional" | "disable" | "forbid"
+    },
+    attribute name { featureName },
+    empty
+  }
+cpuTopology =
+  element topology {
+    attribute sockets { positiveInteger },
+    attribute cores { positiveInteger },
+    attribute threads { positiveInteger }
+  }
+cpuNuma = element numa { numaCell+ }
+numaCell =
+  element cell {
+    attribute id { unsignedInt }?,
+    attribute cpus { cpuset },
+    attribute memory { memoryKB },
+    attribute unit { unit }?,
+    attribute memAccess { "shared" | "private" }?
+  }
+# System information specification:
+#  Placeholder for system specific informations likes the ones
+#  contained in the SMBIOS area.
+#  Only a limited subset of entries can be modified there, so we
+#  fully enumerate each case here.
+#  The DMTF spec doesn't specify any string subset, just 0 terminated
+#  byte strings, but better be safe and restrict at least the names
+#  to avoid problems with space normalization in attribute values,
+#  the value is kept as the element body for maximum flexibility.
+#  A priori we allow only type 0 and type 1 string updates
+sysinfo =
+  element sysinfo {
+    attribute type { "smbios" },
+    (element bios {
+       element entry {
+         attribute name { sysinfo-bios-name },
+         sysinfo-value
+       }+
+     }?
+     & element system {
+         element entry {
+           attribute name { sysinfo-system-name },
+           sysinfo-value
+         }+
+       }?)
+  }
+sysinfo-bios-name = "vendor" | "version" | "date" | "release"
+sysinfo-system-name =
+  "manufacturer"
+  | "product"
+  | "version"
+  | "serial"
+  | "uuid"
+  | "sku"
+  | "family"
+sysinfo-value = xsd:string { pattern = "[a-zA-Z0-9/\-_\. \(\)]+" }
+smbios =
+  element smbios {
+    attribute mode { "emulate" | "host" | "sysinfo" },
+    empty
+  }
+bios =
+  element bios {
+    attribute useserial { virYesNo }?,
+    attribute rebootTimeout { rebootTimeoutDelay }?
+  }
+address =
+  element address {
+    (attribute type { "pci" },
+     pciaddress)
+    | (attribute type { "drive" },
+       driveaddress)
+    | (attribute type { "virtio-serial" },
+       virtioserialaddress)
+    | (attribute type { "ccid" },
+       ccidaddress)
+    | (attribute type { "usb" },
+       usbportaddress)
+    | (attribute type { "spapr-vio" },
+       spaprvioaddress)
+    | (attribute type { "ccw" },
+       ccwaddress)
+    | (attribute type { "isa" },
+       isaaddress)
+    | attribute type { "virtio-mmio" }
+    | (attribute type { "dimm" },
+       dimmaddress)
+  }
+rom =
+  element rom {
+    attribute bar { virOnOff }?,
+    attribute file { absFilePath }?,
+    empty
+  }
+memorydev =
+  element memory {
+    attribute model { "dimm" },
+    (memorydev-source? & memorydev-target & address?)
+  }
+memorydev-source =
+  element source {
+    element pagesize { scaledInteger }?
+    & element nodemask { cpuset }?
+  }
+memorydev-target =
+  element target {
+    element size { scaledInteger }
+    & element node { unsignedInt }
+  }
+rng =
+  element rng {
+    attribute model { "virtio" },
+    (rng-backend & rng-rate? & alias? & address?)
+  }
+rng-backend =
+  element backend {
+    (attribute model { "random" },
+     ("/dev/random" | "/dev/hwrng" | empty))
+    | (attribute model { "egd" },
+       qemucdevSrcType,
+       qemucdevSrcDef)
+  }
+rng-rate =
+  element rate {
+    attribute bytes { positiveInteger },
+    attribute period { positiveInteger }?,
+    empty
+  }
+usbmaster =
+  element master {
+    attribute startport { usbPort },
+    empty
+  }
+filterref-node-attributes =
+  attribute filter { xsd:NCName },
+  element parameter {
+    attribute name { filter-param-name },
+    attribute value { filter-param-value }
+  }*
+deviceBoot =
+  element boot {
+    attribute order { positiveInteger },
+    empty
+  }
+diskMirror =
+  element mirror {
+    ((# old format, for block copy back-compat
+      attribute file { absFilePath },
+      attribute format { storageFormat }?,
+      attribute job { "copy" }?,
+      (diskSourceFile & diskFormat?)?)
+     | (# preferred format
+        attribute job { "copy" | "active-commit" },
+        (diskSource & diskFormat?))),
+    attribute ready { "yes" | "abort" | "pivot" }?
+  }
+diskAuth =
+  element auth {
+    attribute username { genericName },
+    diskAuthSecret
+  }
+diskAuthSecret =
+  element secret {
+    attribute type { "ceph" | "iscsi" },
+    (attribute uuid { UUID }
+     | attribute usage { genericName })
+  }
+diskIoTune =
+  element iotune {
+    (element total_bytes_sec { xsd:unsignedLong }
+     | (element read_bytes_sec { xsd:unsignedLong }?
+        & element write_bytes_sec { xsd:unsignedLong }?))
+    & (element total_iops_sec { xsd:unsignedLong }
+       | (element read_iops_sec { xsd:unsignedLong }?
+          & element write_iops_sec { xsd:unsignedLong }?))
+    & (element total_bytes_sec_max { xsd:unsignedLong }
+       | (element read_bytes_sec_max { xsd:unsignedLong }?
+          & element write_bytes_sec_max { xsd:unsignedLong }?))
+    & (element total_iops_sec_max { xsd:unsignedLong }
+       | (element read_iops_sec_max { xsd:unsignedLong }?
+          & element write_iops_sec_max { xsd:unsignedLong }?))
+    & element size_iops_sec { xsd:unsignedLong }?
+  }
+# Optional HyperV Enlightenment features
+hyperv =
+  element hyperv {
+    element relaxed { featurestate }?
+    & element vapic { featurestate }?
+    & element spinlocks {
+        featurestate,
+        attribute retries { xsd:unsignedInt }?
+      }?
+  }
+# Optional KVM features
+kvm =
+  element kvm {
+    element hidden { featurestate }?
+  }
+# Optional capabilities features
+capabilities =
+  element capabilities {
+    capabilitiespolicy,
+    (element audit_control { featurestate }?
+     & element audit_write { featurestate }?
+     & element block_suspend { featurestate }?
+     & element chown { featurestate }?
+     & element dac_override { featurestate }?
+     & element dac_read_search { featurestate }?
+     & element fowner { featurestate }?
+     & element fsetid { featurestate }?
+     & element ipc_lock { featurestate }?
+     & element ipc_owner { featurestate }?
+     & element kill { featurestate }?
+     & element lease { featurestate }?
+     & element linux_immutable { featurestate }?
+     & element mac_admin { featurestate }?
+     & element mac_override { featurestate }?
+     & element mknod { featurestate }?
+     & element net_admin { featurestate }?
+     & element net_bind_service { featurestate }?
+     & element net_broadcast { featurestate }?
+     & element net_raw { featurestate }?
+     & element setgid { featurestate }?
+     & element setfcap { featurestate }?
+     & element setpcap { featurestate }?
+     & element setuid { featurestate }?
+     & element sys_admin { featurestate }?
+     & element sys_boot { featurestate }?
+     & element sys_chroot { featurestate }?
+     & element sys_module { featurestate }?
+     & element sys_nice { featurestate }?
+     & element sys_pacct { featurestate }?
+     & element sys_ptrace { featurestate }?
+     & element sys_rawio { featurestate }?
+     & element sys_resource { featurestate }?
+     & element sys_time { featurestate }?
+     & element sys_tty_config { featurestate }?
+     & element syslog { featurestate }?
+     & element wake_alarm { featurestate }?)
+  }
+pmu = element pmu { featurestate? }
+featurestate = attribute state { virOnOff }
+capabilitiespolicy = attribute policy { "default" | "allow" | "deny" }
+# Optional hypervisor extensions in their own namespace:
+#   QEmu
+qemucmdline =
+  element ns1:commandline {
+    element ns1:arg {
+      attribute value { text }
+    }*,
+    element ns1:env {
+      attribute name { filter-param-name },
+      attribute value { text }?,
+      empty
+    }*
+  }
+metadata = element metadata { customElement* }
+customElement =
+  element * {
+    (attribute * { text }
+     | text
+     | customElement)*
+  }
+# Type library
+countCPU = xsd:unsignedShort { pattern = "[0-9]+" minInclusive = "1" }
+vcpuid = xsd:unsignedShort { pattern = "[0-9]+" }
+cpushares = xsd:unsignedInt { pattern = "[0-9]+" }
+cpuperiod =
+  xsd:unsignedLong {
+    pattern = "[0-9]+"
+    minInclusive = "1000"
+    maxInclusive = "1000000"
+  }
+cpuquota =
+  xsd:long {
+    pattern = "-?[0-9]+"
+    maxInclusive = "18446744073709551"
+    minInclusive = "-1"
+  }
+rebootTimeoutDelay = xsd:short { minInclusive = "-1" }
+# weight currently is in range [100, 1000]
+weight =
+  xsd:unsignedInt {
+    pattern = "[0-9]+"
+    minInclusive = "100"
+    maxInclusive = "1000"
+  }
+# Memory as an attribute is in KiB, no way to express a unit
+memoryKB = xsd:unsignedInt { pattern = "[0-9]+" }
+domainName =
+  xsd:string {
+    # Use literal newline instead of \n for bug in libxml2 2.7.6
+    pattern = "[^\x{a}" ~ "]+"
+  }
+diskSerial = xsd:string { pattern = "[A-Za-z0-9_\.\+\- ]+" }
+bridgeMode =
+  xsd:string { pattern = "(vepa|bridge|private|passthrough)" }
+addrIPorName =
+  xsd:string {
+    pattern =
+      "(([0-2]?[0-9]?[0-9]\.){3}[0-2]?[0-9]?[0-9])|(([0-9a-fA-F]+|:)+[0-9a-fA-F]+)|([a-zA-Z0-9_\.\+\-]*)"
+  }
+usbIdDefault = xsd:string { pattern = "-1" }
+usbId = xsd:string { pattern = "(0x)?[0-9a-fA-F]{1,4}" }
+usbVersion = xsd:string { pattern = "[0-9]{1,2}.[0-9]{1,2}" }
+usbAddr = xsd:string { pattern = "(0x)?[0-9a-fA-F]{1,3}" }
+usbClass = xsd:string { pattern = "(0x)?[0-9a-fA-F]{1,2}" }
+usbPort =
+  xsd:string {
+    pattern = "((0x)?[0-9a-fA-F]{1,3}\.){0,3}(0x)?[0-9a-fA-F]{1,3}"
+  }
+driveController = xsd:string { pattern = "[0-9]{1,2}" }
+driveBus = xsd:string { pattern = "[0-9]{1,2}" }
+driveTarget = xsd:string { pattern = "[0-9]{1,2}" }
+driveUnit = xsd:string { pattern = "[0-9]{1,2}" }
+featureName = xsd:string { pattern = "[a-zA-Z0-9\-_\.]+" }
+timeDelta = xsd:string { pattern = "(-|\+)?[0-9]+" }
+timeZone = xsd:string { pattern = "[a-zA-Z0-9_\.\+\-/]+" }
+filter-param-name = xsd:string { pattern = "[a-zA-Z0-9_]+" }
+filter-param-value = xsd:string { pattern = "[a-zA-Z0-9_\.:]+" }
+spaprvioReg = xsd:string { pattern = "(0x)?[0-9a-fA-F]{1,16}" }
+aliasName = xsd:string { pattern = "[a-zA-Z0-9_\-.]+" }
+alias =
+  element alias {
+    attribute name { aliasName }
+  },
+  empty
+ccwCssidRange =
+  xsd:string { pattern = "0x[0-9a-eA-E][0-9a-fA-F]?" }
+  | xsd:string { pattern = "0x[fF][0-9a-eA-E]?" }
+  | xsd:int { minInclusive = "0" maxInclusive = "254" }
+ccwSsidRange = xsd:string { pattern = "(0x)?[0-3]" }
+ccwDevnoRange =
+  xsd:string { pattern = "0x[0-9a-fA-F]{1,4}" }
+  | xsd:int { minInclusive = "0" maxInclusive = "65535" }
+panic = element panic { address? }
+rawIO = attribute rawio { virYesNo }
+sgIO = attribute sgio { "filtered" | "unfiltered" }
