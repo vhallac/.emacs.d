@@ -28,9 +28,6 @@
 ;; no splash screen:
 (setq inhibit-startup-message t)
 
-;; Interactively do things
-(ido-mode t)
-
 ;; Highlight mathing parenthesis
 (show-paren-mode 1)
 
