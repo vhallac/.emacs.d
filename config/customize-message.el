@@ -36,6 +36,8 @@
             "Y2Y7Ij48YSBocmVmPSJtYWlsdG86dmVkYXQuaGFsbGFjQHBpYS10ZWFtLmNvbSI+PHU+dmVkYXQu"
             "aGFsbGFjQHBpYS10ZWFtLmNvbTwvdT48L2E+PC9zcGFuPjwvcD48L2Rpdj4="))))
 
+(defvar vh-message-last-mode nil)
+
 (defun vh-message-edit-body-as-org ()
   "Edit the body of the message in org-mode.
 
@@ -45,11 +47,11 @@ When I need to send an e-mail in HTML mode, I can easily edit in org-mode, then 
                        (message-goto-body)
                        (point))))
     (narrow-to-region body-start (point-max)))
-  (set (make-local-variable 'vh-message-last-mode)
+  (set (make-local-variable vh-message-last-mode)
        major-mode)
   (setq vh-message-last-mode major-mode)
   (org-mode)
-  (add-hook 'org-ctrl-c-ctrl-c-hook 'vh-message-back-to-message))
+  (add-hook 'org-ctrl-c-ctrl-c-final-hook 'vh-message-back-to-message))
 
 (defun vh-message-back-to-message ()
   "You don't need to call this usually. Just hitting 'C-c C-c' should take you out"
@@ -59,7 +61,7 @@ When I need to send an e-mail in HTML mode, I can easily edit in org-mode, then 
     (widen)
     (funcall vh-message-last-mode)
     (setq vh-message-last-mode nil)
-    (remove-hook 'org-ctrl-c-ctrl-c-hook 'vh-message-last-mode)
+    (remove-hook 'org-ctrl-c-ctrl-c-final-hook 'vh-message-back-to-message)
     t))
 
 (defun vh-message-org-to-html ()
