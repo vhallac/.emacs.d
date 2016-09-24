@@ -27,17 +27,6 @@
  ".*\\.el")
 
 ;;
-;; Load the per-machine setup:
-;; This is never added to git repository. It may reveal information about
-;; machine/user that you'd rather keep to yourself.
-;;
-(let ((local-config-file "~/.emacs-local-config.el"))
-  (when (file-exists-p local-config-file)
-    (try-progn
-     "Cannot load local configuration"
-     (load-file local-config-file))))
-
-;;
 ;; Load the customizations
 ;; I will try to keep this file empty, and move the customizations to various
 ;; init scripts.
@@ -74,3 +63,15 @@
 (try-progn
  "Cannot load globals"
  (load-file "~/.emacs.d/globals.el"))
+
+;;
+;; Load the per-machine setup:
+;; This is never added to git repository. It may reveal information about
+;; machine/user that you'd rather keep to yourself.
+;; This the very last thing in startup to ensure it can override/undo standard behavior.
+;;
+(let ((local-config-file "~/.emacs-local-config.el"))
+  (when (file-exists-p local-config-file)
+    (try-progn
+     "Cannot load local configuration"
+     (load-file local-config-file))))
