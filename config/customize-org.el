@@ -102,7 +102,7 @@ pre.src {overflow-x: auto; }
 	    (auto-fill-mode t)))
 
 ;; Add modules I want
-(add-to-list 'org-modules "org-habit")
+(add-to-list 'org-modules 'org-habit)
 
 ;; I don't use this -- but set it in case I forget to specify a location in a
 ;; future template.
