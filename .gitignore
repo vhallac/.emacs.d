@@ -15,3 +15,6 @@ org-clock-save.el
 /srecode-map.el
 /bookmarks
 eshell
+/recentf
+/projectile-bookmarks.eld
+/projectile.cache

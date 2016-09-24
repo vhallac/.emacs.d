@@ -21,10 +21,6 @@
 (define-key global-map (kbd "C-c a") 'org-agenda)
 (define-key global-map (kbd "<f12>") 'org-agenda)
 
-(define-key global-map (kbd "C-c g") 'magit-status)
-
-(define-key global-map (kbd "C-c e") 'vh-eval-and-replace)
-
 ;; Multiple cursors
 (define-key global-map (kbd "C-c m l") 'mc/edit-lines)
 (define-key global-map (kbd "C-c m m") 'mc/mark-more-like-this-extended)

@@ -51,7 +51,6 @@
 (mapc (lambda (elt)
         (add-to-list 'package-archives elt))
       '(("melpa" . "http://melpa.milkbox.net/packages/")
-        ("marmalade" . "http://marmalade-repo.org/packages/")
         ("tromey" . "http://tromey.com/elpa/")
         ("gnu" . "http://elpa.gnu.org/packages/")
         ("org" . "http://orgmode.org/elpa/")
@@ -61,14 +60,14 @@
 ;; Also check if they are installed, and install them if needed.
 ;; These packages may end up causing side effects before configuration. Check
 ;; their autoload files to be sure they are safe.
-(let ((early-packages '("zenburn"
-                        "browse-kill-ring"
+(let ((early-packages '("browse-kill-ring"
                         "escreen"
                         "color-theme"
                         "paredit"
                         "ace-window"
                         "ace-jump-mode"
-                        "ace-jump-buffer"))
+                        "ace-jump-buffer"
+                        "use-package"))
       refreshed-p)
   (mapc (lambda (pkg)
           (let ((pkg-symbol (intern pkg)))
