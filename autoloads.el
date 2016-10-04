@@ -11,19 +11,6 @@
 (autoload 'forth-block-mode "gforth.el")
 (add-to-list 'auto-mode-alist '("\\.fb$" . forth-block-mode))
 
-;; (autoload 'gnus "gnus"
-;;   "Mail and news reader" t)
-
-(autoload 'bh/clock-in "org-clock"
-  "Custom clock-in function: loaded in customize-org-clock")
-(autoload 'bh/clock-out "org-clock"
-  "Custom clock-out function: loaded in customize-org-clock")
-
-;; (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
-
-;; (autoload 'python-mode "python" "Python editing mode." t)
-;; (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
-
 ;; Display the color specifications in CSS with the specified color.
 (add-hook 'css-mode-hook 'rainbow-mode)
 

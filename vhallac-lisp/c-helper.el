@@ -138,4 +138,191 @@ and finds it in the search path."
 			(error "No file specified in the #include statement")))
 	  (error "Not on a line with a #include statement"))))
 
+(c-add-style "java-custom"
+             '("java"
+               (c-offsets-alist . ((substatement-open . 0)
+                                   (arglist-cont-nonempty . (c-lineup-cascaded-calls
+                                                             c-lineup-argcont))
+                                   (statement-cont . (c-lineup-cascaded-calls
+                                                      c-lineup-assignments))))
+               (c-hanging-braces-alist . ((class-open after)
+                                          (inexpr-class-open after)
+                                          (inexpr-class-close before)
+                                          (defun-open after)
+                                          (inline-open after)
+                                          (substatement-open after)
+                                          (block-close . c-snug-do-while)))))
+
+(c-add-style "tda" '(
+     (c-basic-offset . 4)
+     (c-comment-only-line-offset . 0)
+     (c-block-comment-prefix . "*")
+     (c-hanging-braces-alist     . ((substatement-open        before after)
+                                    (brace-list-open          after)
+                                    (brace-list-intro)
+                                    (brace-entry-open         before)
+                                    (brace-list-close  . vh/c-snug-array-close)
+                                    (block-close       . c-snug-do-while)
+                                    (class-open               after)
+                                    (class-close              before)))
+     (c-hanging-colons-alist     . ((case-label after)
+                                    (label after)
+                                    (member-init-intro before)
+                                    (inher-intro)))
+     (c-offsets-alist . ((topmost-intro         . 0)
+                         (topmost-intro-cont    . 0)
+                         (substatement          . +)
+                         (substatement-open     . 0)
+                         (case-label            . 0)
+                         (label                 . 0)
+                         (access-label          . -)
+                         (inclass               . +)
+                         (inline-open           . 0)
+                         (cpp-macro-cont        . ++)
+                         (arglist-intro         . c-lineup-arglist-intro-after-paren)
+                         (arglist-cont          . c-lineup-arglist)
+                         (arglist-cont-nonempty . c-lineup-arglist)
+                         (arglist-close         . c-lineup-arglist)
+                         (inextern-lang         . -)
+                         (statement-cont        . vh/c-lineup-array-init)))
+     (c-cleanup-list . (empty-defun-braces
+                        list-close-comma
+                        scope-operator
+                        one-liner-defun
+                        comment-close-slash))
+     (c-hanging-semi&comma-criteria . (c-semi&comma-inside-parenlist))))
+
+(c-add-style "eracom" '(
+     (c-basic-offset . 4)
+     (c-comment-only-line-offset . 0)
+     (c-block-comment-prefix . "*")
+     (c-hanging-braces-alist     . ((substatement-open        before after)
+                                    (brace-list-open          after)
+                                    (brace-list-intro)
+                                    (brace-entry-open         before)
+                                    (brace-list-close  . vh/c-snug-array-close)
+                                    (block-close       . c-snug-do-while)
+                                    (class-open               after)
+                                    (class-close              before)))
+     (c-hanging-colons-alist     . ((case-label after)
+                                    (label after)
+                                    (member-init-intro before)
+                                    (inher-intro)))
+     (c-offsets-alist . ((topmost-intro         . 0)
+                         (topmost-intro-cont    . 0)
+                         (substatement          . +)
+                         (substatement-open     . 0)
+                         (case-label            . 0)
+                         (label                 . 0)
+                         (access-label          . -)
+                         (inclass               . +)
+                         (inline-open           . 0)
+                         (cpp-macro-cont        . ++)
+                         (arglist-intro         . c-lineup-arglist-intro-after-paren)
+                         (arglist-cont          . c-lineup-arglist)
+                         (arglist-cont-nonempty . c-lineup-arglist)
+                         (arglist-close         . c-lineup-arglist)
+                         (inextern-lang         . -)
+                         (statement-cont        . vh/clineup-array-init)))
+     (c-cleanup-list . (empty-defun-braces
+                        list-close-comma
+                        scope-operator))
+     (c-hanging-semi&comma-criteria . (c-semi&comma-inside-parenlist))))
+
+(c-add-style "eracom-old" '(
+     (c-basic-offset . 4)
+     (c-comment-only-line-offset . 0)
+     (c-block-comment-prefix . "*")
+     (c-hanging-braces-alist     . ((substatement-open after)
+                                    (brace-list-open   after)
+                                    (brace-list-intro)
+                                    (brace-entry-open  after)
+                                    (brace-list-close  before)
+                                    (block-close       . c-snug-do-while)
+                                    (class-open        after)))
+     (c-hanging-colons-alist     . ((case-label after)
+                                    (label after)
+                                    (member-init-intro before)
+                                    (inher-intro)))
+     (c-offsets-alist . ((topmost-intro         . 0)
+                         (topmost-intro-cont    . 0)
+                         (substatement          . +)
+                         (substatement-open     . 0)
+                         (case-label            . 0)
+                         (label                 . 0)
+                         (access-label          . -)
+                         (inclass               . +)
+                         (inline-open           . 0)
+                         (cpp-macro-cont        . ++)
+                         (arglist-intro         . c-lineup-arglist-intro-after-paren)
+                         (arglist-cont          . c-lineup-arglist)
+                         (arglist-cont-nonempty . c-lineup-arglist)
+                         (arglist-close         . c-lineup-arglist)))
+     (c-cleanup-list . (brace-else-brace
+                        brace-elseif-brace
+                        empty-defun-braces
+                        list-close-comma
+                        scope-operator))))
+
+(defun vh/c-snug-array-close (syntax pos)
+  "Dynamically calculate close-brace hanginess for array initializations.
+
+See `c-hanging-braces-alist' for how to utilize this function as an
+ACTION associated with `brace-list-close' syntax."
+  (save-excursion
+    (if (eq syntax 'brace-list-close)
+        (match-parenthesis 0))
+    (c-safe (c-forward-token-1 -1))
+    (if (eq (char-after) ?\=)
+        '(before)
+      '(after))))
+
+(defun vh/c-lineup-array-init (langelem)
+  "Correct the indentation of array and structure initializer brace, when it is
+reported as statement-cont.
+
+Changes:
+int a[] =             int a[] =
+   {                  {
+      1,2,3      ->      1,2,3
+   };                 };"
+  (let ((default-lineup (c-lineup-math langelem)))
+    (save-excursion
+      (goto-char (point-at-bol))
+      (if (and (looking-at "\\s-*{")
+               (progn (c-safe (c-backward-token-1 1))
+                      (eq (char-after) ?\=)))
+          0
+        default-lineup))))
+
+(defun vh/c-insert-include-prev-line (include-str offset-from-end)
+  "Add INCLUDE-STR to the previous line, and leave cursor OFFSET-FROM-END
+characters off from the end. The cursor position is where the header name goes.
+
+TODO: Just use yasnippet. Not that useful anymore."
+       (beginning-of-line)
+       (insert "#include <.h>\n")
+       (forward-line -1)
+       (end-of-line)
+       (backward-char 3))
+
+(defun vh/c-add-header-file-protection (&optional c++-mode-p)
+  "Add the statements that protect a header file against multiple inclusion.
+when C++-MODE is set, the header file is assumed to be a C++ header, and no
+extern \"C\" statements are added."
+  (let ((nm (subst-char-in-string ?. ?_ (concat "INC_" (upcase (buffer-name))))))
+	 (save-excursion
+	   (goto-char (point-min))
+	   (insert (concat (concat "#ifndef " nm) "\n"))
+	   (insert (concat (concat "#define " nm) "\n\n"))
+       (if (not c++-mode-p)
+           (insert "#ifdef __cplusplus\nextern \"C\" {\n#endif /* __cplusplus */\n"))
+	   (goto-char (point-max))
+       (newline)
+       (if c++-mode-p
+           (insert (concat (concat "\n#endif // " nm) "\n"))
+         (insert "\n#ifdef __cplusplus\n}\n#endif /* __cplusplus */\n\n")
+         (insert (concat (concat "\n#endif /* " nm) " */\n"))))))
+
+
 (provide 'c-helper)
