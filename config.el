@@ -279,8 +279,10 @@
                                       "CANCELLED(c@/!)" "PHONE" "MEETING")
                             (sequence "QUOTE(q!)" "QUOTED(Q!)" "|"
                                       "APPROVED(A@)" "EXPIRED(E@)" "REJECTED(R@)")
-                            (sequence "OPEN(O)" "|" "CLOSED(C)"))
+                            (sequence "OPEN(O)" "|" "CLOSED(C)")
+                            (type "PERIODIC(P)"))
         org-todo-keyword-faces '(("TODO"      :foreground "red"          :weight bold)
+                                 ("PERIODIC"  :foreground "magenta"      :weight bold)
                                  ("NEXT"      :foreground "blue"         :weight bold)
                                  ("DONE"      :foreground "forest green" :weight bold)
                                  ("WAITING"   :foreground "yellow"       :weight bold)
@@ -336,6 +338,8 @@
   (require 'org-helper)
 
   (setq org-agenda-start-on-weekday 6 ;Weeks start on saturday (for review purposes)
+
+        org-agenda-span 'day
 
         org-agenda-include-all-todo t
         org-agenda-time-grid '((daily today) "----------------" (800 1000 1200 1400 1600 1800 2000))
@@ -493,14 +497,15 @@
                                      "/*]]>*/-->"
                                      "</style>")))
 
-(use-package ob                         ;org-babel
+(use-package ob-core                         ;org-babel
   :after org
   :defer
   :config
   (setq org-babel-min-lines-for-block-output 999
         org-babel-results-keyword "results")
 
-  (org-babel-do-load-languages 'org-babel-load-languages '((ledger . t))))
+  (org-babel-do-load-languages 'org-babel-load-languages '((ledger . t)
+                                                           (shell . t))))
 
 (use-package org-capture
   :bind (("C-c c" .  org-capture))
@@ -517,23 +522,16 @@
                                   (file+headline "~/org/refile.org" "Notes")
                                   "* %? :NOTE:\n  %U\n  %a\n"
                                   :clock-in t :clock-resume t)
+                                 ("r" "research" entry
+                                  (file+headline "~/org/work.org" "Research")
+                                  "* %? :RESEARCH:\n  %U\n  %x\n")
                                  ("q" "Quick note" item
                                   (file+headline "~/org/review.org" "Quick notes"))
                                  ("s" "Schedule" entry
                                   (file+headline "~/org/refile.org" "Quick Schedule")
                                   "* TODO %?\n  SCHEDULED: %t\n  %i")
                                  ("c" "Quick note on clocked task" item
-                                  (clock))
-                                 ("a" "appointment" entry
-                                  (file+headline "~/org/appointments.org" "Appointments")
-                                  "* %? :APPOINTMENT:\n %U")
-                                 ("l" "Ledger entries")
-                                 ("li" "Credit Card" plain
-                                  (file+olp "~/org/finance.org" "Expenses" "Review")
-                                  "%(subst-char-in-string ?- ?/ (org-read-date)) %^{Payee}\n  Liabilities:CC:ING Bonus  \n  Expenses:%^{Account}  %^{Amount}\n")
-                                 ("lc" "Cash" plain
-                                  (file+olp "~/org/finance.org" "Expenses" "Review")
-                                  "%(subst-char-in-string ?- ?/ (org-read-date)) * %^{Payee}\n  Assets:Cash\n  Expenses:%^{Account}  %^{Amount}\n"))))
+                                  (clock)))))
 
 (use-package org-clock
   :bind (("C-c C-x C-j" . org-clock-goto))
