@@ -20,7 +20,3 @@
 (define-key global-map (kbd "C-c a") 'org-agenda)
 (define-key global-map (kbd "<f12>") 'org-agenda)
 
-(when (package-installed-p 'expand-region)
-  (define-key global-map (kbd "C-c v") 'er/expand-region))
-
-(define-key global-map (kbd"C-c x b") 'org-switchb)

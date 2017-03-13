@@ -258,6 +258,9 @@
 
 
 (use-package org
+  :bind (("C-c b o"   . org-switchb)
+         ("C-c b 4 o" . org-switch-to-buffer-other-window)
+         ("C-c l"     . org-store-link))
   :defer
   :config
   (setq org-enforce-todo-checkbox-dependencies t
@@ -888,3 +891,14 @@ You can disable clean-buffer-list by (cancel-timer clean-buffer-list-timer).")
 (use-package sdcv-mode
   :defer
   :bind ( ("C-c d" . sdcv-search)))
+
+(use-package hydra
+  :bind (("C-c v" . hydra-expand-region/body))
+  :init
+  (defhydra hydra-expand-region (:color red)
+    "Expand Region"
+    ("v" (er/expand-region 1) "Expand")
+    ("V" er/contract-region "Contract")
+    ("C-v" (er/expand-region 0) "Reset" :color blue)
+    ("t" er/mark-nxml-tag "Tag")
+    ("e" er/mark-nxml-element "Element")))
