@@ -892,6 +892,10 @@ You can disable clean-buffer-list by (cancel-timer clean-buffer-list-timer).")
   :defer
   :bind ( ("C-c d" . sdcv-search)))
 
+(use-package undo-tree
+  :init
+  (global-undo-tree-mode))
+
 (use-package hydra
   :bind (("C-c v" . hydra-expand-region/body))
   :init
