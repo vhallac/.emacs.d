@@ -99,12 +99,17 @@
 (use-package nxml-mode
   :commands nxml-mode
   :bind (:map nxml-mode-map
-              ("C-c k c" . comment-region))
+              ("C-c k c" . comment-region)
+              ("C-c k i" . indent-xml-file))
   :mode ("\\.\\(x[ms]l\\|rng\\|x?html?\\)\\'" . nxml-mode)
   :config
   (setq nxml-child-indent 4
         nxml-outline-child-indent 4
         nxml-slash-auto-complete-flag nil)
+  (defun indent-xml-file ()
+    "Indent entire XML file"
+    (interactive "")
+    (shell-command-on-region (point-min) (point-max) "xmlindent" (current-buffer) t))
 
   (add-hook 'nxml-mode-hook
             '(lambda ()
