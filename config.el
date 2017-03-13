@@ -853,3 +853,7 @@ You can disable clean-buffer-list by (cancel-timer clean-buffer-list-timer).")
           ("C-c m s" . mc/mark-all-symbols-like-this-in-defun)
           ("C-c m S" . mc/mark-all-symbols-like-this)
           ("C-c m w" . mc/mark-all-symbols-like-this-in-defun)))
+
+(use-package sdcv-mode
+  :defer
+  :bind ( ("C-c d" . sdcv-search)))
