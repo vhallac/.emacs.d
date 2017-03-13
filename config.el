@@ -661,10 +661,10 @@
   :defer
   :config
   (setq tls-program `(,(concat
-                      (if (boundp 'openssl-prg)
-                          openssl-prg
-                        "openssl")
-                      " s_client -connect %h:%p -no_ssl2 -ign_eof")))
+                        (if (boundp 'openssl-prg)
+                            openssl-prg
+                          "openssl")
+                        " s_client -connect %h:%p -no_ssl2 -ign_eof")))
   ;; TODO: Can I send mail without running gnus first?
   (require 'smtp-openssl))
 
@@ -691,8 +691,8 @@
 
 (use-package message
   :bind (:map message-mode-map
-         ("C-c o" . vh/message-edit-body-as-org)
-         ("C-c h" . vh/message-org-to-html))
+              ("C-c o" . vh/message-edit-body-as-org)
+              ("C-c h" . vh/message-org-to-html))
   :defer
   :config
   (setq message-alternative-emails (regexp-opt '("vedathallac@gmail.com"
@@ -741,7 +741,7 @@
 
 (use-package midnight
   :config
-    ;; run clean-buffer-list every 2 hours
+  ;; run clean-buffer-list every 2 hours
   (defvar clean-buffer-list-timer (run-at-time t 7200 'clean-buffer-list)
     "Stores clean-buffer-list timer if there is one.
 
@@ -769,12 +769,12 @@ You can disable clean-buffer-list by (cancel-timer clean-buffer-list-timer).")
 
   (slime-setup)
   (add-to-list slime-lisp-implementations `((sbcl ("sbcl"))
-                                   (cmucl ("lisp"))
-                                   (openmcl ("openmcl"))
-                                   (s48 ("scheme48") :init slime48-init-command)
-                                   (s48-large ("scheme48" "-h" "80000000")
-                                              :init slime48-init-command)
-                                   (abcl ("abcl"))))
+                                            (cmucl ("lisp"))
+                                            (openmcl ("openmcl"))
+                                            (s48 ("scheme48") :init slime48-init-command)
+                                            (s48-large ("scheme48" "-h" "80000000")
+                                                       :init slime48-init-command)
+                                            (abcl ("abcl"))))
   ;;  (setq inferior-lisp-program "sbcl")
   )
 
