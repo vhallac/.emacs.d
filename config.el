@@ -869,6 +869,13 @@ You can disable clean-buffer-list by (cancel-timer clean-buffer-list-timer).")
   :config
   (setq aw-scope 'visible))
 
+(use-package diary-lib
+  :defer
+  :config
+  (add-hook 'diary-list-entries-hook 'diary-sort-entries t)
+  (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
+  (add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files))
+
 (use-package ace-window
   :bind (( "C-x o" . ace-window)))
 
