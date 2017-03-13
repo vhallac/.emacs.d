@@ -435,9 +435,12 @@
       (remove-hook 'org-blocker-hook 'org-block-todo-from-checkboxes)
       ad-do-it))
 
+  ;; Merge gcal outputs to agenda views
+  (require 'org-agenda-gcalcli)
+  (add-hook 'org-agenda-finalize-hook 'vh/append-to-day-reports)
   ;; TODO: The code should be part of local config
 
-    ;; Search all my org files
+  ;; Search all my org files
   ;; `recursive-directory-list' comes from ~/.emacs.d/loadpaths.el
   (setq org-agenda-text-search-extra-files
         (apply #'append (mapcar (lambda (dir)
