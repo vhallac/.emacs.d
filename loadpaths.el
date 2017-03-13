@@ -1,11 +1,11 @@
 (defun recursive-directory-list (path)
   (let* ((toplevel (directory-files path t))
-         (dirs nil))
+         (dirs '()))
     (while toplevel
       (let ((file (car toplevel)))
         (unless (member
                  (file-name-nondirectory file)
-                 '("." ".." "cvs" "CVS" "rcs" "RCS" ".svn" "emacs" "xemacs"))
+                 '("." ".." "cvs" "CVS" "rcs" "RCS" ".svn" "emacs" "xemacs" ".git"))
           (if (file-directory-p file)
               (setq dirs (append dirs
                                  (recursive-directory-list file)))))
