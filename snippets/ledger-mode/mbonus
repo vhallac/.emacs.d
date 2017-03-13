@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: mbonus
+# key: mbonus
+# --
+Assets:CC:Migros                              ${1:_.01} TL
+Income:Garanti:Bonus                         -$1 TL

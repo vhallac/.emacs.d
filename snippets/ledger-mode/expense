@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: expense
+# key: expense
+# --
+Accounts Receivable:PiA Expenses             ${1:0.00} TL
+Income:Reimbursements:PiA                   -$1 TL
