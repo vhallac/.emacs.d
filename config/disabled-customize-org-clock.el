@@ -2,6 +2,7 @@
   (require 'org)
   (require 'org-clock))
 
+(require 'vh-org-clock-helper)
 (declare-function org-clock-out "org-clock.el")
 (declare-function org-clock-in "org-clock.el")
 
@@ -47,26 +48,6 @@
   (save-excursion
     (beginning-of-line 0)
     (org-remove-empty-drawer-at (point))))
-
-;; Change task state to NEXT from TODO when clocking in
-(defun bh/clock-in-to-next (kw)
-  "Switch task from TODO to NEXT when clocking in.
-Skips remember/capture tasks and tasks with subtasks"
-  (if (and (string-equal kw "TODO")
-           (not (or (string-equal "*Remember*" (buffer-name))
-                    (string-prefix-p "CAPTURE-" (buffer-name)))))
-
-      (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-            (has-subtask nil))
-        (save-excursion
-          (forward-line 1)
-          (while (and (not has-subtask)
-                      (< (point) subtree-end)
-                      (re-search-forward "^\*+ " subtree-end t))
-            (when (member (org-get-todo-state) org-not-done-keywords)
-              (setq has-subtask t))))
-        (when (not has-subtask)
-          "NEXT"))))
 
 ;; Not quite sure how these will be integrated. Leave them in for now.
 (defun bh/clock-in ()

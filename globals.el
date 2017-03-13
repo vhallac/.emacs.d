@@ -1,3 +1,7 @@
+
+(setq user-full-name "Vedat Hallac"
+      user-mail-address "vedathallac@gmail.com")
+
 ;; Lazy mode on: Type y or n instead of full "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
 

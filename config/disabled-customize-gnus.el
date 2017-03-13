@@ -129,10 +129,3 @@
 ;; The following setting ensures these two characters are never used in ADAPT
 ;; file names.
 (setq nnheader-file-name-translation-alist '((?[ . ?_) (?] . ?_)) )
-
-(defun mimedown ()
-  (interactive)
-  (save-excursion
-    (let ((default-process-coding-system '(utf-8 . utf-8)))
-      (message-goto-body)
-      (shell-command-on-region (point) (point-max) "~/bin/mimedown.py" nil t))))

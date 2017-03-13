@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: tbonus
+# key: tbonus
+# --
+Assets:CC:cepteteb                            ${1:0.01} TL
+Income:cepteteb:Bonus                        -$1 TL

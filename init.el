@@ -43,21 +43,11 @@
  "Cannot load keyboard setup"
  (load-file "~/.emacs.d/keyboard.el"))
 
-;; Set up customizations:
-;; Each file of the form customize-<file>.el in the ~/.emacs.d/config directory
-;; is loaded via a call to (require '<file-name>) when <file> is loaded.
-(mapc (lambda (x)
-	(let ((file-name
-	       (replace-regexp-in-string "^customize-\\|\\\.el$" ""
-					 (file-name-nondirectory x))))
-	  (eval-after-load file-name
-	    `(try-progn
-	      (concat "Cannot load configuration:" ,x)
-	      (load-file ,x)))))
-      (directory-files "~/.emacs.d/config" t "^customize-.*el$"))
+;; Load package configuration
+(try-progn
+ "Cannot load configuration handler"
+ (load-file "~/.emacs.d/config.el"))
 
-;; And finally, activate all packages
-(package-initialize)
 
 ;; Load the global config and tidbits
 (try-progn

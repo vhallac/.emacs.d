@@ -218,22 +218,6 @@ extern \"C\" statements are added."
          (insert "\n#ifdef __cplusplus\n}\n#endif /* __cplusplus */\n\n")
          (insert (concat (concat "\n#endif /* " nm) " */\n"))))))
 
-(defun add-file-header ()
-  "Insert the company standard header to the current buffer."
-  (let ((header-template "/***************************************************************************\n *  Copyright (C) %YEAR% Eracom Technologies Australia Pty. Ltd.\n *  All Rights Reserved\n *\n *  Use of this file for any purpose whatsoever is prohibited without the\n *  prior written consent of Eracom Technologies Australia Pty. Ltd.\n *\n *  $Source:   $\n *  $Revision: $\n *  $Date:     $\n *\n *//**\n *\n *\n *  @file  %FILENAME%\n *  @brief \n *\n ** **************************************************************************\n */\n")
-        (header))
-    (setq header (replace-regexp-in-string "%YEAR%"
-                                           (int-to-string
-                                            (nth 5 (decode-time)))
-                                           header-template))
-    (setq header (replace-regexp-in-string "%FILENAME%"
-                                           (file-name-nondirectory (buffer-file-name))
-                                           header))
-    (goto-char (point-min))
-    (insert header)
-    (search-backward "@brief")
-    (goto-char (point-at-eol))))
-
 (defun vedat-c-mode-hook ()
   (interactive "")
   (auto-fill-mode t)
@@ -274,10 +258,6 @@ extern \"C\" statements are added."
     '(lambda ()
        (interactive "")
        (add-header-file-protection t)))
-  (define-key c-mode-map [(control c) (h)]
-	'(lambda ()
-	   (interactive "")
-       (add-file-header)))
   (define-key c-mode-map [(control c) (g)]
 	'goto-c-function-in-buffer)
   (define-key c-mode-map [(control c) (control f)] 'c-helper-find-file)

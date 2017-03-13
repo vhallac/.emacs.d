@@ -1,12 +1,3 @@
-(eval-when-compile
-  (require 'escreen))
-
-(escreen-install)
-
-;;(setq escreen-prefix-char "C-z")
-;;(global-set-key escreen-prefix-char 'escreen-prefix)
-
-;; Get the screen-data for the specified screen number
 (defun vh-find-escreen-data-by-number (number)
   (car (delq nil
              (mapcar (lambda (x) (and (= (car x) number) x))
@@ -29,27 +20,11 @@
     (dolist (s escreens)
       (setq screen-msg
             (concat screen-msg
-                    (let ((display-str (concat (number-to-string s)
-                                               ":"
-                                               (vh-escreen-buffer-name s))))
+                    (let ((display-str (concat (number-to-string s) ":" (vh-escreen-buffer-name s))))
                       (if (= escreen-current-screen-number s)
                           (propertize display-str 'face 'bold-italic)
                         display-str))
                       " ")))
     (message "escreen: %s" screen-msg)))
 
-(define-key escreen-map (kbd "l") 'escreen-display-screens)
-
-(defadvice escreen-goto-last-screen (after escreen-goto-last-screen-show activate)
-  (escreen-display-screens))
-
-(defadvice escreen-create-screen (after escreen-create-screen-show activate)
-  (escreen-display-screens))
-
-(defadvice escreen-kill-screen (after escreen-kill-screen-show activate)
-  (escreen-display-screens))
-
-(add-hook 'escreen-goto-screen-hook 'escreen-display-screens)
-
-;; Restore C-\ functionality
-(define-key escreen-map (kbd "\\") 'toggle-input-method)
+(provide 'vh-escreen)
