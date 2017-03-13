@@ -235,6 +235,9 @@
   :config
   (counsel-projectile-on))
 
+(use-package counsel
+  :bind (("M-g h" . counsel-org-agenda-headlines)))
+
 (use-package escreen
   :bind (:map escreen-map
               ("l"  . escreen-display-screens)
@@ -302,10 +305,12 @@
         org-refile-targets '((org-agenda-files :maxlevel . 5)
                              (nil :maxlevel . 5))
         ;; Targets start with the file name - allows creating level 1 tasks
-        org-refile-use-outline-path 'file
+        ;; !!!!!!!!!!!!!!!!!!! REMOVED. It doesn't work well with ivy/org
+        ;;;;; org-refile-use-outline-path 'file
         ;; Targets complete in steps so we start with filename, TAB shows the
         ;; next level of targets etc
-        org-outline-path-complete-in-steps t
+        ;; !!!!!!!!!!!!!!!!!!! REMOVED. It breaks ivy/org
+        ;;;;; org-outline-path-complete-in-steps t
         ;; Allow refile to create parent tasks with confirmation
         org-refile-allow-creating-parent-nodes 'confirm
         ;; Column view and estimates
@@ -858,6 +863,27 @@ You can disable clean-buffer-list by (cancel-timer clean-buffer-list-timer).")
           ("C-c m s" . mc/mark-all-symbols-like-this-in-defun)
           ("C-c m S" . mc/mark-all-symbols-like-this)
           ("C-c m w" . mc/mark-all-symbols-like-this-in-defun)))
+
+(use-package ace-window
+  :config
+  (setq aw-scope 'visible))
+
+(use-package ace-window
+  :bind (( "C-x o" . ace-window)))
+
+(use-package ace-jump-buffer
+  :bind (("C-c b b"   . ace-jump-buffer)
+         ("C-c b 4 b" . ace-jump-buffer-other-window)
+         ("C-c b p"   . ace-jump-projectile-buffers)))
+
+(use-package avy
+  :bind (("M-g j" . avy-goto-char-timer)
+         ("C-c y l" . avy-copy-line)
+         ("C-c y r" . avy-copy-region)
+         ("C-c k l" . avy-kill-whole-line)
+         ("C-c k r" . avy-kill-region)
+         ("C-c K l" . avy-kill-ring-save-whole-line)
+         ("C-c K r" . avy-kill-ring-save-region)))
 
 (use-package sdcv-mode
   :defer

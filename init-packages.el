@@ -65,7 +65,7 @@
                         "color-theme"
                         "paredit"
                         "ace-window"
-                        "ace-jump-mode"
+                        "avy"
                         "ace-jump-buffer"
                         "use-package"))
       refreshed-p)
